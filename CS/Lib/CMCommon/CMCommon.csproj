@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1A565832-2B67-4C5E-B587-DD1D622F39D1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NEXS.ERP.CM</RootNamespace>
+    <AssemblyName>CMCommon</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\CM\CMWeb\Bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\CM\CMWeb\Bin\CMCommon.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\CM\CMWeb\Bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\CM\CMWeb\Bin\CMCommon.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.0.5022.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CMWebSite\Bin\DocumentFormat.OpenXml.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CMWebSite\Bin\log4net.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Seasar, Version=1.4.0.0, Culture=neutral, PublicKeyToken=1d0d0c484d50ca62, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CMWebSite\Bin\Seasar.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Seasar.Quill, Version=1.4.0.0, Culture=neutral, PublicKeyToken=1d0d0c484d50ca62, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CMWebSite\Bin\Seasar.Quill.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SpreadsheetLight, Version=3.4.0.0, Culture=neutral, PublicKeyToken=32fbb46dc1730c57, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CMWebSite\Bin\SpreadsheetLight.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BL\CMAuthenticationBL.cs" />
+    <Compile Include="BL\CMTransactionHandler.cs" />
+    <Compile Include="BL\CMTransactionSetting.cs" />
+    <Compile Include="BL\ICMAuthenticationBL.cs" />
+    <Compile Include="BL\ICMBaseBL.cs" />
+    <Compile Include="BL\ICMCommonBL.cs" />
+    <Compile Include="BL\CMBaseBL.cs" />
+    <Compile Include="BL\CMCommonBL.cs" />
+    <Compile Include="BL\CMTransactionAttribute.cs" />
+    <Compile Include="Common\CMClientInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\CMCommonSelectArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\CMException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\CMInformationManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\CMMessage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\CMMessageDataSet.Designer.cs">
+      <DependentUpon>CMMessageDataSet.xsd</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Common\CMMessageManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\CMRowField.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\CMSelectParam.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\CMSelectType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\CMSoshikiKaiso.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\CMUserInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\CMUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DA\CMBaseDA.cs" />
+    <Compile Include="DA\CMCommonDA.cs" />
+    <Compile Include="DA\CMCommonSelectDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CMCommonSelectDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DA\CMCmdParam.cs" />
+    <Compile Include="DA\CMCmdSettings.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DA\CMUserInfoDA.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="WEB\CMBaseEntryForm.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WEB\CMBaseForm.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WEB\CMBaseListForm.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Common\CMMessageDataSet.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>CMMessageDataSet.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="DA\CMCommonSelectDataSet.xsc">
+      <DependentUpon>CMCommonSelectDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="DA\CMCommonSelectDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>CMCommonSelectDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DA\CMCommonSelectDataSet.xss">
+      <DependentUpon>CMCommonSelectDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
