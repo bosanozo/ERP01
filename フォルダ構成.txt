@@ -1,0 +1,10 @@
+ソーストップ(c:\ERP01)
+CM(サブシステム毎)
+    CMWeb
+        CM UI層ソース, aspx：画面数が多い場合は、もう１階層作る(CMXX)
+        Model エンティティのXMLファイル
+    CMLib：画面数が多い場合は、もう１階層作る(CMXXLib)
+        BL BL層ソース
+        DA DA層ソース
+Lib
+    CMCommn
