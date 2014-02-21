@@ -90,10 +90,32 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.vb" />
+    <Compile Include="BL\CMAuthenticationBL.vb" />
+    <Compile Include="BL\CMBaseBL.vb" />
+    <Compile Include="BL\CMCommonBL.vb" />
+    <Compile Include="BL\CMTransactionAttribute.vb" />
+    <Compile Include="BL\CMTransactionHandler.vb" />
+    <Compile Include="BL\CMTransactionSetting.vb" />
+    <Compile Include="BL\ICMAuthenticationBL.vb" />
+    <Compile Include="BL\ICMBaseBL.vb" />
+    <Compile Include="BL\ICMCommonBL.vb" />
     <Compile Include="Common\CMClientInfo.vb" />
     <Compile Include="Common\CMCommonSelectArgs.vb" />
+    <Compile Include="Common\CMException.vb" />
+    <Compile Include="Common\CMInformationManager.vb" />
+    <Compile Include="Common\CMMessage.vb" />
+    <Compile Include="Common\CMMessageManager.vb" />
+    <Compile Include="Common\CMRowField.vb" />
+    <Compile Include="Common\CMSelectParam.vb" />
     <Compile Include="Common\CMSelectType.vb" />
+    <Compile Include="Common\CMSoshikiKaiso.vb" />
+    <Compile Include="Common\CMUserInfo.vb" />
+    <Compile Include="Common\CMUtil.vb" />
+    <Compile Include="DA\CMBaseDA.vb" />
+    <Compile Include="DA\CMCmdParam.vb" />
+    <Compile Include="DA\CMCmdSettings.vb" />
+    <Compile Include="DA\CMCommonDA.vb" />
+    <Compile Include="DA\CMUserInfoDA.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -109,6 +131,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="WEB\CMBaseEntryForm.vb" />
+    <Compile Include="WEB\CMBaseForm.vb" />
+    <Compile Include="WEB\CMBaseListForm.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -129,11 +154,7 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="BL\" />
-    <Folder Include="DA\" />
-    <Folder Include="WEB\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

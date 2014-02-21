@@ -1,1 +1,5 @@
 obj
+*.suo
+*.xss
+*.xsc
+*.user

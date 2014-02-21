@@ -1,0 +1,2 @@
+﻿Namespace Common
+End Namespace

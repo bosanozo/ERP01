@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual Web Developer Express 2010
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "CMWeb", "CMWeb\", "{E2F150B5-C367-4B10-A0A4-E7C1BCEBDCDC}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
-		ProjectReferences = "{1A565832-2B67-4C5E-B587-DD1D622F39D1}|CMCommon.dll;"
+		ProjectReferences = "{1A565832-2B67-4C5E-B587-DD1D622F39D1}|CMCommon.dll;{CC45D1CE-C21E-4FBC-BB83-355D19393F21}|CMLib.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/CMWeb"
 		Debug.AspNetCompiler.PhysicalPath = "CMWeb\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\CMWeb\"

@@ -1,0 +1,2 @@
+﻿Namespace BL
+End Namespace
