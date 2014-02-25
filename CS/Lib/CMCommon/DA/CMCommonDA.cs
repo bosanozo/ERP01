@@ -461,8 +461,8 @@ namespace NEXS.ERP.CM.DA
             if (argFname == null) argFname = argTable.TableName;
 
             // データセットにファイルを読み込み
-            DataSet ds = new DataSet();
-            ds.ReadXml(Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "Model", argFname + ".xml"));
+            CMEntityDataSet ds = new CMEntityDataSet();
+            ds.ReadXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", argFname + ".xml"));
 
             // 入力値チェックループ
             foreach (DataRow row in argTable.Rows)
@@ -471,17 +471,16 @@ namespace NEXS.ERP.CM.DA
                 if (row.RowState == DataRowState.Deleted) continue;
 
                 // 存在チェック項目ループ
-                foreach (DataRow irow in ds.Tables["項目"].Select("Len(存在チェックテーブル名) > 0"))
+                foreach (CMEntityDataSet.項目Row irow in ds.項目.Select("Len(存在チェックテーブル名) > 0"))
                 {
                     // キー項目は新規のみチェック
-                    if (irow["Key"].ToString() == "True" && row.RowState != DataRowState.Added) continue;
+                    if (irow.Key && row.RowState != DataRowState.Added) continue;
 
                     List<object> checkParams = new List<object>();
                     string paramText;
 
                     // 共通検索パラメータ取得
-                    if (irow.Table.Columns.Contains("共通検索パラメータ") &&
-                        (paramText = irow["共通検索パラメータ"].ToString()).Length > 0)
+                    if ((paramText = irow.共通検索パラメータ).Length > 0)
                     {
                         foreach (string p0 in paramText.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries))
                         {
@@ -502,8 +501,7 @@ namespace NEXS.ERP.CM.DA
                     }
 
                     // 存在チェック
-                    ExistCheck(irow["共通検索ID"].ToString(), irow["存在チェックテーブル名"].ToString(),
-                        row, irow["項目名"].ToString(), checkParams.ToArray());
+                    ExistCheck(irow.共通検索ID, irow.存在チェックテーブル名, row, irow.項目名, checkParams.ToArray());
                 }
             }
         }

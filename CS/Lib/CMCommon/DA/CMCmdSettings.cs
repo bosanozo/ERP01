@@ -14,6 +14,8 @@ using System.Linq;
 using System.Text;
 using System.Web;
 
+using NEXS.ERP.CM.Common;
+
 namespace NEXS.ERP.CM.DA
 {
     //************************************************************************
@@ -21,7 +23,7 @@ namespace NEXS.ERP.CM.DA
     /// SqlCommand設定コレクションクラス
     /// </summary>
     //************************************************************************
-    public class CMCmdSettings : Component
+    public class CMCmdSettings
     {
         #region プロパティ
         [Category("共通部品")]
@@ -86,29 +88,26 @@ namespace NEXS.ERP.CM.DA
             foreach (string fname in argFnames)
             {
                 // データセットにファイルを読み込み
-                DataSet ds = new DataSet();
-                ds.ReadXml(Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "Model", fname + ".xml"));
+                CMEntityDataSet ds = new CMEntityDataSet();
+                ds.ReadXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", fname + ".xml"));
 
                 CMCmdSetting cmdSetting = new CMCmdSetting();
 
                 // テーブル名を設定
-                cmdSetting.Name = ds.Tables["エンティティ"].Rows[0]["テーブル名"].ToString();
-
-                bool hasNotUpdate = ds.Tables["項目"].Columns.Contains("更新対象外");
+                cmdSetting.Name = ds.エンティティ[0].テーブル名;
 
                 // パラメータ設定
                 List<CMCmdParam> paramList = new List<CMCmdParam>();
-                foreach (DataRow row in ds.Tables["項目"].Rows)
+                foreach (var row in ds.項目)
                 {
                     // 更新対象外は無視
-                    if (hasNotUpdate && row["更新対象外"].ToString() == "True") continue;
+                    if (row.更新対象外) continue;
 
                     CMCmdParam cmdParam = new CMCmdParam();
-                    cmdParam.Name = row["項目名"].ToString();
-                    cmdParam.DbType = (CMDbType)Enum.Parse(typeof(CMDbType), row["項目型"].ToString());
-                    cmdParam.IsKey = row["Key"].ToString() == "True";
-                    if (row.Table.Columns.Contains("SourceColumn"))
-                        cmdParam.SourceColumn = row["SourceColumn"].ToString();
+                    cmdParam.Name = row.項目名;
+                    cmdParam.DbType = (CMDbType)Enum.Parse(typeof(CMDbType), row.項目型);
+                    cmdParam.IsKey = row.Key;
+                    cmdParam.SourceColumn = row.SourceColumn;
 
                     paramList.Add(cmdParam);
                 }

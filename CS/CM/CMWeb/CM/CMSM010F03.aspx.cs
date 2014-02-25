@@ -141,21 +141,19 @@ public partial class CM_CMSM010F03 : CMBaseListForm
     private DataTable CreateDataTableFromXml(string argName)
     {
         // データセットにファイルを読み込み
-        DataSet ds = new DataSet();
-        ds.ReadXml(System.IO.Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "Model", argName + ".xml"));
+        CMEntityDataSet ds = new CMEntityDataSet();
+        ds.ReadXml(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", argName + ".xml"));
 
         // データテーブル作成
-        DataTable table = new DataTable(ds.Tables["エンティティ"].Rows[0]["テーブル名"].ToString());
-
-        bool hasNotNull = ds.Tables["項目"].Columns.Contains("必須");
+        DataTable table = new DataTable(ds.エンティティ[0].テーブル名);
 
         // DataColumn追加
-        foreach (DataRow row in ds.Tables["項目"].Rows)
+        foreach (var row in ds.項目)
         {
             // DataColumn作成
-            DataColumn dcol = new DataColumn(row["項目名"].ToString());
+            DataColumn dcol = new DataColumn(row.項目名);
             // 型
-            CMDbType dbType = (CMDbType)Enum.Parse(typeof(CMDbType), row["項目型"].ToString());
+            CMDbType dbType = (CMDbType)Enum.Parse(typeof(CMDbType), row.項目型);
             switch (dbType)
             {
                 case CMDbType.フラグ:
@@ -174,7 +172,7 @@ public partial class CM_CMSM010F03 : CMBaseListForm
                     break;
             }
             // 必須入力
-            if (hasNotNull && row["必須"].ToString() == "True") dcol.AllowDBNull = false;
+            if (row.必須) dcol.AllowDBNull = false;
 
             table.Columns.Add(dcol);
         }
