@@ -1,0 +1,56 @@
+<?xml version="1.0"  encoding="shift_jis" standalone="yes"?>
+<DocumentElement>
+  <!-- V システム共通 -->
+  <!-- エラー -->
+  <Message><Code>E</Code><Format>{0}</Format></Message>
+  <Message><Code>EV001</Code><Format>システムエラーが発生しました。
+内容:{0}</Format></Message>
+  <Message><Code>EV002</Code><Format>データベースエラーが発生しました。
+内容:{0}</Format></Message>
+  <Message><Code>EV003</Code><Format>ファイルアクセスエラーが発生しました。
+内容:{0}</Format></Message>
+
+  <!-- 警告 -->
+  <Message><Code>W</Code><Format>{0}</Format></Message>
+  <Message><Code>WV001</Code><Format>同一レコードが既に存在します</Format></Message>。
+  <Message><Code>WV002</Code><Format>更新しようとしたレコードは他のユーザーによって更新されています。
+更新者ＩＤ = {0}, 更新時刻 = {1:yyyy/MM/dd HH:mm:ss}, 更新ＡＰ = {2}, 更新端末ＩＤ = {3}</Format></Message>
+  <Message><Code>WV003</Code><Format>更新しようとしたレコードは他のユーザーによって削除されています。</Format></Message>
+  <Message><Code>WV004</Code><Format>削除しようとしたレコードは他のユーザーによって更新されています。
+更新者ＩＤ = {0}, 更新時刻 = {1:yyyy/MM/dd HH:mm:ss}, 更新ＡＰ = {2}, 更新端末ＩＤ = {3}</Format></Message>
+  <Message><Code>WV005</Code><Format>削除しようとしたレコードは他のユーザーによって削除されています。</Format></Message>
+  <Message><Code>WV006</Code><Format>更新しようとしたレコードは他のユーザーによってロックされています。</Format></Message>
+  <Message><Code>WV007</Code><Format>削除しようとしたレコードは他のユーザーによってロックされています。</Format></Message>
+  <Message><Code>WV008</Code><Format>更新しようとしたレコードは他のユーザーによって更新されています。
+再度、検索し直して下さい。</Format></Message>
+  <Message><Code>WV101</Code><Format>必須入力です。</Format></Message>
+  <Message><Code>WV102</Code><Format>入力文字列の形式が正しくありません。</Format></Message>
+  <Message><Code>WV103</Code><Format>TO > FROMです。</Format></Message>
+  <Message><Code>WV104</Code><Format>データが選択されていません。</Format></Message>
+  <Message><Code>WV105</Code><Format>データが複数選択されています。</Format></Message>
+  <Message><Code>WV106</Code><Format>データが変更されていません。</Format></Message>
+  <Message><Code>WV107</Code><Format>{0}にデータが存在しません。</Format></Message>
+  <Message><Code>WV108</Code><Format>ファイル名が指定されていません。</Format></Message>
+  <Message><Code>WV109</Code><Format>{0}桁で入力してください。</Format></Message>
+  <Message><Code>WV110</Code><Format>{0}が重複しています。</Format></Message>
+  <Message><Code>WV111</Code><Format>該当するデータが存在しません。</Format></Message>
+  <Message><Code>WV112</Code><Format>{0}を指定してください。</Format></Message>
+  <Message><Code>WV113</Code><Format>数値・文字・記号のうち二種以上を使用してください。</Format></Message>
+
+  <!-- 確認 -->
+  <Message><Code>Q</Code><Format>{0}</Format></Message>
+  <Message><Code>QV001</Code><Format>登録しますか？</Format></Message>
+  <Message><Code>QV002</Code><Format>削除しますか？</Format></Message>
+  <Message><Code>QV003</Code><Format>{0}件削除します。よろしいですか？</Format></Message>
+  <Message><Code>QV004</Code><Format></Format></Message>
+  <Message><Code>QV005</Code><Format>データが変更されています。
+終了しますか？</Format></Message>
+  <Message><Code>QV006</Code><Format>終了しますか？</Format></Message>
+
+  <!-- 情報 -->
+  <Message><Code>I</Code><Format>{0}</Format></Message>
+  <Message><Code>IV001</Code><Format>該当するデータが見つかりませんでした。</Format></Message>
+  <Message><Code>IV002</Code><Format>最大検索件数を超えるデータがありました。</Format></Message>
+  <Message><Code>IV003</Code><Format>登録しました。</Format></Message>
+  <Message><Code>IV004</Code><Format>削除しました。</Format></Message>
+</DocumentElement>

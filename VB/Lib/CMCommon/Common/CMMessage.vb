@@ -2,6 +2,7 @@
     ''' <summary>
     ''' メッセージデータ
     ''' </summary>
+    <Serializable()>
     Public Class CMMessage
 #Region "プロパティ"
         ''' <summary>

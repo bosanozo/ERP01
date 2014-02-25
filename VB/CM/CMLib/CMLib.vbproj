@@ -9,7 +9,7 @@
     </SchemaVersion>
     <ProjectGuid>{962DD14E-42EC-4A7A-AB47-620CA7C44515}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>NEXS.ERP.CM.Lib</RootNamespace>
+    <RootNamespace>NEXS.ERP.CM</RootNamespace>
     <AssemblyName>CMLib</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>

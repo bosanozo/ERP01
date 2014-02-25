@@ -73,6 +73,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -101,6 +103,11 @@
     <Compile Include="BL\ICMCommonBL.vb" />
     <Compile Include="Common\CMClientInfo.vb" />
     <Compile Include="Common\CMCommonSelectArgs.vb" />
+    <Compile Include="Common\CMEntityDataSet.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CMEntityDataSet.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Common\CMException.vb" />
     <Compile Include="Common\CMInformationManager.vb" />
     <Compile Include="Common\CMMessage.vb" />
@@ -120,6 +127,11 @@
     <Compile Include="DA\CMCmdParam.vb" />
     <Compile Include="DA\CMCmdSettings.vb" />
     <Compile Include="DA\CMCommonDA.vb" />
+    <Compile Include="DA\CMCommonSelectDataSet.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CMCommonSelectDataSet.xsd</DependentUpon>
+    </Compile>
     <Compile Include="DA\CMUserInfoDA.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -136,9 +148,15 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="WEB\CMBaseEntryForm.vb" />
-    <Compile Include="WEB\CMBaseForm.vb" />
-    <Compile Include="WEB\CMBaseListForm.vb" />
+    <Compile Include="WEB\CMBaseEntryForm.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WEB\CMBaseForm.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WEB\CMBaseListForm.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -149,6 +167,17 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Common\CMEntityDataSet.xsc">
+      <DependentUpon>CMEntityDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="Common\CMEntityDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>CMEntityDataSet.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="Common\CMEntityDataSet.xss">
+      <DependentUpon>CMEntityDataSet.xsd</DependentUpon>
+    </None>
     <None Include="Common\CMMessageDataSet.xsc">
       <DependentUpon>CMMessageDataSet.xsd</DependentUpon>
     </None>
@@ -158,6 +187,17 @@
     </None>
     <None Include="Common\CMMessageDataSet.xss">
       <DependentUpon>CMMessageDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="DA\CMCommonSelectDataSet.xsc">
+      <DependentUpon>CMCommonSelectDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="DA\CMCommonSelectDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>CMCommonSelectDataSet.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DA\CMCommonSelectDataSet.xss">
+      <DependentUpon>CMCommonSelectDataSet.xsd</DependentUpon>
     </None>
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>

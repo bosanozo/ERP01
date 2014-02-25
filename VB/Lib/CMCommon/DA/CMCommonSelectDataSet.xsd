@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="CMCommonSelectDataSet" targetNamespace="http://tempuri.org/NVCommonSelectDataSet.xsd" xmlns:mstns="http://tempuri.org/NVCommonSelectDataSet.xsd" xmlns="http://tempuri.org/NVCommonSelectDataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="CMCommonSelectDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_DataSetName="CMCommonSelectDataSet" msprop:Generator_UserDSName="CMCommonSelectDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="SelectStatement" msprop:Generator_UserTableName="SelectStatement" msprop:Generator_RowEvArgName="SelectStatementRowChangeEvent" msprop:Generator_TableVarName="tableSelectStatement" msprop:Generator_TablePropName="SelectStatement" msprop:Generator_RowDeletingName="SelectStatementRowDeleting" msprop:Generator_RowChangingName="SelectStatementRowChanging" msprop:Generator_RowDeletedName="SelectStatementRowDeleted" msprop:Generator_TableClassName="SelectStatementDataTable" msprop:Generator_RowChangedName="SelectStatementRowChanged" msprop:Generator_RowEvHandlerName="SelectStatementRowChangeEventHandler" msprop:Generator_RowClassName="SelectStatementRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="SelectId" msprop:Generator_ColumnVarNameInTable="columnSelectId" msprop:Generator_ColumnPropNameInRow="SelectId" msprop:Generator_ColumnPropNameInTable="SelectIdColumn" msprop:Generator_UserColumnName="SelectId" type="xs:string" minOccurs="0" />
+              <xs:element name="Statement" msprop:Generator_ColumnVarNameInTable="columnStatement" msprop:Generator_ColumnPropNameInRow="Statement" msprop:Generator_ColumnPropNameInTable="StatementColumn" msprop:Generator_UserColumnName="Statement" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

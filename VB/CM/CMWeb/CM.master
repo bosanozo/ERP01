@@ -1,0 +1,66 @@
+﻿<%@ Master Language="VB" AutoEventWireup="true" CodeFile="CM.master.vb" Inherits="CMMaster" ClientIDMode="Static" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <base target="_self" />
+    <title><%=LabelTitle.Text%></title>
+    <link href="~/Styles/SsDefaultStyle.css" type="text/css" rel="stylesheet" />
+    <!--
+    <script type="text/vbscript">
+' メッセージを表示する
+Function MsgInfo(argMsg)
+    MsgBox argMsg, 64, "メッセージ"
+End Function
+
+' エラーメッセージを表示する
+Function MsgError(argMsg)
+    MsgBox argMsg, 16, "エラー"
+End Function
+    </script>
+    -->
+</head>
+<body id="Body1" runat="server">
+    <script type="text/javascript" src="<%=ResolveUrl("~") %>Scripts/CMCommon.js"></script>
+    <form id="Form1" runat="server">
+    <div class="page">
+        <!-- ヘッダ -->
+        <div class="header">
+            <table width="100%" style="border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #003580">
+                <tr>
+                    <td style="width: 24px">
+                        <asp:Image ID="Image1" runat="server" ImageUrl="~/Image/title.gif" 
+                            Height="30px"/></td>
+                    <td>
+                        <asp:Label ID="LabelTitle" runat="server" CssClass="Title"></asp:Label>
+                    </td>
+                    <td>
+                        <asp:Label ID="LabelUserName" runat="server" CssClass="Title"></asp:Label>
+                    </td>
+                    <td style="width: 130px">
+                        <asp:Label ID="LabelDateTime" runat="server" CssClass="TitleSmall"></asp:Label>
+                    </td>
+                    <td style="width: 120px">
+                        <asp:Label ID="LabelFormId" runat="server" CssClass="TitleSmall"></asp:Label>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!-- 内容 -->
+        <div class="main">
+        <asp:contentplaceholder id="Content1" runat="server"></asp:contentplaceholder>
+        </div>
+        <div class="clear">
+        </div>
+        <!-- メッセージ領域 -->
+        <div class="footer">
+            <asp:Label ID="LabelMessage" runat="server"></asp:Label>
+        </div>
+    </div>
+	<!-- 処理中メッセージ -->
+	<div id="wait" style="DISPLAY: none; CURSOR: wait"></div>
+    </form>
+	</body>
+</html>
