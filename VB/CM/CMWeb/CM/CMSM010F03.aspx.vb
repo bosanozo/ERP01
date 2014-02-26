@@ -13,7 +13,7 @@ Imports NEXS.ERP.CM.BL
 ''' 組織マスタEXCEL入力
 ''' </summary>
 Public Partial Class CM_CMSM010F03
-    Inherits CMBaseListForm
+    Inherits CMBaseForm
     #Region "BLインジェクション用フィールド"
     Protected m_facade As CMSM010BL
     #End Region
@@ -129,8 +129,10 @@ Public Partial Class CM_CMSM010F03
 
         ' DataColumn追加
         For Each row As CMEntityDataSet.項目Row In ds.項目
+            Dim col As String = If(String.IsNullOrEmpty(row.SourceColumn), row.項目名, row.SourceColumn)
+
             ' DataColumn作成
-            Dim dcol As New DataColumn(row.項目名)
+            Dim dcol As New DataColumn(col)
             ' 型
             Dim dbType As CMDbType = DirectCast([Enum].Parse(GetType(CMDbType), row.項目型), CMDbType)
             Select Case dbType
@@ -176,25 +178,6 @@ Public Partial Class CM_CMSM010F03
         Catch ex As Exception
             ShowError(ex)
         End Try
-    End Sub
-
-    ''' <summary>
-    ''' データバインド
-    ''' </summary>
-    Protected Sub GridView1_RowDataBound(sender As Object, e As GridViewRowEventArgs)
-        If e.Row.RowIndex >= 0 Then
-            Dim row As DataRowView = DirectCast(e.Row.DataItem, DataRowView)
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' ページ切り替え
-    ''' </summary>
-    Protected Sub GridView1_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
-        ' 検索条件取得
-        Dim param As List(Of CMSelectParam) = DirectCast(Session("SelectCondition"), List(Of CMSelectParam))
-        ' 検索実行
-        'DoSelect(m_facade, param, GridView1, e.NewPageIndex)
     End Sub
     #End Region
 End Class

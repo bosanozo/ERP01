@@ -168,36 +168,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Common\CMEntityDataSet.xsc">
-      <DependentUpon>CMEntityDataSet.xsd</DependentUpon>
-    </None>
     <None Include="Common\CMEntityDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>CMEntityDataSet.Designer.vb</LastGenOutput>
-    </None>
-    <None Include="Common\CMEntityDataSet.xss">
-      <DependentUpon>CMEntityDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="Common\CMMessageDataSet.xsc">
-      <DependentUpon>CMMessageDataSet.xsd</DependentUpon>
     </None>
     <None Include="Common\CMMessageDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>CMMessageDataSet.Designer.vb</LastGenOutput>
     </None>
-    <None Include="Common\CMMessageDataSet.xss">
-      <DependentUpon>CMMessageDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="DA\CMCommonSelectDataSet.xsc">
-      <DependentUpon>CMCommonSelectDataSet.xsd</DependentUpon>
-    </None>
     <None Include="DA\CMCommonSelectDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>CMCommonSelectDataSet.Designer.vb</LastGenOutput>
       <SubType>Designer</SubType>
-    </None>
-    <None Include="DA\CMCommonSelectDataSet.xss">
-      <DependentUpon>CMCommonSelectDataSet.xsd</DependentUpon>
     </None>
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>

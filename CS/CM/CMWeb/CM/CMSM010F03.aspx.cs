@@ -20,7 +20,7 @@ using NEXS.ERP.CM.BL;
 /// 組織マスタEXCEL入力
 /// </summary>
 //************************************************************************
-public partial class CM_CMSM010F03 : CMBaseListForm
+public partial class CM_CMSM010F03 : CMBaseForm
 {
     #region BLインジェクション用フィールド
     protected CMSM010BL m_facade;
@@ -150,8 +150,11 @@ public partial class CM_CMSM010F03 : CMBaseListForm
         // DataColumn追加
         foreach (var row in ds.項目)
         {
+            string col = string.IsNullOrEmpty(row.SourceColumn) ?
+                row.項目名 : row.SourceColumn;
+
             // DataColumn作成
-            DataColumn dcol = new DataColumn(row.項目名);
+            DataColumn dcol = new DataColumn(col);
             // 型
             CMDbType dbType = (CMDbType)Enum.Parse(typeof(CMDbType), row.項目型);
             switch (dbType)
@@ -202,32 +205,6 @@ public partial class CM_CMSM010F03 : CMBaseListForm
         {
             ShowError(ex);
         }
-    }
-
-    //************************************************************************
-    /// <summary>
-    /// データバインド
-    /// </summary>
-    //************************************************************************
-    protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
-    {
-        if (e.Row.RowIndex >= 0)
-        {
-            DataRowView row = (DataRowView)e.Row.DataItem;
-        }
-    }
-
-    //************************************************************************
-    /// <summary>
-    /// ページ切り替え
-    /// </summary>
-    //************************************************************************
-    protected void GridView1_PageIndexChanging(object sender, GridViewPageEventArgs e)
-    {
-        // 検索条件取得
-        List<CMSelectParam> param = (List<CMSelectParam>)Session["SelectCondition"];
-        // 検索実行
-        //DoSelect(m_facade, param, GridView1, e.NewPageIndex);
     }
     #endregion
 }

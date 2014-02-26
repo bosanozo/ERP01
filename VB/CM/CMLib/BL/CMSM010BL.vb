@@ -45,7 +45,8 @@ Namespace BL
             ' 検索実行
             Dim isOver As Boolean
             m_dataAccess.Connection = Connection
-            Dim result As DataSet = m_dataAccess.[Select](argParam, argSelectType, maxRow, isOver)
+            Dim result As DataSet = m_dataAccess.SelectFromXml(argParam,
+                argSelectType, maxRow, isOver, "CMSM組織")
 
             argMessage = Nothing
             ' 検索結果なし

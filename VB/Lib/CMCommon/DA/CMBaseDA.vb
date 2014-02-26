@@ -1,5 +1,6 @@
 ﻿Imports System.Data.Common
 Imports System.Data.SqlClient
+Imports System.IO
 Imports System.Text
 Imports System.Text.RegularExpressions
 
@@ -202,6 +203,86 @@ Namespace DA
 #End Region
 
 #Region "publicメソッド"
+        ''' <summary>
+        ''' 指定されたXMLファイルからSELECT文を作成し、検索を実行する。
+        ''' </summary>
+        ''' <param name="argParam">検索条件</param>
+        ''' <param name="argSelectType">検索種別</param>
+        ''' <param name="argMaxRow">最大検索件数</param>
+        ''' <param name="argIsOver">最大検索件数オーバーフラグ</param>
+        ''' <param name="argFname">読み込むXMLファイル名(拡張子なし)</param>
+        ''' <returns>検索結果</returns>
+        Public Function SelectFromXml(argParam As List(Of CMSelectParam), argSelectType As CMSelectType, argMaxRow As Integer, ByRef argIsOver As Boolean, argFname As String) As DataSet
+            ' データセットにファイルを読み込み
+            Dim ds As New CMEntityDataSet()
+            ds.ReadXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", argFname & ".xml"))
+
+            ' テーブル名を取得
+            Dim tableName As String = ds.エンティティ(0).テーブル名
+
+            Dim sb As New StringBuilder()
+            Dim orderSb As New StringBuilder()
+            For Each row As CMEntityDataSet.項目Row In ds.項目
+                ' 項目名に.が無いものは駆動表から取得
+                Dim col As String = If(row.項目名.Contains("."), row.項目名, "A." & Convert.ToString(row.項目名))
+
+                ' 検索列を作成
+                ' SourceColumnの指定がある場合は別名をつける
+                If String.IsNullOrEmpty(row.SourceColumn) Then
+                    sb.AppendFormat("{0},", col)
+                Else
+                    sb.AppendFormat("{0} {1},", col, row.SourceColumn)
+                End If
+
+                ' ソート条件を作成
+                If row.Key Then
+                    If orderSb.Length > 0 Then
+                        orderSb.Append(" ,")
+                    End If
+                    orderSb.Append(col)
+                End If
+            Next
+
+            ' ソート条件
+            Dim order As String = ds.エンティティ(0).OrderBy
+            If String.IsNullOrEmpty(order) Then
+                order = orderSb.ToString()
+            End If
+
+            ' WHERE句作成
+            Dim where As New StringBuilder()
+            AddWhere(where, argParam)
+
+            ' SELECT文の設定
+            Dim cmd As IDbCommand = CreateCommand(CreateSelectSql(sb.ToString(), tableName, where.ToString(), ds.エンティティ(0).Join + " ", order, argSelectType))
+            Adapter.SelectCommand = cmd
+
+            ' パラメータの設定
+            SetParameter(cmd, argParam)
+            ' 一覧検索の場合
+            If argSelectType = CMSelectType.List Then
+                cmd.Parameters.Add(CreateCmdParam("最大検索件数", argMaxRow))
+            End If
+
+            ' データセットの作成
+            Dim result As New DataSet()
+            ' データの取得
+            Dim cnt As Integer = Adapter.Fill(result)
+            ' テーブル名を設定
+            result.Tables(0).TableName = tableName
+
+            ' 一覧検索で最大検索件数オーバーの場合、最終行を削除
+            If argSelectType = CMSelectType.List AndAlso cnt >= argMaxRow Then
+                argIsOver = True
+                result.Tables(0).Rows.RemoveAt(cnt - 1)
+            Else
+                argIsOver = False
+            End If
+
+            ' 検索結果の返却
+            Return result
+        End Function
+
         ''' <summary>
         ''' 指定されたテーブルに更新データを登録する。
         ''' </summary>

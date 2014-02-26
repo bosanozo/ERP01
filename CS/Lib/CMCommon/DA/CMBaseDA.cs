@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -230,6 +231,89 @@ namespace NEXS.ERP.CM.DA
         #region publicメソッド
         //************************************************************************
         /// <summary>
+        /// 指定されたXMLファイルからSELECT文を作成し、検索を実行する。
+        /// </summary>
+        /// <param name="argParam">検索条件</param>
+        /// <param name="argSelectType">検索種別</param>
+        /// <param name="argMaxRow">最大検索件数</param>
+        /// <param name="argIsOver">最大検索件数オーバーフラグ</param>
+        /// <param name="argFname">読み込むXMLファイル名(拡張子なし)</param>
+        /// <returns>検索結果</returns>
+        //************************************************************************
+        public DataSet SelectFromXml(List<CMSelectParam> argParam, CMSelectType argSelectType,
+            int argMaxRow, out bool argIsOver, string argFname)
+        {
+            // データセットにファイルを読み込み
+            CMEntityDataSet ds = new CMEntityDataSet();
+            ds.ReadXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", argFname + ".xml"));
+
+            // テーブル名を取得
+            string tableName = ds.エンティティ[0].テーブル名;
+
+            StringBuilder sb = new StringBuilder();
+            StringBuilder orderSb = new StringBuilder();
+            foreach (var row in ds.項目)
+            {
+                // 項目名に.が無いものは駆動表から取得
+                string col = row.項目名.Contains(".") ?
+                    row.項目名 : "A." + row.項目名;
+
+                // 検索列を作成
+                // SourceColumnの指定がある場合は別名をつける
+                if (string.IsNullOrEmpty(row.SourceColumn))
+                    sb.AppendFormat("{0},", col);
+                else
+                    sb.AppendFormat("{0} {1},", col, row.SourceColumn);
+
+                // ソート条件を作成
+                if (row.Key)
+                {
+                    if (orderSb.Length > 0) orderSb.Append(" ,");
+                    orderSb.Append(col);
+                }
+            }
+
+            // ソート条件
+            string order = ds.エンティティ[0].OrderBy;
+            if (string.IsNullOrEmpty(order)) order = orderSb.ToString();
+
+            // WHERE句作成
+            StringBuilder where = new StringBuilder();
+            AddWhere(where, argParam);
+
+            // SELECT文の設定
+            IDbCommand cmd = CreateCommand(
+                CreateSelectSql(sb.ToString(), tableName, where.ToString(),
+                ds.エンティティ[0].Join + " ", order, argSelectType));
+            Adapter.SelectCommand = cmd;
+
+            // パラメータの設定
+            SetParameter(cmd, argParam);
+            // 一覧検索の場合
+            if (argSelectType == CMSelectType.List)
+                cmd.Parameters.Add(CreateCmdParam("最大検索件数", argMaxRow));
+
+            // データセットの作成
+            DataSet result = new DataSet();
+            // データの取得
+            int cnt = Adapter.Fill(result);
+            // テーブル名を設定
+            result.Tables[0].TableName = tableName;
+
+            // 一覧検索で最大検索件数オーバーの場合、最終行を削除
+            if (argSelectType == CMSelectType.List && cnt >= argMaxRow)
+            {
+                argIsOver = true;
+                result.Tables[0].Rows.RemoveAt(cnt - 1);
+            }
+            else argIsOver = false;
+
+            // 検索結果の返却
+            return result;
+        }
+
+        //************************************************************************
+        /// <summary>
         /// 指定されたテーブルに更新データを登録する。
         /// </summary>
         /// <param name="argUpdateData">更新データ</param>
@@ -332,7 +416,6 @@ namespace NEXS.ERP.CM.DA
         protected string CreateSelectSql(string argCols, string argTableName,
             string argWhere, string argJoin, string argOrder, CMSelectType argSelectType)
         {
-            //string tableName = Escape(argTableName);
             string tableName = argTableName;
 
             // 登録画面の場合
@@ -368,7 +451,7 @@ namespace NEXS.ERP.CM.DA
                 {
                     // テーブルの指定がない場合は、Aをつける
                     if (!param.name.Contains('.')) where.Append("A.");
-                    where.AppendFormat("{0} ", Escape(param.name));
+                    where.AppendFormat("{0} ", param.name);
                 }
                 where.Append(param.condtion).Append(" ");
             }
@@ -406,7 +489,6 @@ namespace NEXS.ERP.CM.DA
                 }
                 else valueFmt = "@{0},";
 
-                //string colName = Escape(row.Name);
                 string colName = row.Name;
 
                 // INSERT文作成
@@ -419,23 +501,9 @@ namespace NEXS.ERP.CM.DA
                     upd.Append(colName).Append(" = ").AppendFormat(valueFmt, row.Name);
             }
 
-            //string tname = Escape(argCmdSetting.Name);
             string tname = argCmdSetting.Name;
             argInsertSql = string.Format(INSERT_SQL, tname, ins1, ins2);
             argUpdateSql = string.Format(UPDATE_SQL, tname, upd);
-        }
-
-        //************************************************************************
-        /// <summary>
-        /// "ー"がある場合、"で囲う。
-        /// </summary>
-        /// <param name="arg">文字列</param>
-        /// <returns>変換後文字列</returns>
-        //************************************************************************
-        protected string Escape(string arg)
-        {
-            if (arg.Contains("ー")) return '"' + arg + '"';
-            else return arg;
         }
         #endregion
 

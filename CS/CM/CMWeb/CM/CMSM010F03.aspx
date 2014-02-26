@@ -32,9 +32,7 @@
 		</table>
     </div>
     <!-- 明細部 -->
-    <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False"
-        PageSize="20" OnRowDataBound="GridView1_RowDataBound" OnPageIndexChanging="GridView1_PageIndexChanging"
-        Width="100%">
+    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" Width="100%">
         <Columns>
             <asp:BoundField DataField="組織CD" HeaderText="組織コード"
                 HtmlEncode="False" >

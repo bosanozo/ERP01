@@ -65,7 +65,8 @@ namespace NEXS.ERP.CM.BL
             // ŒŸõÀs
             bool isOver;
             m_dataAccess.Connection = Connection;
-            DataSet result = m_dataAccess.Select(argParam, argSelectType, maxRow, out isOver);
+            DataSet result = m_dataAccess.SelectFromXml(argParam, argSelectType,
+                maxRow, out isOver, "CMSM‘gD");
 
             argMessage = null;
             // ŒŸõŒ‹‰Ê‚È‚µ
