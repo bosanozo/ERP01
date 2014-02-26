@@ -162,6 +162,9 @@ namespace NEXS.ERP.CM.DA
             "LEFT JOIN CMSMユーザ US1 ON US1.ユーザID = A.作成者ID " +
             "LEFT JOIN CMSMユーザ US2 ON US2.ユーザID = A.更新者ID ";
 
+        private const string ROWNUMBER_CONDITION =
+            "WHERE ROWNUMBER <= @最大検索件数 ";
+
         /// <summary>
         /// SELECT文
         /// </summary>
@@ -176,7 +179,7 @@ namespace NEXS.ERP.CM.DA
             "FROM {2} A{3}) A " +
             TOROKU_JOIN +
             "{4}" +
-            "WHERE ROWNUMBER <= @最大検索件数 " +
+            ROWNUMBER_CONDITION +
             "ORDER BY ROWNUMBER";
 
         /// <summary>
@@ -241,64 +244,72 @@ namespace NEXS.ERP.CM.DA
         /// <returns>検索結果</returns>
         //************************************************************************
         public DataSet SelectFromXml(List<CMSelectParam> argParam, CMSelectType argSelectType,
-            int argMaxRow, out bool argIsOver, string argFname)
+            int argMaxRow, out bool argIsOver, params string[] argFname)
         {
-            // データセットにファイルを読み込み
-            CMEntityDataSet ds = new CMEntityDataSet();
-            ds.ReadXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", argFname + ".xml"));
-
-            // テーブル名を取得
-            string tableName = ds.エンティティ[0].テーブル名;
-
-            StringBuilder sb = new StringBuilder();
-            StringBuilder orderSb = new StringBuilder();
-            foreach (var row in ds.項目)
-            {
-                // 項目名に.が無いものは駆動表から取得
-                string col = row.項目名.Contains(".") ?
-                    row.項目名 : "A." + row.項目名;
-
-                // 検索列を作成
-                // SourceColumnの指定がある場合は別名をつける
-                if (string.IsNullOrEmpty(row.SourceColumn))
-                    sb.AppendFormat("{0},", col);
-                else
-                    sb.AppendFormat("{0} {1},", col, row.SourceColumn);
-
-                // ソート条件を作成
-                if (row.Key)
-                {
-                    if (orderSb.Length > 0) orderSb.Append(" ,");
-                    orderSb.Append(col);
-                }
-            }
-
-            // ソート条件
-            string order = ds.エンティティ[0].OrderBy;
-            if (string.IsNullOrEmpty(order)) order = orderSb.ToString();
-
-            // WHERE句作成
-            StringBuilder where = new StringBuilder();
-            AddWhere(where, argParam);
-
-            // SELECT文の設定
-            IDbCommand cmd = CreateCommand(
-                CreateSelectSql(sb.ToString(), tableName, where.ToString(),
-                ds.エンティティ[0].Join + " ", order, argSelectType));
-            Adapter.SelectCommand = cmd;
-
-            // パラメータの設定
-            SetParameter(cmd, argParam);
-            // 一覧検索の場合
-            if (argSelectType == CMSelectType.List)
-                cmd.Parameters.Add(CreateCmdParam("最大検索件数", argMaxRow));
-
             // データセットの作成
             DataSet result = new DataSet();
-            // データの取得
-            int cnt = Adapter.Fill(result);
-            // テーブル名を設定
-            result.Tables[0].TableName = tableName;
+
+            foreach (string fname in argFname)
+            {
+                // データセットにファイルを読み込み
+                CMEntityDataSet ds = new CMEntityDataSet();
+                ds.ReadXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", fname + ".xml"));
+
+                // テーブル名を取得
+                string tableName = ds.エンティティ[0].テーブル名;
+
+                StringBuilder sb = new StringBuilder();
+                StringBuilder orderSb = new StringBuilder();
+                foreach (var row in ds.項目)
+                {
+                    // 項目名に.が無いものは駆動表から取得
+                    string col = row.項目名.Contains(".") ?
+                        row.項目名 : "A." + row.項目名;
+
+                    // 検索列を作成
+                    // SourceColumnの指定がある場合は別名をつける
+                    if (string.IsNullOrEmpty(row.SourceColumn))
+                        sb.AppendFormat("{0},", col);
+                    else
+                        sb.AppendFormat("{0} {1},", col, row.SourceColumn);
+
+                    // ソート条件を作成
+                    if (row.Key)
+                    {
+                        if (orderSb.Length > 0) orderSb.Append(" ,");
+                        orderSb.Append(col);
+                    }
+                }
+
+                // ソート条件
+                string order = ds.エンティティ[0].OrderBy;
+                if (string.IsNullOrEmpty(order)) order = orderSb.ToString();
+
+                // WHERE句作成
+                StringBuilder where = new StringBuilder();
+                AddWhere(where, argParam);
+
+                // SELECT文の設定
+                IDbCommand cmd = CreateCommand(
+                    CreateSelectSql(sb.ToString(), tableName, where.ToString(),
+                    ds.エンティティ[0].Join + " ", order, argSelectType));
+                Adapter.SelectCommand = cmd;
+
+                // パラメータの設定
+                SetParameter(cmd, argParam);
+                // 一覧検索の場合 かつ 最初の検索の場合、最大検索件数で制限
+                if (argSelectType == CMSelectType.List && result.Tables.Count == 0)
+                    cmd.Parameters.Add(CreateCmdParam("最大検索件数", argMaxRow));
+                else cmd.CommandText = cmd.CommandText.Replace(ROWNUMBER_CONDITION, "");
+
+                // データの取得
+                Adapter.Fill(result);
+                // テーブル名を設定
+                result.Tables["Table"].TableName = tableName;
+            }
+
+            // 最初のデータテーブルで検索件数オーバーを判定
+            int cnt = result.Tables[0].Rows.Count;
 
             // 一覧検索で最大検索件数オーバーの場合、最終行を削除
             if (argSelectType == CMSelectType.List && cnt >= argMaxRow)

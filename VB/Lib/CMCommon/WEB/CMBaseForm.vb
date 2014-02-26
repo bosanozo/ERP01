@@ -394,7 +394,7 @@ Namespace WEB
 
                 For Each table As DataTable In argDataSet.Tables
                     ' シート名を追加
-                    If xslDoc.GetSheetNames().Count = 1 Then
+                    If xslDoc.GetCurrentWorksheetName() = SLDocument.DefaultFirstSheetName Then
                         xslDoc.RenameWorksheet(SLDocument.DefaultFirstSheetName, table.TableName)
                     Else
                         xslDoc.AddWorksheet(table.TableName)

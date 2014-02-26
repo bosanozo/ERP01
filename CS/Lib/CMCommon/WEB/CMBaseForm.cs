@@ -503,8 +503,8 @@ namespace NEXS.ERP.CM.WEB
 
                 foreach (DataTable table in argDataSet.Tables)
                 {
-                    // シート名を追加
-                    if (xslDoc.GetSheetNames().Count == 1)
+                    // シートを追加
+                    if (xslDoc.GetCurrentWorksheetName() == SLDocument.DefaultFirstSheetName)
                         xslDoc.RenameWorksheet(SLDocument.DefaultFirstSheetName, table.TableName);
                     else
                         xslDoc.AddWorksheet(table.TableName);
