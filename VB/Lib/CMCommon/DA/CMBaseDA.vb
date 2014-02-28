@@ -34,10 +34,10 @@ Namespace DA
         Protected Property Adapter As IDbDataAdapter
 #End Region
 
-        ' 行ロックタイムアウトエラーNO
+        ''' <summary>行ロックタイムアウトエラーNO</summary>
         Private Const LOCK_TIMEOUT_ERR As Integer = 1222
 
-        ' PKEY制約違反エラーNO
+        ''' <summary>PKEY制約違反エラーNO</summary>
         Private Const PKEY_ERR As Integer = 2627
 
 #Region "SQL文"
@@ -129,6 +129,9 @@ Namespace DA
 #End Region
 
 #Region "SELECT文作成用SQL"
+        ''' <summary>
+        ''' 登録時に必要な共通項目
+        ''' </summary>
         Private Const TOROKU_COLS As String =
             "A.作成日時," &
             "A.作成者ID," &
@@ -141,10 +144,16 @@ Namespace DA
             "A.更新者IP," &
             "A.更新PG"
 
+        ''' <summary>
+        ''' 作成者名、更新者名取得用JOIN
+        ''' </summary>
         Private Const TOROKU_JOIN As String =
             "LEFT JOIN CMSMユーザ US1 ON US1.ユーザID = A.作成者ID " &
             "LEFT JOIN CMSMユーザ US2 ON US2.ユーザID = A.更新者ID "
 
+        ''' <summary>
+        ''' 最大検索件数の条件
+        ''' </summary>
         Private Const ROWNUMBER_CONDITION As String =
             "WHERE ROWNUMBER <= @最大検索件数 "
 

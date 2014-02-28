@@ -15,6 +15,12 @@ using Seasar.Quill.Attrs;
 
 namespace NEXS.ERP.CM.BL
 {
+    //************************************************************************
+    /// <summary>
+    /// TransactionAttributeがつけられたメソッドの実行をハンドリングし、
+    /// TransactionScopeの設定、及びコネクションの自動オープン/クローズを行う。
+    /// </summary>
+    //************************************************************************
     public class CMTransactionHandler : ITransactionHandler
     {
         private static readonly Logger _logger = Logger.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

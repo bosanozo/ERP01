@@ -35,20 +35,24 @@ namespace NEXS.ERP.CM.DA
     //************************************************************************
     public class CMCmdParam
     {
+        /// <summary>パラメータ名</summary>
         [Category("共通部品")]
         [Description("パラメータ名")]
         public string Name { get; set; }
 
+        /// <summary>DataTableの列名(パラメータ名と異なる場合に指定)</summary>
         [Category("共通部品")]
         [Description("DataTableの列名(パラメータ名と異なる場合に指定)")]
         [DefaultValue(null)]
         public string SourceColumn { get; set; }
 
+        /// <summary>DB項目の型</summary>
         [Category("共通部品")]
         [Description("DB項目の型")]
         [DefaultValue(CMDbType.コード)]
         public CMDbType DbType { get; set; }
 
+        /// <summary>キー項目フラグ</summary>
         [Category("共通部品")]
         [Description("キー項目フラグ")]
         [DefaultValue(false)]
@@ -105,10 +109,12 @@ namespace NEXS.ERP.CM.DA
     //************************************************************************
     public class CMCmdSetting
     {
+        /// <summary>テーブル名</summary>
         [Category("共通部品")]
         [Description("テーブル名")]
         public string Name { get; set; }
 
+        /// <summary>SqlCommandパラメータ配列</summary>
         [Category("共通部品")]
         [Description("SqlCommandパラメータ配列")]
         public CMCmdParam[] ColumnParams { get; set; }

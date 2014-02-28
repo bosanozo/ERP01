@@ -9,6 +9,12 @@ using Seasar.Quill.Database.Tx.Impl;
 
 namespace NEXS.ERP.CM.BL
 {
+    //************************************************************************
+    /// <summary>
+    /// Transaction設定。
+    /// アプリケーション構成ファイルで指定することにより独自のTransaction管理を行う。
+    /// </summary>
+    //************************************************************************
     public class CMTransactionSetting : TypicalTransactionSetting
     {
         //************************************************************************

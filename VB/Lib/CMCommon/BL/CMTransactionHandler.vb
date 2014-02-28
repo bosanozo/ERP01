@@ -9,6 +9,10 @@ Imports Seasar.Quill.Database.Tx.Impl
 Imports Seasar.Quill.Attrs
 
 Namespace BL
+    ''' <summary>
+    ''' TransactionAttributeがつけられたメソッドの実行をハンドリングし、
+    ''' TransactionScopeの設定、及びコネクションの自動オープン/クローズを行う。
+    ''' </summary>
     Public Class CMTransactionHandler
         Implements ITransactionHandler
         Private Shared ReadOnly _logger As Logger = Logger.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType)

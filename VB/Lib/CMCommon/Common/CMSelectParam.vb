@@ -3,10 +3,15 @@
     ''' 検索条件クラス
     ''' </summary>
     Public Class CMSelectParam
+        ''' <summary>項目名</summary>
         Public name As String
+        ''' <summary>検索条件SQL</summary>
         Public condtion As String
+        ''' <summary>プレースフォルダに設定するFrom値</summary>
         Public paramFrom As Object
+        ''' <summary>プレースフォルダに設定するTo値</summary>
         Public paramTo As Object
+        ''' <summary>左辺項目名(leftcol = @name)</summary>
         Public leftCol As String
 
         ''' <summary>

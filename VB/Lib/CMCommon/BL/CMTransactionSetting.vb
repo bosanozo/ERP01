@@ -3,6 +3,10 @@ Imports Seasar.Extension.Tx.Impl
 Imports Seasar.Quill.Database.Tx.Impl
 
 Namespace BL
+    ''' <summary>
+    ''' Transaction設定。
+    ''' アプリケーション構成ファイルで指定することにより独自のTransaction管理を行う。
+    ''' </summary>
     Public Class CMTransactionSetting
         Inherits TypicalTransactionSetting
         ''' <summary>

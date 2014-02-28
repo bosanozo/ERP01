@@ -20,10 +20,15 @@ namespace NEXS.ERP.CM.Common
     [Serializable]
     public class CMSelectParam
     {
+        /// <summary>項目名</summary>
         public string name;
+        /// <summary>検索条件SQL</summary>
         public string condtion;
+        /// <summary>プレースフォルダに設定するFrom値</summary>
         public object paramFrom;
+        /// <summary>プレースフォルダに設定するTo値</summary>
         public object paramTo;
+        /// <summary>左辺項目名(leftcol = @name)</summary>
         public string leftCol;
 
         //************************************************************************

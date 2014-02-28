@@ -7,6 +7,11 @@ namespace NEXS.ERP.CM.Common
     //************************************************************************
     public enum CMSelectType
     {
-        List, Edit, Csv
+        /// <summary>ˆê——ŒŸõ</summary>
+        List,
+        /// <summary>’P•[“o˜^ŒŸõ</summary>
+        Edit,
+        /// <summary>CSVo—ÍŒŸõ</summary>
+        Csv
     }
 }

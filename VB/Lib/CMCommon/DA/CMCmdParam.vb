@@ -25,20 +25,24 @@ Namespace DA
     ''' Commandパラメータ
     ''' </summary>
     Public Class CMCmdParam
+        ''' <summary>パラメータ名</summary>
         <Category("共通部品")> _
         <Description("パラメータ名")> _
         Public Property Name As String
 
         '<DefaultValue(Nothing)> _
+        ''' <summary>DataTableの列名(パラメータ名と異なる場合に指定)</summary>
         <Category("共通部品")> _
         <Description("DataTableの列名(パラメータ名と異なる場合に指定)")> _
         Public Property SourceColumn As String
 
+        ''' <summary>DB項目の型</summary>
         <Category("共通部品")> _
         <Description("DB項目の型")> _
         <DefaultValue(CMDbType.コード)> _
         Public Property DbType As CMDbType
 
+        ''' <summary>キー項目フラグ</summary>
         <Category("共通部品")> _
         <Description("キー項目フラグ")> _
         <DefaultValue(False)> _
@@ -85,10 +89,12 @@ Namespace DA
     ''' SqlCommand設定
     ''' </summary>
     Public Class CMCmdSetting
+        ''' <summary>テーブル名</summary>
         <Category("共通部品")> _
         <Description("テーブル名")> _
         Public Property Name As String
 
+        ''' <summary>SqlCommandパラメータ配列</summary>
         <Category("共通部品")> _
         <Description("SqlCommandパラメータ配列")> _
         Public Property ColumnParams As CMCmdParam()

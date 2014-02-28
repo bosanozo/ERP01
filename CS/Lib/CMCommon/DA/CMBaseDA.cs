@@ -49,10 +49,10 @@ namespace NEXS.ERP.CM.DA
         protected IDbDataAdapter Adapter { get; set; }
         #endregion
 
-        // 行ロックタイムアウトエラーNO
+        /// <summary>行ロックタイムアウトエラーNO</summary>
         private const int LOCK_TIMEOUT_ERR = 1222;
 
-        // PKEY制約違反エラーNO
+        /// <summary>PKEY制約違反エラーNO</summary>
         private const int PKEY_ERR = 2627;
 
         #region SQL文
@@ -146,6 +146,9 @@ namespace NEXS.ERP.CM.DA
         #endregion
 
         #region SELECT文作成用SQL
+        /// <summary>
+        /// 登録時に必要な共通項目
+        /// </summary>
         private const string TOROKU_COLS =
             "A.作成日時," +
             "A.作成者ID," +
@@ -158,10 +161,16 @@ namespace NEXS.ERP.CM.DA
             "A.更新者IP," +
             "A.更新PG";
 
+        /// <summary>
+        /// 作成者名、更新者名取得用JOIN
+        /// </summary>
         private const string TOROKU_JOIN =
             "LEFT JOIN CMSMユーザ US1 ON US1.ユーザID = A.作成者ID " +
             "LEFT JOIN CMSMユーザ US2 ON US2.ユーザID = A.更新者ID ";
 
+        /// <summary>
+        /// 最大検索件数の条件
+        /// </summary>
         private const string ROWNUMBER_CONDITION =
             "WHERE ROWNUMBER <= @最大検索件数 ";
 

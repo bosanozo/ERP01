@@ -9,6 +9,9 @@ Imports Seasar.Quill.Database.Tx.Impl
 Imports Seasar.Quill.Attrs
 
 Namespace BL
+    ''' <summary>
+    ''' BL層のメソッドにつけるTransaction制御のためのAttribute
+    ''' </summary>
     Public Class CMTransactionAttribute
         Inherits TransactionAttribute
         Private m_scopeOption As System.Nullable(Of TransactionScopeOption)
@@ -22,7 +25,7 @@ Namespace BL
                 Return m_scopeOption.Value
             End Get
             Set(value As TransactionScopeOption)
-                m_scopeOption = Value
+                m_scopeOption = value
             End Set
         End Property
 
@@ -39,7 +42,7 @@ Namespace BL
                 Return m_isolationLevel.Value
             End Get
             Set(value As IsolationLevel)
-                m_isolationLevel = Value
+                m_isolationLevel = value
             End Set
         End Property
 
@@ -56,7 +59,7 @@ Namespace BL
                 Return m_timeout.Value
             End Get
             Set(value As Integer)
-                m_timeout = Value
+                m_timeout = value
             End Set
         End Property
 

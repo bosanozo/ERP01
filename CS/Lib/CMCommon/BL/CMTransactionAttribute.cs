@@ -14,6 +14,11 @@ using Seasar.Quill.Attrs;
 
 namespace NEXS.ERP.CM.BL
 {
+    //************************************************************************
+    /// <summary>
+    /// BL層のメソッドにつけるTransaction制御のためのAttribute
+    /// </summary>
+    //************************************************************************
     public class CMTransactionAttribute : TransactionAttribute
     {
         private TransactionScopeOption? m_scopeOption;
