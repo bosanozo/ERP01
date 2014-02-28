@@ -44,14 +44,17 @@ public partial class Menu : CMBaseListForm
             DataTable table = CommonBL.Select("CMSTシステム情報");
             GridView1.DataSource = table;
 
+            CMUserInfo uinfo = CMInformationManager.UserInfo;
+
             // メニューレベル１の検索
-            DataTable table2 = CommonBL.Select("CMSMメニューレベル1");
+            DataTable table2 = CommonBL.Select("CMSMメニューレベル1", uinfo.SoshikiCd, uinfo.Id);
 
             foreach (DataRow row in table2.Rows)
             {
                 MenuItem item = new MenuItem();
-                item.Text = row["レベル1名"].ToString();
-                item.Value = row["レベル1ID"].ToString();
+                item.Text = row["画面名"].ToString();
+                item.Value = row["メニューID"].ToString();
+                item.Enabled = row["許否フラグ"].ToString() == "True";
                 Menu1.Items.Add(item);
             }
 
@@ -81,15 +84,18 @@ public partial class Menu : CMBaseListForm
             {
                 Menu2.Items.Clear();
 
-                // メニューレベル２の検索
-                DataTable table = CommonBL.Select("CMSMメニューレベル2");
+                CMUserInfo uinfo = CMInformationManager.UserInfo;
 
-                foreach (DataRow row in table.Select(string.Format("レベル1ID = '{0}'", e.Item.Value)))
+                // メニューレベル２の検索
+                DataTable table = CommonBL.Select("CMSMメニューレベル2", uinfo.SoshikiCd, uinfo.Id, e.Item.Value);
+
+                foreach (DataRow row in table.Rows)
                 {
                     MenuItem item = new MenuItem();
                     item.Text = row["画面名"].ToString();
                     item.NavigateUrl = row["URL"].ToString();
                     item.Target = row["オプション"].ToString();
+                    item.Enabled = row["許否フラグ"].ToString() != "False";
                     Menu2.Items.Add(item);
                 }
             }

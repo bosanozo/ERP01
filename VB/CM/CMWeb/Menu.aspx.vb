@@ -26,13 +26,16 @@ Public Partial Class Menu
             Dim table As DataTable = CommonBL.[Select]("CMSTシステム情報")
             GridView1.DataSource = table
 
+            Dim uinfo As CMUserInfo = CMInformationManager.UserInfo
+
             ' メニューレベル１の検索
-            Dim table2 As DataTable = CommonBL.[Select]("CMSMメニューレベル1")
+            Dim table2 As DataTable = CommonBL.[Select]("CMSMメニューレベル1", uinfo.SoshikiCd, uinfo.Id)
 
             For Each row As DataRow In table2.Rows
                 Dim item As New MenuItem()
-                item.Text = row("レベル1名").ToString()
-                item.Value = row("レベル1ID").ToString()
+                item.Text = row("画面名").ToString()
+                item.Value = row("メニューID").ToString()
+                item.Enabled = row("許否フラグ").ToString() = "True"
                 Menu1.Items.Add(item)
             Next
 
@@ -53,14 +56,17 @@ Public Partial Class Menu
             Else
                 Menu2.Items.Clear()
 
-                ' メニューレベル２の検索
-                Dim table As DataTable = CommonBL.[Select]("CMSMメニューレベル2")
+                Dim uinfo As CMUserInfo = CMInformationManager.UserInfo
 
-                For Each row As DataRow In table.[Select](String.Format("レベル1ID = '{0}'", e.Item.Value))
+                ' メニューレベル２の検索
+                Dim table As DataTable = CommonBL.[Select]("CMSMメニューレベル2", uinfo.SoshikiCd, uinfo.Id, e.Item.Value)
+
+                For Each row As DataRow In table.Rows
                     Dim item As New MenuItem()
                     item.Text = row("画面名").ToString()
                     item.NavigateUrl = row("URL").ToString()
                     item.Target = row("オプション").ToString()
+                    item.Enabled = row("許否フラグ").ToString() <> "False"
                     Menu2.Items.Add(item)
                 Next
             End If
