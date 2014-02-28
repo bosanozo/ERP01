@@ -716,7 +716,7 @@ Namespace DA
                 ' メッセージ設定
                 Dim message As String = If(ex.Number = PKEY_ERR, CMMessageManager.GetMessage(msgCode), ex.Message)
                 ' メッセージ作成
-                Dim msgData As New CMMessage(msgCode, New CMRowField(rowNumber), message)
+                Dim msgData As New CMMessage(msgCode, New CMRowField(argDataTable.TableName, rowNumber), message)
                 ' 例外発生
                 Throw New CMException(msgData, ex)
             End Try
@@ -762,7 +762,8 @@ Namespace DA
                             Dim rowNumber As Integer = CMUtil.GetRowNumber(argRow)
                             ' 行番号ありの場合
                             If rowNumber >= 0 Then
-                                message = New CMMessage(msgCode, New CMRowField(rowNumber), userId, updateTime, progId, hostname)
+                                message = New CMMessage(msgCode, New CMRowField(argRow.Table.TableName, rowNumber),
+                                                        userId, updateTime, progId, hostname)
                             Else
                                 ' 行番号なしの場合
                                 message = New CMMessage(msgCode, userId, updateTime, progId, hostname)
@@ -778,7 +779,7 @@ Namespace DA
                         Dim rowNumber As Integer = CMUtil.GetRowNumber(argRow)
                         ' 行番号ありの場合
                         If rowNumber >= 0 Then
-                            message = New CMMessage(msgCode, New CMRowField(rowNumber))
+                            message = New CMMessage(msgCode, New CMRowField(argRow.Table.TableName, rowNumber))
                         Else
                             ' 行番号なしの場合
                             message = New CMMessage(msgCode)
@@ -799,7 +800,7 @@ Namespace DA
                 Dim rowNumber As Integer = CMUtil.GetRowNumber(argRow)
                 ' 行番号ありの場合
                 If rowNumber >= 0 Then
-                    message = New CMMessage(msgCode, New CMRowField(rowNumber))
+                    message = New CMMessage(msgCode, New CMRowField(argRow.Table.TableName, rowNumber))
                 Else
                     ' 行番号なしの場合
                     message = New CMMessage(msgCode)
@@ -919,7 +920,7 @@ Namespace DA
                 Dim rowNumber As Integer = CMUtil.GetRowNumber(table.Rows(0))
                 ' 行番号ありの場合
                 If rowNumber >= 0 Then
-                    message = New CMMessage(msgCode, New CMRowField(rowNumber), ex.Message)
+                    message = New CMMessage(msgCode, New CMRowField(argDataTable.TableName, rowNumber), ex.Message)
                 Else
                     ' 行番号なしの場合
                     message = New CMMessage(msgCode, ex.Message)

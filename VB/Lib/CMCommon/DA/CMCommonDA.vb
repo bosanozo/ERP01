@@ -387,7 +387,7 @@ Namespace DA
             ' 存在チェック
             If cnt = 0 Then
                 ' メッセージの作成
-                Dim message As New CMMessage("WV107", New CMRowField(CMUtil.GetRowNumber(argRow), argColumnName), argTableName)
+                Dim message As New CMMessage("WV107", New CMRowField(argRow.Table.TableName, CMUtil.GetRowNumber(argRow), argColumnName), argTableName)
                 ' 例外を発生
                 Throw New CMException(message)
             End If

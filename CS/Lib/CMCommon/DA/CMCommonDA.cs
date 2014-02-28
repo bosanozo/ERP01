@@ -441,7 +441,7 @@ namespace NEXS.ERP.CM.DA
             {
                 // メッセージの作成
                 CMMessage message = new CMMessage("WV107",
-                    new CMRowField(CMUtil.GetRowNumber(argRow), argColumnName),
+                    new CMRowField(argRow.Table.TableName, CMUtil.GetRowNumber(argRow), argColumnName),
                     argTableName);
                 // 例外を発生
                 throw new CMException(message);

@@ -786,7 +786,8 @@ namespace NEXS.ERP.CM.DA
                 // メッセージ設定
                 string message = ex.Number == PKEY_ERR ? CMMessageManager.GetMessage(msgCode) : ex.Message;
                 // メッセージ作成
-                CMMessage msgData = new CMMessage(msgCode, new CMRowField(rowNumber), message);
+                CMMessage msgData = new CMMessage(msgCode,
+                    new CMRowField(argDataTable.TableName, rowNumber), message);
                 // 例外発生
                 throw new CMException(msgData, ex);
             }
@@ -841,7 +842,8 @@ namespace NEXS.ERP.CM.DA
                             CMMessage message;
                             int rowNumber = CMUtil.GetRowNumber(argRow);
                             // 行番号ありの場合
-                            if (rowNumber >= 0) message = new CMMessage(msgCode, new CMRowField(rowNumber),
+                            if (rowNumber >= 0) message = new CMMessage(msgCode,
+                                    new CMRowField(argRow.Table.TableName, rowNumber),
                                     userId, updateTime, progId, hostname);
                             // 行番号なしの場合
                             else message = new CMMessage(msgCode, userId, updateTime, progId, hostname);
@@ -857,7 +859,8 @@ namespace NEXS.ERP.CM.DA
                         CMMessage message;
                         int rowNumber = CMUtil.GetRowNumber(argRow);
                         // 行番号ありの場合
-                        if (rowNumber >= 0) message = new CMMessage(msgCode, new CMRowField(rowNumber));
+                        if (rowNumber >= 0) message = new CMMessage(msgCode,
+                            new CMRowField(argRow.Table.TableName, rowNumber));
                         // 行番号なしの場合
                         else message = new CMMessage(msgCode);
                         // 例外発生
@@ -875,7 +878,8 @@ namespace NEXS.ERP.CM.DA
                 CMMessage message;
                 int rowNumber = CMUtil.GetRowNumber(argRow);
                 // 行番号ありの場合
-                if (rowNumber >= 0) message = new CMMessage(msgCode, new CMRowField(rowNumber));
+                if (rowNumber >= 0) message = new CMMessage(msgCode,
+                    new CMRowField(argRow.Table.TableName, rowNumber));
                 // 行番号なしの場合
                 else message = new CMMessage(msgCode);
                 // 例外発生
@@ -1021,7 +1025,8 @@ namespace NEXS.ERP.CM.DA
                 CMMessage message;
                 int rowNumber = CMUtil.GetRowNumber(table.Rows[0]);
                 // 行番号ありの場合
-                if (rowNumber >= 0) message = new CMMessage(msgCode, new CMRowField(rowNumber), ex.Message);
+                if (rowNumber >= 0) message = new CMMessage(msgCode,
+                    new CMRowField(argDataTable.TableName, rowNumber), ex.Message);
                 // 行番号なしの場合
                 else message = new CMMessage(msgCode, ex.Message);
                 // 例外発生
