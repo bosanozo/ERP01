@@ -14,6 +14,7 @@ Imports SpreadsheetLight
 
 Imports NEXS.ERP.CM.Common
 Imports NEXS.ERP.CM.BL
+Imports NEXS.ERP.CM.DA
 
 Namespace WEB
     ''' <summary>
@@ -338,6 +339,117 @@ Namespace WEB
             Dim text As String = argDDList.SelectedItem.Text
             Dim idx As Integer = text.IndexOf(" "c)
             Return If(idx >= 0, text.Substring(idx), "")
+        End Function
+#End Region
+
+#Region "EXCEL出力"
+        ''' <summary>
+        ''' 指定のXmlファイルからデータテーブルを作成する。
+        ''' </summary>
+        ''' <param name="argName">Xmlファイル名</param>
+        ''' <returns>データテーブル</returns>
+        Protected Function CreateDataTableFromXml(argName As String) As DataTable
+            ' データセットにファイルを読み込み
+            Dim ds As New CMEntityDataSet()
+            ds.ReadXml(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", argName & ".xml"))
+
+            ' データテーブル作成
+            Dim table As New DataTable(ds.エンティティ(0).テーブル名)
+
+            ' DataColumn追加
+            For Each row As CMEntityDataSet.項目Row In ds.項目
+                Dim col As String = If(String.IsNullOrEmpty(row.SourceColumn), row.項目名, row.SourceColumn)
+
+                ' DataColumn作成
+                Dim dcol As New DataColumn(col)
+                ' 型
+                Dim dbType As CMDbType = DirectCast([Enum].Parse(GetType(CMDbType), row.項目型), CMDbType)
+                Select Case dbType
+                    Case CMDbType.フラグ
+                        dcol.DataType = GetType(Boolean)
+                        Exit Select
+                    Case CMDbType.金額, CMDbType.小数
+                        dcol.DataType = GetType(Decimal)
+                        Exit Select
+                    Case CMDbType.整数
+                        dcol.DataType = GetType(Long)
+                        Exit Select
+                    Case CMDbType.日付, CMDbType.日時
+                        dcol.DataType = GetType(DateTime)
+                        Exit Select
+                End Select
+                ' 必須入力
+                If row.必須 Then
+                    dcol.AllowDBNull = False
+                End If
+
+                table.Columns.Add(dcol)
+            Next
+
+            Return table
+        End Function
+
+        ''' <summary>
+        ''' 指定StreamからDataSetにデータを取り込む。
+        ''' </summary>
+        ''' <param name="argInputStream">入力Stream</param>
+        ''' <returns>データを取り込んだDataSet</returns>
+        ''' <remarks>データを取り込むDataTableのスキーマはエンティティ定義XMLファイルより生成する。
+        ''' シート名がXMLファイル名になる。</remarks>
+        Protected Function ImportExcel(argInputStream As Stream) As DataSet
+            ' EXCEL文書を作成
+            Dim xslDoc As New SLDocument(argInputStream)
+
+            ' データセットにデータを取り込む
+            Dim ds As New DataSet()
+
+            ' シートでループ
+            For Each sheet As String In xslDoc.GetSheetNames()
+                ' シートを選択
+                xslDoc.SelectWorksheet(sheet)
+
+                ' データテーブル作成
+                Dim table As DataTable = CreateDataTableFromXml(sheet)
+
+                Dim sheetStat = xslDoc.GetWorksheetStatistics()
+
+                ' １行ずつ読み込み、先頭行はタイトルとして読み飛ばす
+                For rowIdx As Integer = sheetStat.StartRowIndex + 1 To sheetStat.EndRowIndex
+                    Dim newRow As DataRow = table.NewRow()
+                    For colIdx As Integer = 0 To table.Columns.Count - 1
+                        Dim col As Integer = colIdx + sheetStat.StartColumnIndex
+
+                        ' 型に応じて値を取得する
+                        Select Case table.Columns(colIdx).DataType.Name
+                            Case "bool"
+                                newRow(colIdx) = xslDoc.GetCellValueAsBoolean(rowIdx, col)
+                                Exit Select
+
+                            Case "decimal"
+                                newRow(colIdx) = xslDoc.GetCellValueAsDecimal(rowIdx, col)
+                                Exit Select
+
+                            Case "long"
+                                newRow(colIdx) = xslDoc.GetCellValueAsInt64(rowIdx, col)
+                                Exit Select
+
+                            Case "DateTime"
+                                newRow(colIdx) = xslDoc.GetCellValueAsDateTime(rowIdx, col)
+                                Exit Select
+                            Case Else
+
+                                newRow(colIdx) = xslDoc.GetCellValueAsString(rowIdx, col)
+                                Exit Select
+                        End Select
+                    Next
+                    table.Rows.Add(newRow)
+                Next
+
+                ' データテーブルを追加
+                ds.Tables.Add(table)
+            Next
+
+            Return ds
         End Function
 #End Region
 

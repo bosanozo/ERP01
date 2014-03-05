@@ -28,6 +28,7 @@ using SpreadsheetLight;
 
 using NEXS.ERP.CM.Common;
 using NEXS.ERP.CM.BL;
+using NEXS.ERP.CM.DA;
 
 namespace NEXS.ERP.CM.WEB
 {
@@ -437,6 +438,130 @@ namespace NEXS.ERP.CM.WEB
             string text = argDDList.SelectedItem.Text;
             int idx = text.IndexOf(' ');
             return idx >= 0 ? text.Substring(idx) : "";
+        }
+        #endregion
+
+        #region EXCEL入力
+        //************************************************************************
+        /// <summary>
+        /// 指定のXmlファイルからデータテーブルを作成する。
+        /// </summary>
+        /// <param name="argName">Xmlファイル名</param>
+        /// <returns>データテーブル</returns>
+        //************************************************************************
+        protected DataTable CreateDataTableFromXml(string argName)
+        {
+            // データセットにファイルを読み込み
+            CMEntityDataSet ds = new CMEntityDataSet();
+            ds.ReadXml(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", argName + ".xml"));
+
+            // データテーブル作成
+            DataTable table = new DataTable(ds.エンティティ[0].テーブル名);
+
+            // DataColumn追加
+            foreach (var row in ds.項目)
+            {
+                string col = string.IsNullOrEmpty(row.SourceColumn) ?
+                    row.項目名 : row.SourceColumn;
+
+                // DataColumn作成
+                DataColumn dcol = new DataColumn(col);
+                // 型
+                CMDbType dbType = (CMDbType)Enum.Parse(typeof(CMDbType), row.項目型);
+                switch (dbType)
+                {
+                    case CMDbType.フラグ:
+                        dcol.DataType = typeof(bool);
+                        break;
+                    case CMDbType.金額:
+                    case CMDbType.小数:
+                        dcol.DataType = typeof(decimal);
+                        break;
+                    case CMDbType.整数:
+                        dcol.DataType = typeof(long);
+                        break;
+                    case CMDbType.日付:
+                    case CMDbType.日時:
+                        dcol.DataType = typeof(DateTime);
+                        break;
+                }
+                // 必須入力
+                if (row.必須) dcol.AllowDBNull = false;
+
+                table.Columns.Add(dcol);
+            }
+
+            return table;
+        }
+
+        //******************************************************************************
+        /// <summary>
+        /// 指定StreamからDataSetにデータを取り込む。
+        /// </summary>
+        /// <param name="argInputStream">入力Stream</param>
+        /// <returns>データを取り込んだDataSet</returns>
+        /// <remarks>データを取り込むDataTableのスキーマはエンティティ定義XMLファイルより生成する。
+        /// シート名がXMLファイル名になる。</remarks>
+        //******************************************************************************
+        protected DataSet ImportExcel(Stream argInputStream)
+        {
+            // EXCEL文書を作成
+            SLDocument xslDoc = new SLDocument(argInputStream);
+
+            // データセットにデータを取り込む
+            DataSet ds = new DataSet();
+
+            // シートでループ
+            foreach (string sheet in xslDoc.GetSheetNames())
+            {
+                // シートを選択
+                xslDoc.SelectWorksheet(sheet);
+
+                // データテーブル作成
+                DataTable table = CreateDataTableFromXml(sheet);
+
+                var sheetStat = xslDoc.GetWorksheetStatistics();
+
+                // １行ずつ読み込み、先頭行はタイトルとして読み飛ばす
+                for (int rowIdx = sheetStat.StartRowIndex + 1; rowIdx <= sheetStat.EndRowIndex; rowIdx++)
+                {
+                    DataRow newRow = table.NewRow();
+                    for (int colIdx = 0; colIdx < table.Columns.Count; colIdx++)
+                    {
+                        int col = colIdx + sheetStat.StartColumnIndex;
+
+                        // 型に応じて値を取得する
+                        switch (table.Columns[colIdx].DataType.Name)
+                        {
+                            case "bool":
+                                newRow[colIdx] = xslDoc.GetCellValueAsBoolean(rowIdx, col);
+                                break;
+
+                            case "decimal":
+                                newRow[colIdx] = xslDoc.GetCellValueAsDecimal(rowIdx, col);
+                                break;
+
+                            case "long":
+                                newRow[colIdx] = xslDoc.GetCellValueAsInt64(rowIdx, col);
+                                break;
+
+                            case "DateTime":
+                                newRow[colIdx] = xslDoc.GetCellValueAsDateTime(rowIdx, col);
+                                break;
+
+                            default:
+                                newRow[colIdx] = xslDoc.GetCellValueAsString(rowIdx, col);
+                                break;
+                        }
+                    }
+                    table.Rows.Add(newRow);
+                }
+
+                // データテーブルを追加
+                ds.Tables.Add(table);
+            }
+
+            return ds;
         }
         #endregion
 
