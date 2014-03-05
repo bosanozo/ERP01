@@ -224,6 +224,9 @@ Namespace DA
         ''' <param name="argIsOver">最大検索件数オーバーフラグ</param>
         ''' <param name="argFname">読み込むXMLファイル名(拡張子なし)</param>
         ''' <returns>検索結果</returns>
+        ''' <remarks>XMLファイルを複数指定した場合、その順に検索結果のDataTableがDataSetに生成される。
+        ''' 最大検索件数チェックは検索種別が一覧検索でXMLファイルが最初の検索のみ行う。
+        ''' DataTableの列名はXMLファイル中の項目名となるが、SourceColumnを指定した場合は別名にすることが可能。</remarks>
         Public Function SelectFromXml(argParam As List(Of CMSelectParam), argSelectType As CMSelectType, argMaxRow As Integer,
                                       ByRef argIsOver As Boolean, ParamArray argFname As String()) As DataSet
             ' データセットの作成
@@ -311,6 +314,11 @@ Namespace DA
         ''' <param name="argOperationTime">操作時刻</param>
         ''' <param name="argCmdSettings">Command設定</param>
         ''' <returns>登録したレコード数</returns>
+        ''' <remarks>argCmdSettingsが未指定の場合、エンティティ定義XMLファイルからCMCmdSettingsを生成する。
+        ''' データテーブル名がXMLファイル名になる。
+        ''' argUpdateDataに複数のDataTableが存在する場合、
+        ''' DataTableの逆順に削除データを登録後、
+        ''' DataTableの正順に新規、修正データを登録する。</remarks>
         Public Function Update(argUpdateData As DataSet, argOperationTime As DateTime, Optional argCmdSettings As CMCmdSettings = Nothing) As Integer
             ' デフォルト設定
             If argCmdSettings Is Nothing Then
@@ -359,6 +367,11 @@ Namespace DA
         ''' <param name="argOperationTime">操作時刻</param>
         ''' <param name="argCmdSettings">Command設定</param>
         ''' <returns>登録したレコード数</returns>
+        ''' <remarks>argCmdSettingsが未指定の場合、エンティティ定義XMLファイルからCMCmdSettingsを生成する。
+        ''' データテーブル名がXMLファイル名になる。
+        ''' argUpdateDataに複数のDataTableが存在する場合、
+        ''' DataTableの正順に新規、修正データを登録する。
+        ''' 削除データは扱わない。</remarks>
         Public Function Upload(argUpdateData As DataSet, argOperationTime As DateTime, Optional argCmdSettings As CMCmdSettings = Nothing) As Integer
             ' デフォルト設定
             If argCmdSettings Is Nothing Then
@@ -409,12 +422,14 @@ Namespace DA
         ''' <summary>
         ''' StringBuilderに検索条件を追加する。
         ''' </summary>
-        ''' <param name="where">検索条件を追加するStringBuilder</param>
+        ''' <param name="argWhereSb">検索条件を追加するStringBuilder</param>
         ''' <param name="argParam">検索条件</param>
-        Protected Sub AddWhere(where As StringBuilder, argParam As List(Of CMSelectParam))
+        ''' <remarks>argWhereSbの長さが0の場合はWHEREから文字列を追加する。
+        ''' 0でない場合はANDから文字列を追加する。</remarks>
+        Protected Sub AddWhere(argWhereSb As StringBuilder, argParam As List(Of CMSelectParam))
             ' 空白で終わってなければ、空白追加
-            If where.Length > 0 AndAlso where(where.Length - 1) <> " "c Then
-                where.Append(" ")
+            If argWhereSb.Length > 0 AndAlso argWhereSb(argWhereSb.Length - 1) <> " "c Then
+                argWhereSb.Append(" ")
             End If
 
             ' 追加の条件
@@ -422,15 +437,15 @@ Namespace DA
                 If String.IsNullOrEmpty(param.condtion) Then
                     Continue For
                 End If
-                where.Append(If(where.Length > 0, "AND ", " WHERE "))
+                argWhereSb.Append(If(argWhereSb.Length > 0, "AND ", " WHERE "))
                 If Not String.IsNullOrEmpty(param.name) Then
                     ' テーブルの指定がない場合は、Aをつける
                     If Not param.name.Contains("."c) Then
-                        where.Append("A.")
+                        argWhereSb.Append("A.")
                     End If
-                    where.AppendFormat("{0} ", param.name)
+                    argWhereSb.AppendFormat("{0} ", param.name)
                 End If
-                where.Append(param.condtion).Append(" ")
+                argWhereSb.Append(param.condtion).Append(" ")
             Next
         End Sub
 
@@ -564,6 +579,10 @@ Namespace DA
         ''' <param name="argInsertSql">INSERT文</param>
         ''' <param name="argUpdateSql">UPDATE文</param>
         ''' <returns>登録したレコード数</returns>
+        ''' <remarks>INSERT文, UPDATE文が未指定の場合、Command設定から生成する。
+        ''' 更新、削除データの場合、項目：排他用バージョンにより排他チェックを行う。
+        ''' 削除データ、更新データ、新規データの順に登録を行う。
+        ''' 登録が成功した場合、監査証跡の出力を行う。</remarks>
         Protected Function UpdateTable(argCmdSetting As CMCmdSetting, argDataTable As DataTable, argSysdate As DateTime, Optional argInsertSql As String = Nothing, Optional argUpdateSql As String = Nothing) As Integer
             Dim tname As String = argCmdSetting.Name
 
@@ -644,6 +663,9 @@ Namespace DA
         ''' <param name="argInsertSql">INSERT文</param>
         ''' <param name="argUpdateSql">UPDATE文</param>
         ''' <returns>登録したレコード数</returns>
+        ''' <remarks>INSERT文, UPDATE文が未指定の場合、Command設定から生成する。
+        ''' 同一キーのデータが存在する場合UPDATE、存在しない場合INSERTを実行する。
+        ''' 監査証跡の出力は行わない。</remarks>
         Protected Function UploadTable(argCmdSetting As CMCmdSetting, argDataTable As DataTable, argUpdateTime As DateTime, Optional argInsertSql As String = Nothing, Optional argUpdateSql As String = Nothing) As Integer
             ' 更新用の列をDataTableに追加
             argDataTable.Columns.Add("更新日時", GetType(DateTime))
