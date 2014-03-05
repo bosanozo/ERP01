@@ -573,6 +573,10 @@ namespace NEXS.ERP.CM.WEB
         /// <param name="argDataSet">データセット</param>
         /// <param name="argPath">ファイル出力フルパス</param>
         /// <returns>true:出力した, false:キャンセルした</returns>
+        /// <remarks>テンプレートファイルがある場合は、テンプレートファイルの書式に従って
+        /// データを出力する。出力開始位置はセルに"開始"と記述することで指定可能(無くても可)。
+        /// データを出力するシートはデータテーブル名とシート名が一致するものを使用する。
+        /// テンプレートファイルが無い場合は、デフォルトの形式でデータを出力する。</remarks>
         //******************************************************************************
         protected bool ExportExcel(DataSet argDataSet, string argPath)
         {
@@ -595,8 +599,9 @@ namespace NEXS.ERP.CM.WEB
                     // シートを選択
                     xslDoc.SelectWorksheet(sheet);
 
-                    int startRow = 2;
-                    int startCol = 1;
+                    var sheetStat = xslDoc.GetWorksheetStatistics();
+                    int startRow = sheetStat.StartRowIndex + 1;
+                    int startCol = sheetStat.StartColumnIndex;
 
                     // 開始位置を検索
                     var cells = xslDoc.GetCells().Where(c => c.Value.DataType == 

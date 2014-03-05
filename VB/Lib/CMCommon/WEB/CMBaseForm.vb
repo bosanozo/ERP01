@@ -342,7 +342,7 @@ Namespace WEB
         End Function
 #End Region
 
-#Region "EXCEL出力"
+#Region "EXCEL入力"
         ''' <summary>
         ''' 指定のXmlファイルからデータテーブルを作成する。
         ''' </summary>
@@ -460,6 +460,10 @@ Namespace WEB
         ''' <param name="argDataSet">データセット</param>
         ''' <param name="argPath">ファイル出力フルパス</param>
         ''' <returns>true:出力した, false:キャンセルした</returns>
+        ''' <remarks>テンプレートファイルがある場合は、テンプレートファイルの書式に従って
+        ''' データを出力する。出力開始位置はセルに"開始"と記述することで指定可能(無くても可)。
+        ''' データを出力するシートはデータテーブル名とシート名が一致するものを使用する。
+        ''' テンプレートファイルが無い場合は、デフォルトの形式でデータを出力する。</remarks>
         Protected Function ExportExcel(argDataSet As DataSet, argPath As String) As Boolean
             Dim xslDoc As SLDocument
 
@@ -479,8 +483,9 @@ Namespace WEB
                     ' シートを選択
                     xslDoc.SelectWorksheet(sheet)
 
-                    Dim startRow As Integer = 2
-                    Dim startCol As Integer = 1
+                    Dim sheetStat = xslDoc.GetWorksheetStatistics()
+                    Dim startRow As Integer = sheetStat.StartRowIndex + 1
+                    Dim startCol As Integer = sheetStat.StartColumnIndex
 
                     ' 開始位置を検索
                     Dim cells = xslDoc.GetCells().Where(Function(c) c.Value.DataType = DocumentFormat.OpenXml.Spreadsheet.CellValues.SharedString)

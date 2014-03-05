@@ -105,7 +105,9 @@ Namespace BL
         ''' </summary>
         ''' <param name="argFormId">画面ＩＤ</param>
         ''' <param name="argIsRange">True:参照範囲, False:更新許可</param>
-        ''' <returns>True:会社、更新可, False:拠点、更新不可</returns>
+        ''' <returns>True:可, False:不可</returns>
+        ''' <remarks>ユーザに付与されたロールで画面IDが長く一致するもの、
+        ''' 組織階層が上に向かって近いものを優先して取得する。</remarks>
         Public Function GetRangeCanUpdate(argFormId As String, argIsRange As Boolean) As Boolean _
             Implements ICMCommonBL.GetRangeCanUpdate
             CommonDA.Connection = Connection
