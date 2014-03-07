@@ -3,6 +3,18 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="Content1" Runat="Server">
     <!-- スクリプト -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+    <script type="text/javascript">
+        // jQuery
+        $(document).ready(function () {
+            $("#上位組織CD").change(function () {
+                $.getJSON("../CMCommonService.svc/GetCodeName",
+                    { argSelectId: "CN組織名", argCode: $(this).val() },
+                    function (json) { $("#上位組織名").val(json.d); });
+                $(this).css("background-color", "#FFFFCC");
+            });
+        });
+    </script>
 	<script type="text/javascript">
 // 確認ボタン押下時の入力値チェック
 function CheckInputEntry(argMode)
