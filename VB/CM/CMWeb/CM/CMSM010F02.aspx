@@ -3,6 +3,39 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="Content1" Runat="Server">
     <!-- スクリプト -->
+    <script type="text/javascript" src="<%=ResolveUrl("~") %>Scripts/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        // jQuery
+        $(document).ready(function () {
+            $("#上位組織CD").change(function () {
+                $.getJSON("<%=ResolveUrl("~") %>CMCommonService.svc/GetCodeName",
+                    { argCodeId: $(this).attr("id"), argNameId: "上位組織名",
+                      argSelectId: "CN組織名", argCode: $(this).val() },
+                    SetCodeName);
+            });
+        });
+
+        // サーバから取得した名称を設定する
+        function SetCodeName(json)
+        {
+            var codeId = "#" + json.d.CodeId;
+            var nameId = "#" + json.d.NameId;
+            var name = json.d.Name;
+
+            // 名称を設定
+            $(nameId).val(name);
+
+            // 背景色設定
+            var color = name.length > 0 ? "" : "Pink";
+            $(codeId).css("background-color", color);
+
+            // エラー表示＆フォーカス
+            if (name.length == 0) {
+                $(nameId).val("データなし");
+                $(codeId).focus();
+            }
+        }
+    </script>
 	<script type="text/javascript">
 // 確認ボタン押下時の入力値チェック
 function CheckInputEntry(argMode)

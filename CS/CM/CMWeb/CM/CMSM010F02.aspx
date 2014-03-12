@@ -10,7 +10,8 @@
             $("#上位組織CD").change(function () {
                 $.getJSON("<%=ResolveUrl("~") %>CMCommonService.svc/GetCodeName",
                     //{ arg: [ "CN組織名", $(this).val()] },
-                    { argSelectId: "CN組織名", argCode: $(this).val() },
+                    { argCodeId: $(this).attr("id"), argNameId: "上位組織名",
+                      argSelectId: "CN組織名", argCode: $(this).val() },
                     SetCodeName);
             });
         });
@@ -18,18 +19,19 @@
         // サーバから取得した名称を設定する
         function SetCodeName(json)
         {
-            var codeId = "#上位組織CD";
-            var nameId = "#上位組織名";
+            var codeId = "#" + json.d.CodeId;
+            var nameId = "#" + json.d.NameId;
+            var name = json.d.Name;
 
             // 名称を設定
-            $(nameId).val(json.d);
+            $(nameId).val(name);
 
             // 背景色設定
-            var color = json.d.length > 0 ? "" : "Pink";
+            var color = name.length > 0 ? "" : "Pink";
             $(codeId).css("background-color", color);
 
             // エラー表示＆フォーカス
-            if (json.d.length == 0) {
+            if (name.length == 0) {
                 $(nameId).val("データなし");
                 $(codeId).focus();
             }

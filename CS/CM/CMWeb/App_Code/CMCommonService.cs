@@ -41,14 +41,19 @@ public class CMCommonService
     #endregion
 
     #region サービスメソッド
-    // HTTP GET を使用するために [WebGet] 属性を追加します (既定の ResponseFormat は WebMessageFormat.Json)。
-	// XML を返す操作を作成するには、
-	//     [WebGet(ResponseFormat=WebMessageFormat.Xml)] を追加し、
-	//     操作本文に次の行を含めます。
-	//         WebOperationContext.Current.OutgoingResponse.ContentType = "text/xml";
-	[OperationContract]
+    //************************************************************************
+    /// <summary>
+    /// コード値から名称を取得する。
+    /// </summary>
+    /// <param name="argCodeId">コード値要素ID属性</param>
+    /// <param name="argNameId">名称要素ID属性</param>
+    /// <param name="argSelectId">共通検索ID</param>
+    /// <param name="argCode">コード値</param>
+    /// <returns>コード値に対する名称</returns>
+    //************************************************************************
+    [OperationContract]
     [WebGet]
-    public string GetCodeName(string argSelectId, string argCode)
+    public CodeName GetCodeName(string argCodeId, string argNameId, string argSelectId, string argCode)
 	{
         string name = "";
 
@@ -56,15 +61,24 @@ public class CMCommonService
         DataTable result = m_commonBL.Select(argSelectId, argCode);
         if (result != null && result.Rows.Count > 0)
             name = result.Rows[0][0].ToString();
-        return name;
-        //return new CodeName() { Code = argCode, Name = name };
+
+        // 結果を返却
+        return new CodeName() { CodeId = argCodeId, NameId = argNameId, Name = name };
     }
     #endregion
 
-    /*
+    //************************************************************************
+    /// <summary>
+    /// コード値に対する名称返却クラス
+    /// </summary>
+    //************************************************************************
     public class CodeName
     {
-        public string Code { get; set; }
+        /// <summary>コード値要素ID属性</summary>
+        public string CodeId { get; set; }
+        /// <summary>名称要素ID属性</summary>
+        public string NameId { get; set; }
+        /// <summary>コード値に対する名称</summary>
         public string Name { get; set; }
-    }*/
+    }
 }
