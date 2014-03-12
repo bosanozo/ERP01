@@ -269,9 +269,14 @@ Namespace DA
                     order = orderSb.ToString()
                 End If
 
+                ' tableNameがテーブル名が一致するものとtableNameなしを抽出
+                Dim p = From a In argParam
+                        Where a.tableName = tableName OrElse
+                        String.IsNullOrEmpty(a.tableName)
+
                 ' WHERE句作成
                 Dim where As New StringBuilder()
-                AddWhere(where, argParam)
+                AddWhere(where, p.ToList)
 
                 ' SELECT文の設定
                 Dim cmd As IDbCommand = CreateCommand(CreateSelectSql(sb.ToString(), tableName, where.ToString(), ds.エンティティ(0).Join + " ", order, argSelectType))

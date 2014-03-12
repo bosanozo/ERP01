@@ -297,9 +297,15 @@ namespace NEXS.ERP.CM.DA
                 string order = ds.エンティティ[0].OrderBy;
                 if (string.IsNullOrEmpty(order)) order = orderSb.ToString();
 
+                // tableNameがテーブル名が一致するものとtableNameなしを抽出
+                var p = from a in argParam
+                        where a.tableName == tableName
+                           || string.IsNullOrEmpty(a.tableName)
+                        select a;
+
                 // WHERE句作成
-                StringBuilder where = new StringBuilder();
-                AddWhere(where, argParam);
+                StringBuilder where = new StringBuilder();                
+                AddWhere(where, p.ToList());
 
                 // SELECT文の設定
                 IDbCommand cmd = CreateCommand(

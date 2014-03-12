@@ -13,6 +13,9 @@
         Public paramTo As Object
         ''' <summary>左辺項目名(leftcol = @name)</summary>
         Public leftCol As String
+        ''' <summary>検索条件を追加するテーブル名</summary>
+        ''' <remarks>未指定の場合は全テーブルの検索に条件を追加する。</remarks>
+        Public tableName As String
 
         ''' <summary>
         ''' コンストラクタ

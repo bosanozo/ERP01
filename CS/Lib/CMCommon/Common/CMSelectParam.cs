@@ -30,6 +30,9 @@ namespace NEXS.ERP.CM.Common
         public object paramTo;
         /// <summary>左辺項目名(leftcol = @name)</summary>
         public string leftCol;
+        /// <summary>検索条件を追加するテーブル名</summary>
+        /// <remarks>未指定の場合は全テーブルの検索に条件を追加する。</remarks>
+        public string tableName;
 
         //************************************************************************
         /// <summary>
