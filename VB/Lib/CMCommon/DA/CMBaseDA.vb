@@ -278,14 +278,21 @@ Namespace DA
                 Dim where As New StringBuilder()
                 AddWhere(where, p.ToList)
 
+                ' 検索種別がEditで2つ目の検索以降はListにする
+                Dim selectType As CMSelectType =
+                    If(argSelectType = CMSelectType.Edit AndAlso
+                        result.Tables.Count > 0, CMSelectType.List, argSelectType)
+
                 ' SELECT文の設定
-                Dim cmd As IDbCommand = CreateCommand(CreateSelectSql(sb.ToString(), tableName, where.ToString(), ds.エンティティ(0).Join + " ", order, argSelectType))
+                Dim cmd As IDbCommand = CreateCommand(
+                    CreateSelectSql(sb.ToString(), tableName, where.ToString(),
+                        ds.エンティティ(0).Join + " ", order, selectType))
                 Adapter.SelectCommand = cmd
 
                 ' パラメータの設定
-                SetParameter(cmd, argParam)
+                SetParameter(cmd, p.ToList())
                 ' 一覧検索の場合 かつ 最初の検索の場合、最大検索件数で制限
-                If argSelectType = CMSelectType.List AndAlso result.Tables.Count = 0 Then
+                If selectType = CMSelectType.List AndAlso result.Tables.Count = 0 Then
                     cmd.Parameters.Add(CreateCmdParam("最大検索件数", argMaxRow))
                 Else
                     cmd.CommandText = cmd.CommandText.Replace(ROWNUMBER_CONDITION, "")
@@ -539,7 +546,7 @@ Namespace DA
         ''' <param name="argCmd">IDbCommand</param>
         ''' <param name="argParam">検索条件</param>
         Protected Sub SetParameter(argCmd As IDbCommand, argParam As List(Of CMSelectParam))
-            Dim regex As New Regex("@\S+")
+            Dim regex As New Regex("@\w+")
 
             For Each param As CMSelectParam In argParam
                 ' プレースフォルダ名を取得

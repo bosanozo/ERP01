@@ -307,16 +307,20 @@ namespace NEXS.ERP.CM.DA
                 StringBuilder where = new StringBuilder();                
                 AddWhere(where, p.ToList());
 
+                // 検索種別がEditで2つ目の検索以降はListにする
+                CMSelectType selectType = argSelectType == CMSelectType.Edit &&
+                    result.Tables.Count > 0 ? CMSelectType.List : argSelectType;
+
                 // SELECT文の設定
                 IDbCommand cmd = CreateCommand(
                     CreateSelectSql(sb.ToString(), tableName, where.ToString(),
-                    ds.エンティティ[0].Join + " ", order, argSelectType));
+                    ds.エンティティ[0].Join + " ", order, selectType));
                 Adapter.SelectCommand = cmd;
 
                 // パラメータの設定
-                SetParameter(cmd, argParam);
+                SetParameter(cmd, p.ToList());
                 // 一覧検索の場合 かつ 最初の検索の場合、最大検索件数で制限
-                if (argSelectType == CMSelectType.List && result.Tables.Count == 0)
+                if (selectType == CMSelectType.List && result.Tables.Count == 0)
                     cmd.Parameters.Add(CreateCmdParam("最大検索件数", argMaxRow));
                 else cmd.CommandText = cmd.CommandText.Replace(ROWNUMBER_CONDITION, "");
 
@@ -597,7 +601,7 @@ namespace NEXS.ERP.CM.DA
         //************************************************************************
         protected void SetParameter(IDbCommand argCmd, List<CMSelectParam> argParam)
         {
-            Regex regex = new Regex("@\\S+");
+            Regex regex = new Regex("@\\w+");
 
             foreach (var param in argParam)
             {
