@@ -55,7 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BL\CMSM010BL.cs" />
+    <Compile Include="BL\XM010BL.cs" />
     <Compile Include="DA\CMSM010DA.cs" />
+    <Compile Include="DA\XM010DA.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
