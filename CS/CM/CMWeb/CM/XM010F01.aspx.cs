@@ -74,6 +74,15 @@ public partial class CM_XM010F01 : CMBaseListForm
         // 検索パラメータ取得
         List<CMSelectParam> param = CreateSelectParam(PanelCondition);
 
+        // 最新バージョンのみ表示する条件を追加
+        if (最新.Checked)
+        {
+            CMSelectParam paramVer = new CMSelectParam("VER",
+                "= (SELECT MAX(VER) FROM XM更新履歴 WHERE オブジェクト型 = A.オブジェクト型 " +
+                "AND オブジェクト名 = A.オブジェクト名)", null);
+            param.Add(paramVer);
+        }
+
         bool hasError = false;
 
         // 検索

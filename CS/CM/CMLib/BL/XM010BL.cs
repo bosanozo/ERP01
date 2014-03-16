@@ -94,14 +94,6 @@ namespace NEXS.ERP.CM.BL
                     argParam.Add(param2);
                 }
             }
-            else
-            {
-                // 最新バージョンのみ表示する条件を追加
-                CMSelectParam paramVer = new CMSelectParam("VER",
-                    "= (SELECT MAX(VER) FROM XM更新履歴 WHERE オブジェクト型 = A.オブジェクト型 " +
-                    "AND オブジェクト名 = A.オブジェクト名)", null);
-                argParam.Add(paramVer);
-            }
 
             // 検索実行
             bool isOver;

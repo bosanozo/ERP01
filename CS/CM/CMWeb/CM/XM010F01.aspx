@@ -29,13 +29,19 @@
             </tr>
             <tr>
                 <td class="ItemName">更新年月日</td>
-                <td class="ItemPanel" colspan="3">
+                <td class="ItemPanel">
                     <asp:TextBox ID="更新日時From" CssClass="DateInput" runat="server" MaxLength="10" Width="80" />
                     <input id="B更新日時From" class="SelectButton" onclick="ShowCalendar(this, 更新日時From)"
 				        type="button" value="..." /> ～
                     <asp:TextBox ID="更新日時To" CssClass="DateInput" runat="server" MaxLength="10" Width="80" />
                     <input id="B更新日時To" class="SelectButton" onclick="ShowCalendar(this, 更新日時To)"
 					    type="button" value="..." />
+                </td>
+                <td class="ItemName">表示範囲</td>
+                <td class="ItemPanel">
+                    <asp:RadioButton ID="最新" runat="server" Checked="True" Text="最新のみ表示" 
+                        GroupName="表示範囲" />
+                    <asp:RadioButton ID="全て" runat="server" Text="全て表示" GroupName="表示範囲" />
                 </td>
             </tr>
         </table>

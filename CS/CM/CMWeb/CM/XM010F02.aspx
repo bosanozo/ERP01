@@ -99,9 +99,11 @@ function CheckInputEntry(argMode)
                 <ItemStyle Width="40px" />
             </asp:BoundField>
             <asp:BoundField DataField="項目名" HeaderText="項目名" HtmlEncode="False" />
-            <asp:BoundField DataField="説明" HeaderText="説明" HtmlEncode="False" >
-                <ItemStyle Width="300px" />
-            </asp:BoundField>
+            <asp:TemplateField HeaderText="説明" ItemStyle-Width="300">
+                <ItemTemplate>
+                    <asp:TextBox ID="TextBox1" runat="server" Text="<%# Bind('説明') %>" ></asp:TextBox>
+                </ItemTemplate>
+            </asp:TemplateField>
             <asp:BoundField DataField="項目型" HeaderText="項目型" HtmlEncode="False" />
             <asp:BoundField DataField="長さ" HeaderText="長さ" HtmlEncode="False" >
                 <ItemStyle Width="40px" />
