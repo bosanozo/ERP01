@@ -60,7 +60,8 @@ public partial class CM_XM010F02 : CMBaseEntryForm
         try
         {
             // 区分値の検索
-            DataTable kbnTable = CommonBL.SelectKbn("X002");
+            DataTable kbnTable = CommonBL.SelectKbn("X002", "X003");
+            ViewState["kbnTable"] = kbnTable;
 
             // 区分値の設定
             DataView dv = new DataView(kbnTable, "分類CD = 'X002'", null, DataViewRowState.CurrentRows);
@@ -171,9 +172,50 @@ public partial class CM_XM010F02 : CMBaseEntryForm
 
             // データバインド実行
             DataBind();
-        }
+        } 
     }
-    
+
+    //************************************************************************
+    /// <summary>
+    /// 行更新開始
+    /// </summary>
+    //************************************************************************
+    protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+        DropDownList ddl = GridView1.Rows[e.NewEditIndex].FindControl("DDL項目型") as DropDownList;
+        if (ddl != null)
+        {
+            //DataView dv = new DataView((DataTable)ViewState["kbnTable"], "分類CD = 'X003'", null, DataViewRowState.CurrentRows);
+            //ddl.DataSource = dv.ToTable();
+            foreach (DataRow row in ((DataTable)ViewState["kbnTable"]).Select("分類CD = 'X003'"))
+                ddl.Items.Add(new ListItem(row["表示名"].ToString(), row["基準値CD"].ToString()));
+        }
+
+        GridView1.EditIndex = e.NewEditIndex;
+        //GridView1.DataBind();
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// 行更新キャンセル
+    /// </summary>
+    //************************************************************************
+    protected void GridView1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+    {
+        GridView1.EditIndex = -1;
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// 行更新確定
+    /// </summary>
+    //************************************************************************
+    protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
+    {
+        GridView1.EditIndex = -1;
+
+    }
+
     //************************************************************************
     /// <summary>
     /// 登録ボタン押下

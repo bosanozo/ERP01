@@ -83,8 +83,9 @@ function CheckInputEntry(argMode)
 		</table>
 	</asp:panel>
     <!-- 明細部 -->
-    <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False"
-        PageSize="20" Width="100%">
+    <asp:GridView ID="GridView1" runat="server" AllowPaging="True" 
+        AutoGenerateColumns="False" Width="100%" onrowcancelingedit="GridView1_RowCancelingEdit" 
+        onrowediting="GridView1_RowEditing" onrowupdating="GridView1_RowUpdating">
         <Columns>
             <asp:TemplateField HeaderText="選択">
                 <ItemTemplate>
@@ -92,37 +93,101 @@ function CheckInputEntry(argMode)
                 </ItemTemplate>
                 <ItemStyle HorizontalAlign="Center" Width="40px" />
             </asp:TemplateField>
-            <asp:BoundField DataField="項目NO" HeaderText="NO" HtmlEncode="False" >
-                <ItemStyle Width="40px" />
-            </asp:BoundField>
-            <asp:BoundField DataField="VER" HeaderText="VER" HtmlEncode="False" >
-                <ItemStyle Width="40px" />
-            </asp:BoundField>
-            <asp:BoundField DataField="項目名" HeaderText="項目名" HtmlEncode="False" />
-            <asp:TemplateField HeaderText="説明" ItemStyle-Width="300">
+            <asp:CommandField ShowEditButton="True" ButtonType="Button">
+            </asp:CommandField>
+            <asp:TemplateField HeaderText="NO">
                 <ItemTemplate>
-                    <asp:TextBox ID="TextBox1" runat="server" Text="<%# Bind('説明') %>" ></asp:TextBox>
+                    <asp:Label ID="NO_I" runat="server" Text='<%# Bind("項目NO") %>'></asp:Label>
                 </ItemTemplate>
+                <EditItemTemplate>
+                    <asp:TextBox ID="NO_E" runat="server" Text='<%# Bind("項目NO") %>' Width="40px"></asp:TextBox>
+                </EditItemTemplate>
+                <ItemStyle Width="40px" />
             </asp:TemplateField>
-            <asp:BoundField DataField="項目型" HeaderText="項目型" HtmlEncode="False" />
-            <asp:BoundField DataField="長さ" HeaderText="長さ" HtmlEncode="False" >
+            <asp:TemplateField HeaderText="VER">
+                <ItemTemplate>
+                    <asp:Label ID="VER_I" runat="server" Text='<%# Bind("VER") %>'></asp:Label>
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <asp:Label ID="VER_E" runat="server" Text='<%# Bind("VER") %>'></asp:Label>
+                </EditItemTemplate>
                 <ItemStyle Width="40px" />
-            </asp:BoundField>
-            <asp:BoundField DataField="小数桁" HeaderText="小数桁" HtmlEncode="False" >
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="項目名">
+                <ItemTemplate>
+                    <asp:Label ID="項目名_I" runat="server" Text='<%# Bind("項目名") %>'></asp:Label>
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <asp:TextBox ID="項目名_E" runat="server" Text='<%# Bind("項目名") %>'></asp:TextBox>
+                </EditItemTemplate>
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="説明">
+                <ItemTemplate>
+                    <asp:Label ID="説明_I" runat="server" Text='<%# Bind("説明") %>'></asp:Label>
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <asp:TextBox ID="説明_E" runat="server" Text='<%# Bind("説明") %>' TextMode="MultiLine" Rows="5" Columns="50"></asp:TextBox>
+                </EditItemTemplate>
+                <ItemStyle Width="300px"/>
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="項目型">
+                <ItemTemplate>
+                    <asp:TextBox ID="項目型_I" runat="server" Text='<%# Bind("項目型") %>'></asp:TextBox>
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <asp:TextBox ID="項目型_E" runat="server" Text='<%# Bind("項目型") %>' Width="40px"></asp:TextBox>
+                </EditItemTemplate>
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="長さ">
+                <ItemTemplate>
+                    <asp:Label ID="長さ_I" runat="server" Text='<%# Bind("長さ") %>'></asp:Label>
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <asp:TextBox ID="長さ_E" runat="server" Text='<%# Bind("長さ") %>' Width="40px"></asp:TextBox>
+                </EditItemTemplate>
                 <ItemStyle Width="40px" />
-            </asp:BoundField>
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="小数桁">
+                <ItemTemplate>
+                    <asp:Label ID="小数桁_I" runat="server" Text='<%# Bind("小数桁") %>'></asp:Label>
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <asp:TextBox ID="小数桁_E" runat="server" Text='<%# Bind("小数桁") %>' Width="40px"></asp:TextBox>
+                </EditItemTemplate>
+                <ItemStyle Width="40px" />
+            </asp:TemplateField>
             <asp:BoundField DataField="必須" HeaderText="必須" HtmlEncode="False" >
                 <ItemStyle Width="40px" />
             </asp:BoundField>
             <asp:BoundField DataField="主キー" HeaderText="主キー" HtmlEncode="False" >
-                <ItemStyle Width="40px" />
+            <ItemStyle Width="40px" />
             </asp:BoundField>
-            <asp:BoundField DataField="デフォルト" HeaderText="デフォルト" HtmlEncode="False" >
+            <asp:TemplateField HeaderText="デフォルト">
+                <ItemTemplate>
+                    <asp:Label ID="デフォルト_I" runat="server" Text='<%# Bind("デフォルト") %>'></asp:Label>
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <asp:TextBox ID="デフォルト_E" runat="server" Text='<%# Bind("デフォルト") %>' Width="100px"></asp:TextBox>
+                </EditItemTemplate>
                 <ItemStyle Width="100px" />
-            </asp:BoundField>
-            <asp:BoundField DataField="更新日時" HeaderText="更新日時" 
-                DataFormatString="{0:yyyy/MM/dd HH:mm:ss}" />
-            <asp:BoundField DataField="更新者名" HeaderText="更新者名" HtmlEncode="False" />
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="更新日時">
+                <ItemTemplate>
+                    <asp:Label ID="更新日時_I" runat="server" 
+                        Text='<%# Bind("更新日時", "{0:yyyy/MM/dd HH:mm:ss}") %>'></asp:Label>
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <asp:Label ID="更新日時_E" runat="server" Text='<%# Bind("更新日時") %>'></asp:Label>
+                </EditItemTemplate>
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="更新者名">
+                <ItemTemplate>
+                    <asp:Label ID="更新者名_I" runat="server" Text='<%# Bind("更新者名") %>'></asp:Label>
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <asp:Label ID="更新者名_E" runat="server" Text='<%# Bind("更新者名") %>'></asp:Label>
+                </EditItemTemplate>
+            </asp:TemplateField>
         </Columns>
         <HeaderStyle BackColor="#003580" ForeColor="White" Height="18px" />
         <AlternatingRowStyle BackColor="#CCCCFF" />
