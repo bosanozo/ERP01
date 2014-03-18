@@ -199,8 +199,8 @@ Namespace DA
             Adapter.SelectCommand = cmd
 
             ' パラメータを設定
-            For Each val As String In argKbnList
-                cmd.Parameters.Add(CreateCmdParam("1", val))
+            For i As Integer = 1 To argKbnList.Length
+                cmd.Parameters.Add(CreateCmdParam(i.ToString(), argKbnList(i - 1)))
             Next
 
             ' データセットの作成

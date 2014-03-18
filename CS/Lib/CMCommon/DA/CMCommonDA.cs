@@ -235,7 +235,8 @@ namespace NEXS.ERP.CM.DA
             Adapter.SelectCommand = cmd;
 
             // パラメータを設定
-            foreach (string val in argKbnList) cmd.Parameters.Add(CreateCmdParam("1", val));
+            for (int i = 1; i <= argKbnList.Length; i++)
+                cmd.Parameters.Add(CreateCmdParam(i.ToString(), argKbnList[i-1]));
 
             // データセットの作成
             DataSet ds = new DataSet();
