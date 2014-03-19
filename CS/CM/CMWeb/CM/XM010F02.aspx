@@ -85,107 +85,176 @@ function CheckInputEntry(argMode)
     <!-- 明細部 -->
     <asp:GridView ID="GridView1" runat="server" AllowPaging="True" 
         AutoGenerateColumns="False" Width="100%" onrowcancelingedit="GridView1_RowCancelingEdit" 
-        onrowediting="GridView1_RowEditing" onrowupdating="GridView1_RowUpdating">
+        onrowediting="GridView1_RowEditing" onrowupdating="GridView1_RowUpdating" 
+        ondatabound="GridView1_DataBound" onrowcommand="GridView1_RowCommand" 
+        ShowFooter="True">
         <Columns>
-            <asp:TemplateField HeaderText="選択">
+            <asp:TemplateField ShowHeader="False">
                 <ItemTemplate>
-                    <input id="Checkbox" type="checkbox" onclick="SetSelectedIndex()" />
+                    <asp:Button ID="Button1" runat="server" CausesValidation="False" 
+                        CommandName="Edit" Text="編集" />                
                 </ItemTemplate>
-                <ItemStyle HorizontalAlign="Center" Width="40px" />
+                <EditItemTemplate>
+                    <asp:Button ID="Button1" runat="server" CausesValidation="True" 
+                        CommandName="Update" Text="更新" />
+              &nbsp;<asp:Button ID="Button2" runat="server" CausesValidation="False" 
+                        CommandName="Cancel" Text="キャンセル" />
+                </EditItemTemplate>
+                <FooterTemplate>
+                    <asp:Button ID="Button1" runat="server" CausesValidation="False" 
+                        CommandName="New" Text="新規" />                
+                </FooterTemplate>
             </asp:TemplateField>
-            <asp:CommandField ShowEditButton="True" ButtonType="Button">
-            </asp:CommandField>
+
+            <asp:TemplateField HeaderText="削除">
+                <ItemTemplate>
+                    <asp:CheckBox ID="削除フラグ" runat="server" Checked='<%# Bind("削除フラグ") %>' Enabled="false"></asp:CheckBox>
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <asp:CheckBox ID="削除フラグ" runat="server" Checked='<%# Bind("削除フラグ") %>'></asp:CheckBox>
+                </EditItemTemplate>
+            </asp:TemplateField>
+
             <asp:TemplateField HeaderText="NO">
                 <ItemTemplate>
-                    <asp:Label ID="NO_I" runat="server" Text='<%# Bind("項目NO") %>'></asp:Label>
+                    <asp:Label ID="項目NO" runat="server" Text='<%# Bind("項目NO") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
-                    <asp:TextBox ID="NO_E" runat="server" Text='<%# Bind("項目NO") %>' Width="40px"></asp:TextBox>
+                    <asp:TextBox ID="項目NO" runat="server" Text='<%# Bind("項目NO") %>' Width="40px"></asp:TextBox>
+                    <asp:HiddenField ID="RowIdx" runat="server" Value='<%# GetRowIdx(Container.DataItem) %>'></asp:HiddenField>
                 </EditItemTemplate>
-                <ItemStyle Width="40px" />
+                <FooterTemplate>
+                    <asp:TextBox ID="項目NO" runat="server" Width="40px"></asp:TextBox>
+                </FooterTemplate>
+                <ItemStyle HorizontalAlign="Center" />
             </asp:TemplateField>
+
             <asp:TemplateField HeaderText="VER">
                 <ItemTemplate>
-                    <asp:Label ID="VER_I" runat="server" Text='<%# Bind("VER") %>'></asp:Label>
+                    <asp:Label ID="VER" runat="server" Text='<%# Bind("VER") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
-                    <asp:Label ID="VER_E" runat="server" Text='<%# Bind("VER") %>'></asp:Label>
+                    <asp:Label ID="VER" runat="server" Text='<%# Bind("VER") %>'></asp:Label>
                 </EditItemTemplate>
-                <ItemStyle Width="40px" />
+                <FooterTemplate>
+                    <asp:Label ID="VER" runat="server" Text="1"></asp:Label>
+                </FooterTemplate>
+                <ItemStyle HorizontalAlign="Center" />
             </asp:TemplateField>
+
             <asp:TemplateField HeaderText="項目名">
                 <ItemTemplate>
-                    <asp:Label ID="項目名_I" runat="server" Text='<%# Bind("項目名") %>'></asp:Label>
+                    <asp:Label ID="項目名" runat="server" Text='<%# Bind("項目名") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
-                    <asp:TextBox ID="項目名_E" runat="server" Text='<%# Bind("項目名") %>'></asp:TextBox>
+                    <asp:Label ID="項目名" runat="server" Text='<%# Bind("項目名") %>'></asp:Label>
                 </EditItemTemplate>
+                <FooterTemplate>
+                    <asp:TextBox ID="項目名" runat="server"></asp:TextBox>
+                </FooterTemplate>
             </asp:TemplateField>
+
             <asp:TemplateField HeaderText="説明">
                 <ItemTemplate>
-                    <asp:Label ID="説明_I" runat="server" Text='<%# Bind("説明") %>'></asp:Label>
+                    <asp:Label ID="説明" runat="server" Text='<%# Bind("説明") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
-                    <asp:TextBox ID="説明_E" runat="server" Text='<%# Bind("説明") %>' TextMode="MultiLine" Rows="5" Columns="50"></asp:TextBox>
+                    <asp:TextBox ID="説明" runat="server" Text='<%# Bind("説明") %>' TextMode="MultiLine" Rows="5" Columns="50"></asp:TextBox>
                 </EditItemTemplate>
-                <ItemStyle Width="300px"/>
+                <FooterTemplate>
+                    <asp:TextBox ID="説明" runat="server" TextMode="MultiLine" Rows="5" Columns="50"></asp:TextBox>
+                </FooterTemplate>
             </asp:TemplateField>
+
             <asp:TemplateField HeaderText="項目型">
                 <ItemTemplate>
-                    <asp:TextBox ID="項目型_I" runat="server" Text='<%# Bind("項目型") %>'></asp:TextBox>
+                    <asp:Label ID="項目型" runat="server" Text='<%# Bind("項目型名") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
-                    <asp:TextBox ID="項目型_E" runat="server" Text='<%# Bind("項目型") %>' Width="40px"></asp:TextBox>
+                    <asp:DropDownList ID="項目型" runat="server" DataTextField="表示名" DataValueField="基準値CD" />
                 </EditItemTemplate>
+                <FooterTemplate>
+                    <asp:DropDownList ID="項目型" runat="server" DataTextField="表示名" DataValueField="基準値CD" />
+                </FooterTemplate>
             </asp:TemplateField>
+
             <asp:TemplateField HeaderText="長さ">
                 <ItemTemplate>
-                    <asp:Label ID="長さ_I" runat="server" Text='<%# Bind("長さ") %>'></asp:Label>
+                    <asp:Label ID="長さ" runat="server" Text='<%# Bind("長さ") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
-                    <asp:TextBox ID="長さ_E" runat="server" Text='<%# Bind("長さ") %>' Width="40px"></asp:TextBox>
+                    <asp:TextBox ID="長さ" runat="server" Text='<%# Bind("長さ") %>' Width="40px"></asp:TextBox>
                 </EditItemTemplate>
-                <ItemStyle Width="40px" />
+                <FooterTemplate>
+                    <asp:TextBox ID="長さ" runat="server" Width="40px"></asp:TextBox>
+                </FooterTemplate>
             </asp:TemplateField>
+
             <asp:TemplateField HeaderText="小数桁">
                 <ItemTemplate>
-                    <asp:Label ID="小数桁_I" runat="server" Text='<%# Bind("小数桁") %>'></asp:Label>
+                    <asp:Label ID="小数桁" runat="server" Text='<%# Bind("小数桁") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
-                    <asp:TextBox ID="小数桁_E" runat="server" Text='<%# Bind("小数桁") %>' Width="40px"></asp:TextBox>
+                    <asp:TextBox ID="小数桁" runat="server" Text='<%# Bind("小数桁") %>' Width="40px"></asp:TextBox>
                 </EditItemTemplate>
-                <ItemStyle Width="40px" />
+                <FooterTemplate>
+                    <asp:TextBox ID="小数桁" runat="server" Width="40px"></asp:TextBox>
+                </FooterTemplate>
             </asp:TemplateField>
-            <asp:BoundField DataField="必須" HeaderText="必須" HtmlEncode="False" >
-                <ItemStyle Width="40px" />
-            </asp:BoundField>
-            <asp:BoundField DataField="主キー" HeaderText="主キー" HtmlEncode="False" >
-            <ItemStyle Width="40px" />
-            </asp:BoundField>
+
+            <asp:TemplateField HeaderText="必須">
+                <ItemTemplate>
+                    <asp:CheckBox ID="必須" runat="server" Checked='<%# Bind("必須") %>' Enabled="false"></asp:CheckBox>
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <asp:CheckBox ID="必須" runat="server" Checked='<%# Bind("必須") %>'></asp:CheckBox>
+                </EditItemTemplate>
+                <FooterTemplate>
+                    <asp:CheckBox ID="必須" runat="server" /></asp:CheckBox>
+                </FooterTemplate>
+            </asp:TemplateField>
+
+            <asp:TemplateField HeaderText="主キー">
+                <ItemTemplate>
+                    <asp:CheckBox ID="主キー" runat="server" Checked='<%# Bind("主キー") %>' Enabled="false"></asp:CheckBox>
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <asp:CheckBox ID="主キー" runat="server" Checked='<%# Bind("主キー") %>'></asp:CheckBox>
+                </EditItemTemplate>
+                <FooterTemplate>
+                    <asp:CheckBox ID="主キー" runat="server" /></asp:CheckBox>
+                </FooterTemplate>
+            </asp:TemplateField>
+
             <asp:TemplateField HeaderText="デフォルト">
                 <ItemTemplate>
-                    <asp:Label ID="デフォルト_I" runat="server" Text='<%# Bind("デフォルト") %>'></asp:Label>
+                    <asp:Label ID="デフォルト" runat="server" Text='<%# Bind("デフォルト") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
-                    <asp:TextBox ID="デフォルト_E" runat="server" Text='<%# Bind("デフォルト") %>' Width="100px"></asp:TextBox>
+                    <asp:TextBox ID="デフォルト" runat="server" Text='<%# Bind("デフォルト") %>' Width="100px"></asp:TextBox>
                 </EditItemTemplate>
-                <ItemStyle Width="100px" />
+                <FooterTemplate>
+                    <asp:TextBox ID="デフォルト" runat="server" Width="100px"></asp:TextBox>
+                </FooterTemplate>
             </asp:TemplateField>
+
             <asp:TemplateField HeaderText="更新日時">
                 <ItemTemplate>
-                    <asp:Label ID="更新日時_I" runat="server" 
+                    <asp:Label ID="更新日時" runat="server" 
                         Text='<%# Bind("更新日時", "{0:yyyy/MM/dd HH:mm:ss}") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
-                    <asp:Label ID="更新日時_E" runat="server" Text='<%# Bind("更新日時") %>'></asp:Label>
+                    <asp:Label ID="更新日時" runat="server" 
+                        Text='<%# Bind("更新日時", "{0:yyyy/MM/dd HH:mm:ss}") %>'></asp:Label>
                 </EditItemTemplate>
             </asp:TemplateField>
+
             <asp:TemplateField HeaderText="更新者名">
                 <ItemTemplate>
-                    <asp:Label ID="更新者名_I" runat="server" Text='<%# Bind("更新者名") %>'></asp:Label>
+                    <asp:Label ID="更新者名" runat="server" Text='<%# Bind("更新者名") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
-                    <asp:Label ID="更新者名_E" runat="server" Text='<%# Bind("更新者名") %>'></asp:Label>
+                    <asp:Label ID="更新者名" runat="server" Text='<%# Bind("更新者名") %>'></asp:Label>
                 </EditItemTemplate>
             </asp:TemplateField>
         </Columns>

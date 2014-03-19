@@ -61,7 +61,7 @@ public partial class CM_XM010F02 : CMBaseEntryForm
         {
             // 区分値の検索
             DataTable kbnTable = CommonBL.SelectKbn("X002", "X003");
-            ViewState["kbnTable"] = kbnTable;
+            Session["kbnTable"] = kbnTable;
 
             // 区分値の設定
             DataView dv = new DataView(kbnTable, "分類CD = 'X002'", null, DataViewRowState.CurrentRows);
@@ -131,13 +131,16 @@ public partial class CM_XM010F02 : CMBaseEntryForm
                     // 検索結果を取得
                     InputRow = table.Rows[0];
                     InputRow2 = result.Tables["XMエンティティ"].Rows[0];
-                    GridView1.DataSource = result.Tables["XMエンティティ項目"];
+                    DataTable girdTable = result.Tables["XMエンティティ項目"];
+                    girdTable.DefaultView.Sort = "項目NO";
+                    GridView1.DataSource = girdTable;
 
                     // データバインド実行
                     DataBind();
 
                     // セッションに検索結果を保持
                     Session["inputRow"] = InputRow;
+                    Session["table"] = GridView1.DataSource;
 
                     // 操作履歴を出力
                     WriteOperationLog();
@@ -177,22 +180,58 @@ public partial class CM_XM010F02 : CMBaseEntryForm
 
     //************************************************************************
     /// <summary>
+    /// データバインド完了
+    /// </summary>
+    //************************************************************************
+    protected void GridView1_DataBound(object sender, EventArgs e)
+    {
+        // DropDownListのDataSourceを設定
+        DropDownList ddl = GridView1.FooterRow.FindControl("項目型") as DropDownList;
+        DataView dv = new DataView((DataTable)Session["kbnTable"], "分類CD = 'X003'", null, DataViewRowState.CurrentRows);
+        ddl.DataSource = dv.ToTable();
+        ddl.DataBind();
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// コマンドボタンクリック
+    /// </summary>
+    //************************************************************************
+    protected void GridView1_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "New")
+        {
+            DataTable table = (DataTable)Session["table"];
+            GridView1.DataSource = table;
+
+            DataRow newRow = table.NewRow();
+            table.Rows.Add(newRow);
+
+            SetData(newRow, GridView1.FooterRow);
+
+            GridView1.DataBind();
+        }
+    }
+
+    //************************************************************************
+    /// <summary>
     /// 行更新開始
     /// </summary>
     //************************************************************************
     protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)
     {
-        DropDownList ddl = GridView1.Rows[e.NewEditIndex].FindControl("DDL項目型") as DropDownList;
+        GridView1.EditIndex = e.NewEditIndex;
+        GridView1.DataSource = Session["table"];
+        GridView1.DataBind();
+
+        DropDownList ddl = GridView1.Rows[e.NewEditIndex].FindControl("項目型") as DropDownList;
         if (ddl != null)
         {
-            //DataView dv = new DataView((DataTable)ViewState["kbnTable"], "分類CD = 'X003'", null, DataViewRowState.CurrentRows);
-            //ddl.DataSource = dv.ToTable();
-            foreach (DataRow row in ((DataTable)ViewState["kbnTable"]).Select("分類CD = 'X003'"))
-                ddl.Items.Add(new ListItem(row["表示名"].ToString(), row["基準値CD"].ToString()));
+            DataView dv = new DataView((DataTable)Session["kbnTable"], "分類CD = 'X003'", null, DataViewRowState.CurrentRows);
+            ddl.DataSource = dv.ToTable();
+            ddl.SelectedValue = GetDataRow(e.NewEditIndex)["項目型"].ToString();
+            ddl.DataBind();
         }
-
-        GridView1.EditIndex = e.NewEditIndex;
-        //GridView1.DataBind();
     }
 
     //************************************************************************
@@ -203,6 +242,8 @@ public partial class CM_XM010F02 : CMBaseEntryForm
     protected void GridView1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
     {
         GridView1.EditIndex = -1;
+        GridView1.DataSource = Session["table"];
+        GridView1.DataBind();
     }
 
     //************************************************************************
@@ -213,7 +254,11 @@ public partial class CM_XM010F02 : CMBaseEntryForm
     protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         GridView1.EditIndex = -1;
+        GridView1.DataSource = Session["table"];
 
+        SetData(GetDataRow(e.RowIndex), GridView1.Rows[e.RowIndex]);
+
+        GridView1.DataBind();
     }
 
     //************************************************************************
@@ -314,4 +359,82 @@ public partial class CM_XM010F02 : CMBaseEntryForm
         return hasError;
     }
     #endregion
+
+    //************************************************************************
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="argDataItem"></param>
+    /// <returns></returns>
+    //************************************************************************
+    protected int GetRowIdx(object argDataItem)
+    {
+        DataRow row = ((DataRowView)argDataItem).Row;
+        return row.Table.Rows.IndexOf(row);
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="idx"></param>
+    /// <returns></returns>
+    //************************************************************************
+    private DataRow GetDataRow(int idx)
+    {
+        string no = ((HiddenField)GridView1.Rows[idx].FindControl("RowIdx")).Value;
+        return ((DataTable)GridView1.DataSource).Rows[int.Parse(no)];
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="row"></param>
+    /// <param name="grow"></param>
+    //************************************************************************
+    private void SetData(DataRow row, GridViewRow grow)
+    {
+        DataTable table = (DataTable)GridView1.DataSource;
+
+        string _no = ((TextBox)grow.FindControl("項目NO")).Text;
+        int no = String.IsNullOrEmpty(_no) || int.Parse(_no) > table.Rows.Count ?
+            table.Rows.Count : int.Parse(_no);
+        if (no == 0) no = 1;
+        int p_no = row["項目NO"] == DBNull.Value ? GridView1.Rows.Count + 1 : Convert.ToInt32(row["項目NO"]);
+
+        row["項目NO"] = no;
+        row["項目型"] = ((DropDownList)grow.FindControl("項目型")).SelectedValue;
+        row["説明"] = ((TextBox)grow.FindControl("説明")).Text;
+        string length = ((TextBox)grow.FindControl("長さ")).Text;
+        if (length.Length > 0) row["長さ"] = length;
+        var delFlg = (CheckBox)grow.FindControl("削除フラグ");
+        row["削除フラグ"] = delFlg != null ? delFlg.Checked : false;
+
+        string[] colNames = { "必須", "主キー" };
+        foreach(string colName in colNames)
+        {
+            Control c = grow.FindControl(colName);
+            if (c == null) continue;
+            if (c is CheckBox) row[colName] = ((CheckBox)c).Checked;
+        }
+
+        // NOの付け替え
+        bool od = p_no < no;
+        int from = od ? p_no : no;
+        int to = od ? no : p_no;
+        int add = od ? -1 : 1;
+        int i = from;
+        foreach (DataRow drow in table.Select(string.Format("項目NO >= {0} AND 項目NO <= {1}", from, to), "項目NO"))
+        {
+            int row_no = Convert.ToInt32(drow["項目NO"]);
+
+            if (row_no == no)
+            {
+                if (!drow.Equals(row)) drow["項目NO"] = no == i ? no + add : i;
+            }
+            else drow["項目NO"] = i;
+            i++;
+        }
+    }
 }
