@@ -210,7 +210,7 @@ function CheckInputEntry(argMode)
                     <asp:CheckBox ID="必須" runat="server" Checked='<%# Bind("必須") %>'></asp:CheckBox>
                 </EditItemTemplate>
                 <FooterTemplate>
-                    <asp:CheckBox ID="必須" runat="server" /></asp:CheckBox>
+                    <asp:CheckBox ID="必須" runat="server" />
                 </FooterTemplate>
             </asp:TemplateField>
 
@@ -222,7 +222,7 @@ function CheckInputEntry(argMode)
                     <asp:CheckBox ID="主キー" runat="server" Checked='<%# Bind("主キー") %>'></asp:CheckBox>
                 </EditItemTemplate>
                 <FooterTemplate>
-                    <asp:CheckBox ID="主キー" runat="server" /></asp:CheckBox>
+                    <asp:CheckBox ID="主キー" runat="server" />
                 </FooterTemplate>
             </asp:TemplateField>
 

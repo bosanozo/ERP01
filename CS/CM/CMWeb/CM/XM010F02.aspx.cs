@@ -186,10 +186,7 @@ public partial class CM_XM010F02 : CMBaseEntryForm
     protected void GridView1_DataBound(object sender, EventArgs e)
     {
         // DropDownListのDataSourceを設定
-        DropDownList ddl = GridView1.FooterRow.FindControl("項目型") as DropDownList;
-        DataView dv = new DataView((DataTable)Session["kbnTable"], "分類CD = 'X003'", null, DataViewRowState.CurrentRows);
-        ddl.DataSource = dv.ToTable();
-        ddl.DataBind();
+        SetListDataSource(GridView1.FooterRow);
     }
 
     //************************************************************************
@@ -199,6 +196,7 @@ public partial class CM_XM010F02 : CMBaseEntryForm
     //************************************************************************
     protected void GridView1_RowCommand(object sender, GridViewCommandEventArgs e)
     {
+        // 新規の場合
         if (e.CommandName == "New")
         {
             DataTable table = (DataTable)Session["table"];
@@ -224,14 +222,8 @@ public partial class CM_XM010F02 : CMBaseEntryForm
         GridView1.DataSource = Session["table"];
         GridView1.DataBind();
 
-        DropDownList ddl = GridView1.Rows[e.NewEditIndex].FindControl("項目型") as DropDownList;
-        if (ddl != null)
-        {
-            DataView dv = new DataView((DataTable)Session["kbnTable"], "分類CD = 'X003'", null, DataViewRowState.CurrentRows);
-            ddl.DataSource = dv.ToTable();
-            ddl.SelectedValue = GetDataRow(e.NewEditIndex)["項目型"].ToString();
-            ddl.DataBind();
-        }
+        // DropDownListのDataSourceを設定
+        SetListDataSource(GridView1.Rows[e.NewEditIndex], GetDataRow(e.NewEditIndex)["項目型"].ToString());
     }
 
     //************************************************************************
@@ -360,12 +352,13 @@ public partial class CM_XM010F02 : CMBaseEntryForm
     }
     #endregion
 
+    #region privateメソッド
     //************************************************************************
     /// <summary>
-    /// 
+    /// グリッドにバインドされたDataRowの行番号を取得する。
     /// </summary>
-    /// <param name="argDataItem"></param>
-    /// <returns></returns>
+    /// <param name="argDataItem">Container.DataItem</param>
+    /// <returns>バインドされたDataRowの行番号</returns>
     //************************************************************************
     protected int GetRowIdx(object argDataItem)
     {
@@ -375,10 +368,10 @@ public partial class CM_XM010F02 : CMBaseEntryForm
 
     //************************************************************************
     /// <summary>
-    /// 
+    /// グリッド上の指定行に対応するDataRowを取得する。
     /// </summary>
-    /// <param name="idx"></param>
-    /// <returns></returns>
+    /// <param name="idx">グリッド上の行番号</param>
+    /// <returns>対応するDataRow</returns>
     //************************************************************************
     private DataRow GetDataRow(int idx)
     {
@@ -388,10 +381,26 @@ public partial class CM_XM010F02 : CMBaseEntryForm
 
     //************************************************************************
     /// <summary>
-    /// 
+    /// DropDownListのDataSourceを設定する。
     /// </summary>
-    /// <param name="row"></param>
-    /// <param name="grow"></param>
+    /// <param name="argGrow">DropDownListがあるGridViewRow</param>
+    /// <param name="argValue">SelectedValueに設定する値</param>
+    //************************************************************************
+    private void SetListDataSource(GridViewRow argGrow, string argValue = null)
+    {
+        DropDownList ddl = argGrow.FindControl("項目型") as DropDownList;
+        DataView dv = new DataView((DataTable)Session["kbnTable"], "分類CD = 'X003'", null, DataViewRowState.CurrentRows);
+        ddl.DataSource = dv.ToTable();
+        if (!string.IsNullOrEmpty(argValue)) ddl.SelectedValue = argValue;
+        ddl.DataBind();
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// DataRowにグリッド上の値を設定する。
+    /// </summary>
+    /// <param name="row">値を設定するDataRow</param>
+    /// <param name="grow">値を保持しているGridViewRow</param>
     //************************************************************************
     private void SetData(DataRow row, GridViewRow grow)
     {
@@ -404,19 +413,35 @@ public partial class CM_XM010F02 : CMBaseEntryForm
         int p_no = row["項目NO"] == DBNull.Value ? GridView1.Rows.Count + 1 : Convert.ToInt32(row["項目NO"]);
 
         row["項目NO"] = no;
-        row["項目型"] = ((DropDownList)grow.FindControl("項目型")).SelectedValue;
-        row["説明"] = ((TextBox)grow.FindControl("説明")).Text;
-        string length = ((TextBox)grow.FindControl("長さ")).Text;
-        if (length.Length > 0) row["長さ"] = length;
         var delFlg = (CheckBox)grow.FindControl("削除フラグ");
         row["削除フラグ"] = delFlg != null ? delFlg.Checked : false;
 
-        string[] colNames = { "必須", "主キー" };
+        foreach (Control ctl in grow.Controls)
+        {
+            DataControlFieldCell cell = ctl as DataControlFieldCell;
+            if (cell == null) continue;
+
+            TemplateField tf = cell.ContainingField as TemplateField;
+            if (tf == null) continue;        
+        }
+
+        string[] colNames = { "項目型", "説明", "長さ", "必須", "主キー" };
         foreach(string colName in colNames)
         {
             Control c = grow.FindControl(colName);
             if (c == null) continue;
-            if (c is CheckBox) row[colName] = ((CheckBox)c).Checked;
+            if (c is TextBox)
+            {
+                string text = ((TextBox)c).Text;
+                Type t = table.Columns[colName].DataType;
+                if (t == typeof(int))
+                {
+                    if (!string.IsNullOrEmpty(text)) row[colName] = int.Parse(text);
+                }
+                else row[colName] = text;
+            }
+            else if (c is DropDownList) row[colName] = ((DropDownList)c).SelectedValue;
+            else if (c is CheckBox) row[colName] = ((CheckBox)c).Checked;            
         }
 
         // NOの付け替え
@@ -437,4 +462,5 @@ public partial class CM_XM010F02 : CMBaseEntryForm
             i++;
         }
     }
+    #endregion
 }
