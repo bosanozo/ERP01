@@ -55,6 +55,11 @@ function CheckInputEntry(argMode)
                     <asp:TextBox ID="コメント" CssClass="TextInput" runat="server" MaxLength="4000" Width="600" Text='<%# InputRow["コメント"] %>' />
                 </td>
             </tr>
+	    </table>
+    </asp:panel>
+    <!-- 従属項目部2 -->
+    <asp:panel id="PanelSubItems2" Runat="server">
+	    <table cellspacing="2" width="100%">
             <tr>
                 <td class="ItemName" width="120">サブシステム</td>
                 <td class="ItemPanel">
@@ -113,6 +118,9 @@ function CheckInputEntry(argMode)
                 <EditItemTemplate>
                     <asp:CheckBox ID="削除フラグ" runat="server" Checked='<%# Bind("削除フラグ") %>'></asp:CheckBox>
                 </EditItemTemplate>
+                <FooterTemplate>
+                    <asp:CheckBox ID="削除フラグ" runat="server" Visible="false"/>
+                </FooterTemplate>
             </asp:TemplateField>
 
             <asp:TemplateField HeaderText="NO">
@@ -120,11 +128,11 @@ function CheckInputEntry(argMode)
                     <asp:Label ID="項目NO" runat="server" Text='<%# Bind("項目NO") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
-                    <asp:TextBox ID="項目NO" runat="server" Text='<%# Bind("項目NO") %>' Width="40px"></asp:TextBox>
+                    <asp:TextBox ID="項目NO" runat="server" CssClass="CodeInput" Text='<%# Bind("項目NO") %>' Width="40px"></asp:TextBox>
                     <asp:HiddenField ID="RowIdx" runat="server" Value='<%# GetRowIdx(Container.DataItem) %>'></asp:HiddenField>
                 </EditItemTemplate>
                 <FooterTemplate>
-                    <asp:TextBox ID="項目NO" runat="server" Width="40px"></asp:TextBox>
+                    <asp:TextBox ID="項目NO" runat="server" CssClass="CodeInput" Width="40px"></asp:TextBox>
                 </FooterTemplate>
                 <ItemStyle HorizontalAlign="Center" />
             </asp:TemplateField>
@@ -183,10 +191,10 @@ function CheckInputEntry(argMode)
                     <asp:Label ID="長さ" runat="server" Text='<%# Bind("長さ") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
-                    <asp:TextBox ID="長さ" runat="server" Text='<%# Bind("長さ") %>' Width="40px"></asp:TextBox>
+                    <asp:TextBox ID="長さ" runat="server" CssClass="CodeInput" Text='<%# Bind("長さ") %>' Width="40px"></asp:TextBox>
                 </EditItemTemplate>
                 <FooterTemplate>
-                    <asp:TextBox ID="長さ" runat="server" Width="40px"></asp:TextBox>
+                    <asp:TextBox ID="長さ" runat="server" CssClass="CodeInput" Width="40px"></asp:TextBox>
                 </FooterTemplate>
             </asp:TemplateField>
 
@@ -195,10 +203,10 @@ function CheckInputEntry(argMode)
                     <asp:Label ID="小数桁" runat="server" Text='<%# Bind("小数桁") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
-                    <asp:TextBox ID="小数桁" runat="server" Text='<%# Bind("小数桁") %>' Width="40px"></asp:TextBox>
+                    <asp:TextBox ID="小数桁" runat="server" CssClass="CodeInput" Text='<%# Bind("小数桁") %>' Width="40px"></asp:TextBox>
                 </EditItemTemplate>
                 <FooterTemplate>
-                    <asp:TextBox ID="小数桁" runat="server" Width="40px"></asp:TextBox>
+                    <asp:TextBox ID="小数桁" runat="server" CssClass="CodeInput" Width="40px"></asp:TextBox>
                 </FooterTemplate>
             </asp:TemplateField>
 

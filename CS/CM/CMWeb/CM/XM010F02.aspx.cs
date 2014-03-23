@@ -34,6 +34,21 @@ public partial class CM_XM010F02 : CMBaseEntryForm
     /// 入力データを保持するDataRow
     /// </summary>
     public DataRow InputRow2 { get; set; }
+
+    /// <summary>
+    /// FormにバインドするDataSet
+    /// </summary>
+    public DataSet FormDataSet
+    {
+        get
+        {
+            return (DataSet)Session["FormDataSet"];
+        }
+        set
+        {
+            Session["FormDataSet"] = value;
+        }
+    }
     #endregion
     
     #region イベントハンドラ
@@ -180,6 +195,109 @@ public partial class CM_XM010F02 : CMBaseEntryForm
 
     //************************************************************************
     /// <summary>
+    /// 登録ボタン押下時処理
+    /// </summary>
+    //************************************************************************
+    protected void OnCommitClick()
+    {
+        // セッションからデータを取得
+        InputRow = (DataRow)Session["inputRow"];
+        // 登録DataTable
+        DataTable inputTable = InputRow.Table;
+
+        // 新規、修正の場合
+        if (OpeMode == "Insert" || OpeMode == "Update")
+        {
+            // データが更新されていなければ、アラート表示
+            if (!IsModified())
+            {
+                ShowMessage("WV106");
+                return;
+            }
+
+            // 入力データを設定
+            bool hasError = SetInputRow();
+
+            // セッションに編集結果を保持
+            Session["inputRow"] = InputRow;
+
+            // エラーがなければ登録実行
+            if (hasError) return;
+
+            // 新規確認の場合
+            if (OpeMode == "Insert")
+            {
+                DataSet ds = InputRow.Table.DataSet.Clone();
+                inputTable = ds.Tables[0];
+                DataRow row = inputTable.NewRow();
+                // データコピー
+                for (int i = 0; i < inputTable.Columns.Count; i++) row[i] = InputRow[i];
+                // 新規行追加
+                inputTable.Rows.Add(row);
+            }
+        }
+        // 削除確認の場合
+        else
+        {
+            DataSet ds = InputRow.Table.DataSet.Copy();
+            inputTable = ds.Tables[0];
+            inputTable.Rows[0].Delete();
+        }
+
+        try
+        {
+            // ファサードの呼び出し
+            DateTime operationTime;
+            m_facade.Update(inputTable.DataSet, out operationTime);
+
+            // 新規、修正の場合
+            if (OpeMode == "Insert" || OpeMode == "Update")
+            {
+                // 変更を確定
+                InputRow.AcceptChanges();
+                // セッションに編集結果を保持
+                Session["inputRow"] = InputRow;
+                Session["retMessage"] = CMMessageManager.GetMessage("IV003");
+                Session["cancelRet"] = true;
+                // 新規画面へリダイレクト
+                //Response.Redirect(Request.Path + "?mode=" + OpeMode);
+            }
+            // 削除確認の場合、画面を閉じる
+            else Close(true);
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex);
+        }
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// キャンセルボタン押下時処理
+    /// </summary>
+    //************************************************************************
+    protected void OnCancelClick()
+    {
+        // セッションからデータを取得
+        InputRow = (DataRow)Session["inputRow"];
+        bool retVal = (bool)Session["cancelRet"];
+
+        // 新規、修正の場合
+        if (OpeMode == "Insert" || OpeMode == "Update")
+        {
+            string msgcd = IsModified() ? "QV005" : "QV006";
+
+            // 確認画面を表示
+            Master.Body.Attributes.Add("onload",
+                string.Format("if (confirm('{0}')) {{window.returnValue = {1}; window.close()}}",
+                    CMMessageManager.GetMessage(msgcd).Replace("\r\n", "\\n"), retVal.ToString().ToLower()));
+        }
+        else Close(retVal);
+    }
+
+    #region グリッドイベント
+    //************************************************************************
+    /// <summary>
     /// データバインド完了
     /// </summary>
     //************************************************************************
@@ -203,6 +321,8 @@ public partial class CM_XM010F02 : CMBaseEntryForm
             GridView1.DataSource = table;
 
             DataRow newRow = table.NewRow();
+            newRow["エンティティ名"] = オブジェクト名.Text;
+            newRow["VER"] = 1;
             table.Rows.Add(newRow);
 
             SetData(newRow, GridView1.FooterRow);
@@ -252,6 +372,7 @@ public partial class CM_XM010F02 : CMBaseEntryForm
 
         GridView1.DataBind();
     }
+    #endregion
 
     //************************************************************************
     /// <summary>
@@ -261,7 +382,7 @@ public partial class CM_XM010F02 : CMBaseEntryForm
     protected void BtnCommit_Click(object sender, EventArgs e)
     {
         // 標準の登録ボタン押下時処理実行
-        OnCommitClick(Master.Body, m_facade);
+        OnCommitClick();
     }
 
     //************************************************************************
@@ -272,7 +393,7 @@ public partial class CM_XM010F02 : CMBaseEntryForm
     protected void BtnCancel_Click(object sender, EventArgs e)
     {
         // 標準のキャンセルボタン押下時処理実行
-        OnCancelClick(Master.Body);
+        OnCancelClick();
     }
     #endregion
 
@@ -315,6 +436,9 @@ public partial class CM_XM010F02 : CMBaseEntryForm
 
         // 従属項目チェック
         if (IsPanelModified(PanelSubItems)) return true;
+
+        // グリッドのチェック
+        if (((DataTable)Session["table"]).GetChanges() != null) return true;
 
         return false;
     }
@@ -412,20 +536,7 @@ public partial class CM_XM010F02 : CMBaseEntryForm
         if (no == 0) no = 1;
         int p_no = row["項目NO"] == DBNull.Value ? GridView1.Rows.Count + 1 : Convert.ToInt32(row["項目NO"]);
 
-        row["項目NO"] = no;
-        var delFlg = (CheckBox)grow.FindControl("削除フラグ");
-        row["削除フラグ"] = delFlg != null ? delFlg.Checked : false;
-
-        foreach (Control ctl in grow.Controls)
-        {
-            DataControlFieldCell cell = ctl as DataControlFieldCell;
-            if (cell == null) continue;
-
-            TemplateField tf = cell.ContainingField as TemplateField;
-            if (tf == null) continue;        
-        }
-
-        string[] colNames = { "項目型", "説明", "長さ", "必須", "主キー" };
+        string[] colNames = { "削除フラグ", "項目名", "説明", "項目型", "長さ", "小数桁", "必須", "主キー", "デフォルト" };
         foreach(string colName in colNames)
         {
             Control c = grow.FindControl(colName);
@@ -434,7 +545,7 @@ public partial class CM_XM010F02 : CMBaseEntryForm
             {
                 string text = ((TextBox)c).Text;
                 Type t = table.Columns[colName].DataType;
-                if (t == typeof(int))
+                if (t == typeof(int) || t == typeof(byte))
                 {
                     if (!string.IsNullOrEmpty(text)) row[colName] = int.Parse(text);
                 }
@@ -445,22 +556,14 @@ public partial class CM_XM010F02 : CMBaseEntryForm
         }
 
         // NOの付け替え
-        bool od = p_no < no;
-        int from = od ? p_no : no;
-        int to = od ? no : p_no;
-        int add = od ? -1 : 1;
-        int i = from;
-        foreach (DataRow drow in table.Select(string.Format("項目NO >= {0} AND 項目NO <= {1}", from, to), "項目NO"))
+        int add = p_no < no ? 1 : -1;
+        for (int i = p_no; i != no; i += add)
         {
-            int row_no = Convert.ToInt32(drow["項目NO"]);
-
-            if (row_no == no)
-            {
-                if (!drow.Equals(row)) drow["項目NO"] = no == i ? no + add : i;
-            }
-            else drow["項目NO"] = i;
-            i++;
+            foreach (DataRow drow in table.Select("項目NO = " + (i + add)))
+                drow["項目NO"] = i;
         }
+
+        row["項目NO"] = no;
     }
     #endregion
 }
