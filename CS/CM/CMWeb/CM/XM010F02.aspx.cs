@@ -31,9 +31,47 @@ public partial class CM_XM010F02 : CMBaseEntryForm
 
     #region プロパティ
     /// <summary>
-    /// 入力データを保持するDataRow
+    /// 入力項目グループ１にバインドするDataRow
     /// </summary>
-    public DataRow InputRow2 { get; set; }
+    public DataRow FormRow1
+    {
+        get
+        {
+            DataTable table = FormDataSet.Tables[0];
+            if (table.Rows.Count == 0) return null;
+            return table.Rows[0];
+        }
+    }
+
+    /// <summary>
+    /// 入力項目グループ２にバインドするDataRow
+    /// </summary>
+    public DataRow FormRow2
+    {
+        get
+        {
+            DataTable table = FormDataSet.Tables["XMエンティティ"];
+            if (table.Rows.Count == 0)
+            {
+                DataRow newRow = table.NewRow();
+                newRow["VER"] = FormRow1["VER"];
+                newRow["エンティティ種別"] = "M";
+                table.Rows.Add(newRow);
+            }
+            return table.Rows[0];
+        }
+    }
+
+    /// <summary>
+    /// グリッドバインドするDataTable
+    /// </summary>
+    public DataTable FormTable
+    {
+        get
+        {
+            return FormDataSet.Tables["XMエンティティ項目"];
+        }
+    }
 
     /// <summary>
     /// FormにバインドするDataSet
@@ -66,6 +104,24 @@ public partial class CM_XM010F02 : CMBaseEntryForm
         string subName = SetOpeMode(PanelKeyItems, PanelSubItems,
             PanelUpdateInfo, PanelFunction, null, BtnCommit, BtnCancel);
 
+        // 操作モードに応じた設定
+        switch (OpeMode)
+        {
+            case "Insert":
+                break;
+
+            case "Update":
+                VerUP.Visible = true;
+                break;
+
+            //case "Delete":
+            default:
+                ProtectPanel(PanelSubItems2);
+                GridView1.ShowFooter = false;
+                GridView1.Columns[0].Visible = false;
+                break;
+        }
+
         // 画面ヘッダ初期化
         Master.Title = "エンティティ定義　" + subName;
 
@@ -92,12 +148,137 @@ public partial class CM_XM010F02 : CMBaseEntryForm
 
         // 標準の画面表示処理実行
         OnPageOnLoad();
-
-        // 新規で既存選択はVerUP
-        if (OpeMode == "Insert" && オブジェクト名.Text.Length > 0)
-            VER.Text = (Convert.ToInt32(VER.Text) + 1).ToString();
     }
 
+    #region グリッドイベント
+    //************************************************************************
+    /// <summary>
+    /// データバインド完了
+    /// </summary>
+    //************************************************************************
+    protected void GridView1_DataBound(object sender, EventArgs e)
+    {
+        // DropDownListのDataSourceを設定
+        SetListDataSource(GridView1.FooterRow);
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// 行データバインド完了
+    /// </summary>
+    //************************************************************************
+    protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowIndex < 0) return;
+
+        // 削除行の背景色変更
+        CheckBox cb = e.Row.FindControl("削除フラグ") as CheckBox;
+        if (cb.Checked) e.Row.BackColor = System.Drawing.Color.LightGray;
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// コマンドボタンクリック
+    /// </summary>
+    //************************************************************************
+    protected void GridView1_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        // 新規の場合
+        if (e.CommandName == "New")
+        {
+            GridView1.DataSource = FormTable;
+
+            DataRow newRow = FormTable.NewRow();
+            newRow["VER"] = FormRow1["VER"];
+            FormTable.Rows.Add(newRow);
+
+            SetData(newRow, GridView1.FooterRow);
+
+            GridView1.DataBind();
+        }
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// 行更新開始
+    /// </summary>
+    //************************************************************************
+    protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+        GridView1.EditIndex = e.NewEditIndex;
+        GridView1.DataSource = FormTable;
+        GridView1.DataBind();
+
+        // DropDownListのDataSourceを設定
+        SetListDataSource(GridView1.Rows[e.NewEditIndex], GetDataRow(e.NewEditIndex)["項目型"].ToString());
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// 行更新キャンセル
+    /// </summary>
+    //************************************************************************
+    protected void GridView1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+    {
+        GridView1.EditIndex = -1;
+        GridView1.DataSource = FormTable;
+        GridView1.DataBind();
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// 行更新確定
+    /// </summary>
+    //************************************************************************
+    protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
+    {
+        GridView1.EditIndex = -1;
+        GridView1.DataSource = FormTable;
+
+        SetData(GetDataRow(e.RowIndex), GridView1.Rows[e.RowIndex]);
+
+        GridView1.DataBind();
+    }
+    #endregion
+
+    //************************************************************************
+    /// <summary>
+    /// 登録ボタン押下
+    /// </summary>
+    //************************************************************************
+    protected void BtnCommit_Click(object sender, EventArgs e)
+    {
+        // 標準の登録ボタン押下時処理実行
+        OnCommitClick();
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// ダウンロードボタン押下
+    /// </summary>
+    //************************************************************************
+    protected void BtnDownLoad_Click(object sender, EventArgs e)
+    {
+        Response.AppendHeader("Content-Disposition", "Attachment; filename=" +
+            HttpUtility.UrlEncode(FormRow1["オブジェクト名"].ToString()) + ".xml");
+        Response.Write(FormDataSet.GetXml());
+
+        Response.End();
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// キャンセルボタン押下
+    /// </summary>
+    //************************************************************************
+    protected void BtnCancel_Click(object sender, EventArgs e)
+    {
+        // 標準のキャンセルボタン押下時処理実行
+        OnCancelClick();
+    }
+    #endregion
+
+    #region イベントハンドラから呼ばれるメソッド
     //************************************************************************
     /// <summary>
     /// 画面表示処理
@@ -107,6 +288,7 @@ public partial class CM_XM010F02 : CMBaseEntryForm
     {
         // キーを取得
         string paramKey = Request.Params["keys"];
+        if (paramKey.Length == 0) paramKey = ",1";
 
         // 初期表示の場合
         if (paramKey != null)
@@ -130,6 +312,17 @@ public partial class CM_XM010F02 : CMBaseEntryForm
                 // 新規または検索結果ありの場合
                 if (OpeMode == "Insert" || found)
                 {
+                    // 新規の場合、既存行のVERは1にする
+                    if (OpeMode == "Insert")
+                    {
+                        foreach (DataTable table1 in result.Tables)
+                        {
+                            foreach (DataRow row in table1.Rows) row["VER"] = 1;
+                        }
+
+                        result.AcceptChanges();
+                    }
+
                     // 新規で検索結果なしの場合
                     if (!found)
                     {
@@ -143,19 +336,30 @@ public partial class CM_XM010F02 : CMBaseEntryForm
                         table.AcceptChanges();
                     }
 
-                    // 検索結果を取得
-                    InputRow = table.Rows[0];
-                    InputRow2 = result.Tables["XMエンティティ"].Rows[0];
-                    DataTable girdTable = result.Tables["XMエンティティ項目"];
-                    girdTable.DefaultView.Sort = "項目NO";
-                    GridView1.DataSource = girdTable;
+                    // セッションに検索結果を保持
+                    FormDataSet = result;
+                    InputRow = FormRow1;
+
+                    // グリッド
+                    FormTable.DefaultView.Sort = "項目NO";
+                    // 空行の追加
+                    if (FormTable.Rows.Count == 0)
+                    {
+                        DataRow newRow = FormTable.NewRow();
+                        newRow["項目名"] = "項目１";
+                        newRow["VER"] = FormRow1["VER"];
+                        newRow["項目NO"] = 1;
+                        newRow["削除フラグ"] = false;
+                        newRow["項目型"] = "1";
+                        newRow["必須"] = false;
+                        newRow["主キー"] = false;
+                        FormTable.Rows.Add(newRow);
+                        FormTable.AcceptChanges();
+                    }
+                    GridView1.DataSource = FormTable;
 
                     // データバインド実行
                     DataBind();
-
-                    // セッションに検索結果を保持
-                    Session["inputRow"] = InputRow;
-                    Session["table"] = GridView1.DataSource;
 
                     // 操作履歴を出力
                     WriteOperationLog();
@@ -166,7 +370,7 @@ public partial class CM_XM010F02 : CMBaseEntryForm
                     Master.Body.Attributes.Add("onload",
                         "alert('" + CMMessageManager.GetMessage("IV001") +
                         "'); window.returnValue = false; window.close()");
-                }            
+                }
             }
             catch (Exception ex)
             {
@@ -177,9 +381,6 @@ public partial class CM_XM010F02 : CMBaseEntryForm
         // 確認画面、戻った画面の場合
         else
         {
-            // 編集結果を取得
-            InputRow = (DataRow)Session["inputRow"];
-
             // 結果メッセージを表示
             string mes = (string)Session["retMessage"];
             if (mes != null && mes.Length > 0)
@@ -190,7 +391,7 @@ public partial class CM_XM010F02 : CMBaseEntryForm
 
             // データバインド実行
             DataBind();
-        } 
+        }
     }
 
     //************************************************************************
@@ -200,10 +401,8 @@ public partial class CM_XM010F02 : CMBaseEntryForm
     //************************************************************************
     protected void OnCommitClick()
     {
-        // セッションからデータを取得
-        InputRow = (DataRow)Session["inputRow"];
-        // 登録DataTable
-        DataTable inputTable = InputRow.Table;
+        // 登録DataSet
+        DataSet inputDataSet = FormDataSet;
 
         // 新規、修正の場合
         if (OpeMode == "Insert" || OpeMode == "Update")
@@ -218,45 +417,84 @@ public partial class CM_XM010F02 : CMBaseEntryForm
             // 入力データを設定
             bool hasError = SetInputRow();
 
-            // セッションに編集結果を保持
-            Session["inputRow"] = InputRow;
-
             // エラーがなければ登録実行
             if (hasError) return;
 
             // 新規確認の場合
             if (OpeMode == "Insert")
             {
-                DataSet ds = InputRow.Table.DataSet.Clone();
-                inputTable = ds.Tables[0];
-                DataRow row = inputTable.NewRow();
-                // データコピー
-                for (int i = 0; i < inputTable.Columns.Count; i++) row[i] = InputRow[i];
-                // 新規行追加
-                inputTable.Rows.Add(row);
+                // 全DataTable、全DataRow新規にする
+                foreach (DataTable table in inputDataSet.Tables)
+                {
+                    foreach (DataRow row in table.Rows)
+                    {
+                        if (row.RowState == DataRowState.Modified) row.AcceptChanges();
+                        if (row.RowState == DataRowState.Unchanged) row.SetAdded();
+                    }
+                }
+            }
+
+            // VerUPの場合、変更行のVERを1UPし、新規にする
+            if (VerUP.Checked)
+            {
+                int newVer = int.Parse(VER.Text) + 1;
+
+                foreach (DataTable table in inputDataSet.Tables)
+                {
+                    foreach (DataRow row in table.Rows)
+                        if (row.RowState == DataRowState.Added ||
+                            row.RowState == DataRowState.Modified ||
+                            table.TableName == "XM更新履歴")
+                        {
+                            row["VER"] = newVer;
+
+                            // 修正は新規に変更
+                            if (row.RowState == DataRowState.Modified)
+                            {
+                                row.AcceptChanges();
+                                row.SetAdded();
+                            }
+                        }
+                }
+            }
+
+            // キー項目値を設定
+            foreach (DataRow row in inputDataSet.Tables["XMエンティティ"].Rows)
+            {
+                if (row.RowState == DataRowState.Added)
+                    row["エンティティ名"] = FormRow1["オブジェクト名"];
+            }
+
+            // キー項目値を設定
+            foreach (DataRow row in inputDataSet.Tables["XMエンティティ項目"].Rows)
+            {
+                if (row.RowState == DataRowState.Added)
+                    row["エンティティ名"] = FormRow1["オブジェクト名"];
             }
         }
         // 削除確認の場合
         else
         {
-            DataSet ds = InputRow.Table.DataSet.Copy();
-            inputTable = ds.Tables[0];
-            inputTable.Rows[0].Delete();
+            // 全DataTable、全DataRow削除
+            inputDataSet = FormDataSet.Copy();
+            foreach (DataTable table in inputDataSet.Tables)
+            {
+                foreach (DataRow row in table.Rows) row.Delete();
+            }
         }
 
         try
         {
             // ファサードの呼び出し
             DateTime operationTime;
-            m_facade.Update(inputTable.DataSet, out operationTime);
+            m_facade.Update(inputDataSet, out operationTime);
 
             // 新規、修正の場合
             if (OpeMode == "Insert" || OpeMode == "Update")
             {
                 // 変更を確定
-                InputRow.AcceptChanges();
+                FormDataSet.AcceptChanges();
                 // セッションに編集結果を保持
-                Session["inputRow"] = InputRow;
                 Session["retMessage"] = CMMessageManager.GetMessage("IV003");
                 Session["cancelRet"] = true;
                 // 新規画面へリダイレクト
@@ -279,7 +517,6 @@ public partial class CM_XM010F02 : CMBaseEntryForm
     protected void OnCancelClick()
     {
         // セッションからデータを取得
-        InputRow = (DataRow)Session["inputRow"];
         bool retVal = (bool)Session["cancelRet"];
 
         // 新規、修正の場合
@@ -294,106 +531,54 @@ public partial class CM_XM010F02 : CMBaseEntryForm
         }
         else Close(retVal);
     }
-
-    #region グリッドイベント
-    //************************************************************************
-    /// <summary>
-    /// データバインド完了
-    /// </summary>
-    //************************************************************************
-    protected void GridView1_DataBound(object sender, EventArgs e)
-    {
-        // DropDownListのDataSourceを設定
-        SetListDataSource(GridView1.FooterRow);
-    }
-
-    //************************************************************************
-    /// <summary>
-    /// コマンドボタンクリック
-    /// </summary>
-    //************************************************************************
-    protected void GridView1_RowCommand(object sender, GridViewCommandEventArgs e)
-    {
-        // 新規の場合
-        if (e.CommandName == "New")
-        {
-            DataTable table = (DataTable)Session["table"];
-            GridView1.DataSource = table;
-
-            DataRow newRow = table.NewRow();
-            newRow["エンティティ名"] = オブジェクト名.Text;
-            newRow["VER"] = 1;
-            table.Rows.Add(newRow);
-
-            SetData(newRow, GridView1.FooterRow);
-
-            GridView1.DataBind();
-        }
-    }
-
-    //************************************************************************
-    /// <summary>
-    /// 行更新開始
-    /// </summary>
-    //************************************************************************
-    protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)
-    {
-        GridView1.EditIndex = e.NewEditIndex;
-        GridView1.DataSource = Session["table"];
-        GridView1.DataBind();
-
-        // DropDownListのDataSourceを設定
-        SetListDataSource(GridView1.Rows[e.NewEditIndex], GetDataRow(e.NewEditIndex)["項目型"].ToString());
-    }
-
-    //************************************************************************
-    /// <summary>
-    /// 行更新キャンセル
-    /// </summary>
-    //************************************************************************
-    protected void GridView1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
-    {
-        GridView1.EditIndex = -1;
-        GridView1.DataSource = Session["table"];
-        GridView1.DataBind();
-    }
-
-    //************************************************************************
-    /// <summary>
-    /// 行更新確定
-    /// </summary>
-    //************************************************************************
-    protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
-    {
-        GridView1.EditIndex = -1;
-        GridView1.DataSource = Session["table"];
-
-        SetData(GetDataRow(e.RowIndex), GridView1.Rows[e.RowIndex]);
-
-        GridView1.DataBind();
-    }
     #endregion
 
+    #region 共通部品メソッド
     //************************************************************************
     /// <summary>
-    /// 登録ボタン押下
+    /// パネルのデータが変更されているかチェックする。
     /// </summary>
+    /// <param name="argPanel">パネル</param>
+    /// <returns>True:変更あり, False:変更なし</returns>
     //************************************************************************
-    protected void BtnCommit_Click(object sender, EventArgs e)
+    protected bool IsPanelModified(Panel argPanel, DataRow argRow)
     {
-        // 標準の登録ボタン押下時処理実行
-        OnCommitClick();
+        foreach (Control c in argPanel.Controls)
+        {
+            WebControl wc = c as WebControl;
+
+            // テキストとドロップダウンが対象
+            if (!(wc is DropDownList) && !(wc is TextBox)) continue;
+
+            if (argRow.RowState == DataRowState.Added) return true;
+
+            // 値を比較
+            if (argRow[wc.ID, DataRowVersion.Original].ToString() != GetValue(wc).ToString())
+                return true;
+        }
+
+        return false;
     }
 
     //************************************************************************
     /// <summary>
-    /// キャンセルボタン押下
+    /// パネルに設定された値をInputRowに設定する。
     /// </summary>
+    /// <param name="argPanel">パネル</param>
     //************************************************************************
-    protected void BtnCancel_Click(object sender, EventArgs e)
+    protected void SetPanelInputRow(Panel argPanel, DataRow argRow)
     {
-        // 標準のキャンセルボタン押下時処理実行
-        OnCancelClick();
+        foreach (Control c in argPanel.Controls)
+        {
+            WebControl wc = c as WebControl;
+
+            // テキストとドロップダウンが対象
+            if (!(wc is DropDownList) && !(wc is TextBox)) continue;
+
+            // 値を設定
+            if (argRow[wc.ID].ToString() != GetValue(wc).ToString())
+                argRow[wc.ID] = GetValue(wc);
+        }
     }
     #endregion
 
@@ -432,13 +617,14 @@ public partial class CM_XM010F02 : CMBaseEntryForm
     protected override bool IsModified()
     {
         // 新規の場合、キー項目チェック
-        if (OpeMode == "Insert" && IsPanelModified(PanelKeyItems)) return true;
+        if (OpeMode == "Insert" && IsPanelModified(PanelKeyItems, FormRow1)) return true;
 
         // 従属項目チェック
-        if (IsPanelModified(PanelSubItems)) return true;
+        if (IsPanelModified(PanelSubItems, FormRow1)) return true;
+        if (IsPanelModified(PanelSubItems2, FormRow2)) return true;
 
         // グリッドのチェック
-        if (((DataTable)Session["table"]).GetChanges() != null) return true;
+        if (FormTable.GetChanges() != null) return true;
 
         return false;
     }
@@ -466,10 +652,11 @@ public partial class CM_XM010F02 : CMBaseEntryForm
         bool hasError = false;
 
         // 新規の場合
-        if (OpeMode == "Insert") SetPanelInputRow(PanelKeyItems);
+        if (OpeMode == "Insert") SetPanelInputRow(PanelKeyItems, FormRow1);
 
         // 従属項目値を設定
-        SetPanelInputRow(PanelSubItems);
+        SetPanelInputRow(PanelSubItems, FormRow1);
+        SetPanelInputRow(PanelSubItems2, FormRow2);
 
         // エラー有無を返却
         return hasError;
@@ -531,11 +718,12 @@ public partial class CM_XM010F02 : CMBaseEntryForm
         DataTable table = (DataTable)GridView1.DataSource;
 
         string _no = ((TextBox)grow.FindControl("項目NO")).Text;
-        int no = String.IsNullOrEmpty(_no) || int.Parse(_no) > table.Rows.Count ?
+        int no = string.IsNullOrEmpty(_no) || int.Parse(_no) > table.Rows.Count ?
             table.Rows.Count : int.Parse(_no);
         if (no == 0) no = 1;
         int p_no = row["項目NO"] == DBNull.Value ? GridView1.Rows.Count + 1 : Convert.ToInt32(row["項目NO"]);
 
+        // 項目値をDataRowに設定
         string[] colNames = { "削除フラグ", "項目名", "説明", "項目型", "長さ", "小数桁", "必須", "主キー", "デフォルト" };
         foreach(string colName in colNames)
         {

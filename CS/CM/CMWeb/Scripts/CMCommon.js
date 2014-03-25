@@ -170,8 +170,11 @@ function OpenEntryForm(argMode) {
 
     if (sheet != null && rowIdx >= 0) keys = GetKeys(sheet.rows[rowIdx]);
 
-    var result = window.showModalDialog(Form1.EntryForm.value + ".aspx?mode=" +
-		argMode + "&keys=" + keys, "", "dialogheight:724px;dialogwidth:1024px;help:no");
+    //var result = window.showModalDialog(Form1.EntryForm.value + ".aspx?mode=" +
+	//	argMode + "&keys=" + keys, "", "dialogheight:724px;dialogwidth:1024px");
+
+    window.open(Form1.EntryForm.value + ".aspx?mode=" + argMode + "&keys=" + keys);
+    var result = false;
 
     if (result != null) return result;
     else return false;

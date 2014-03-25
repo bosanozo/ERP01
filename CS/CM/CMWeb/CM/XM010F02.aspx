@@ -37,11 +37,13 @@ function CheckInputEntry(argMode)
             <tr>
                 <td class="ItemName" width="120">オブジェクト名</td>
                 <td class="ItemPanel" width="300">
-                    <asp:TextBox ID="オブジェクト名" CssClass="TextInput" runat="server" MaxLength="32" Width="200" Text='<%# InputRow["オブジェクト名"] %>' />
+                    <asp:TextBox ID="オブジェクト名" CssClass="TextInput" runat="server" MaxLength="32" Width="200" Text='<%# FormRow1["オブジェクト名"] %>' />
                 </td>
                 <td class="ItemName" width="120">VER</td>
                 <td class="ItemPanel">
-                    <asp:TextBox ID="VER" CssClass="CodeInput" runat="server" MaxLength="3" Width="30" Text='<%# InputRow["VER"] %>' />
+                    <asp:TextBox ID="VER" CssClass="ReadOnly" runat="server" MaxLength="3" 
+                        Width="30" Text='<%# FormRow1["VER"] %>' ReadOnly="True" />
+                    <asp:CheckBox ID="VerUP" Text="VerUP" runat="server" Visible="false" />
                 </td>
             </tr>
 	    </table>
@@ -52,7 +54,7 @@ function CheckInputEntry(argMode)
             <tr>
                 <td class="ItemName" width="120">コメント</td>
                 <td class="ItemPanel" colspan="3">
-                    <asp:TextBox ID="コメント" CssClass="TextInput" runat="server" MaxLength="4000" Width="600" Text='<%# InputRow["コメント"] %>' />
+                    <asp:TextBox ID="コメント" CssClass="TextInput" runat="server" MaxLength="4000" Width="600" Text='<%# FormRow1["コメント"] %>' />
                 </td>
             </tr>
 	    </table>
@@ -63,15 +65,17 @@ function CheckInputEntry(argMode)
             <tr>
                 <td class="ItemName" width="120">サブシステム</td>
                 <td class="ItemPanel">
-                    <asp:TextBox ID="サブシステム" CssClass="CodeInput" runat="server" MaxLength="4" Width="40" Text='<%# InputRow2["サブシステムID"] %>' />
+                    <asp:TextBox ID="サブシステムID" CssClass="CodeInput" runat="server" MaxLength="4" Width="40" Text='<%# FormRow2["サブシステムID"] %>' />
                 </td>
                 <td class="ItemName" width="120">エンティティ種別</td>
                 <td class="ItemPanel">
-                    <asp:DropDownList ID="エンティティ種別" DataTextField="表示名" DataValueField="基準値CD" runat="server" Text='<%# InputRow2["エンティティ種別"] %>' />
+                    <asp:DropDownList ID="エンティティ種別" DataTextField="表示名" DataValueField="基準値CD" runat="server" Text='<%# FormRow2["エンティティ種別"] %>' />
                 </td>
             </tr>
 	    </table>
     </asp:panel>
+    <asp:TextBox ID="TextBox1" CssClass="ReadOnly" runat="server" MaxLength="3" 
+        Width="30" Text='<%# FormRow2["VER"] %>' ReadOnly="True" />
 	<!-- 登録・更新情報表示部 -->
     <asp:panel id="PanelUpdateInfo" Runat="server" width="100%">
 		<table cellspacing="1" cellpadding="0" align="right">
@@ -92,7 +96,7 @@ function CheckInputEntry(argMode)
         AutoGenerateColumns="False" Width="100%" onrowcancelingedit="GridView1_RowCancelingEdit" 
         onrowediting="GridView1_RowEditing" onrowupdating="GridView1_RowUpdating" 
         ondatabound="GridView1_DataBound" onrowcommand="GridView1_RowCommand" 
-        ShowFooter="True">
+        ShowFooter="True" onrowdatabound="GridView1_RowDataBound">
         <Columns>
             <asp:TemplateField ShowHeader="False">
                 <ItemTemplate>
@@ -144,9 +148,6 @@ function CheckInputEntry(argMode)
                 <EditItemTemplate>
                     <asp:Label ID="VER" runat="server" Text='<%# Bind("VER") %>'></asp:Label>
                 </EditItemTemplate>
-                <FooterTemplate>
-                    <asp:Label ID="VER" runat="server" Text="1"></asp:Label>
-                </FooterTemplate>
                 <ItemStyle HorizontalAlign="Center" />
             </asp:TemplateField>
 
@@ -278,6 +279,10 @@ function CheckInputEntry(argMode)
 				<td>
 					<asp:button id="BtnCommit" runat="server" CssClass="FuncButton" Text="登録" 
                         onclick="BtnCommit_Click" />
+                 </td>
+				<td>
+					<asp:button id="BtnDownLoad" runat="server" CssClass="FuncButton" Text="ダウンロード"
+                        onclick="BtnDownLoad_Click" />
                  </td>
 				<td>
 					<asp:button id="BtnCancel" runat="server" CssClass="FuncButton" Text="終了" 
