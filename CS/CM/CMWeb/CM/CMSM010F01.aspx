@@ -6,7 +6,7 @@
 	<script type="text/javascript">
 	    // 選択行のキーを取得する
 	    function GetKeys(argRow) {
-	        return argRow.cells[1].innerText;
+	        return argRow.cells[1].innerHTML;
 	    }
 
 	    // 検索ボタン押下時の入力値チェック
