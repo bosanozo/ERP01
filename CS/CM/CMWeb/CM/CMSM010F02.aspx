@@ -3,18 +3,8 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="Content1" Runat="Server">
     <!-- スクリプト -->
-    <script type="text/javascript" src="<%=ResolveUrl("~") %>Scripts/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="<%=ResolveUrl("~") %>Scripts/jquery-2.1.0.min.js"></script>
     <script type="text/javascript">
-        // jQuery
-        $(document).ready(function () {
-            $("#上位組織CD").change(function () {
-                $.getJSON("<%=ResolveUrl("~") %>CMCommonService.svc/GetCodeName",
-                    //{ arg: [ "CN組織名", $(this).val()] },
-                    { argCodeId: $(this).attr("id"), argNameId: "上位組織名",
-                      argSelectId: "CN組織名", argCode: $(this).val() },
-                    SetCodeName);
-            });
-        });
 
         // サーバから取得した名称を設定する
         function SetCodeName(json)
@@ -59,12 +49,37 @@ function CheckInputEntry(argMode)
 	// 従属項目チェック
 
 	// 必須入力チェック
-    if (CheckNull(Form1.組織名, "組織名")) return false;
+    //if (CheckNull(Form1.組織名, "組織名")) return false;
 	
 	// 入力形式チェック
     if (CheckName(Form1.組織名, "組織名")) return false;
 }
+
+// コード値名称取得
+function CodeValidate(sender, e) {
+    // 同期通信に変更 
+    $.ajaxSetup({ async: false });
+
+    // jQueryで名称取得
+    $.getJSON("<%=ResolveUrl("~") %>CMCommonService.svc/GetCodeName",
+        {
+            argCodeId: sender.controltovalidate, argNameId: "上位組織名",
+            argSelectId: "CN組織名", argCode: e.Value
+        },
+        SetCodeName);
+
+    // ステータス設定
+    e.IsValid = $("#上位組織名").val() != "データなし";
+
+    // 非同期通信に戻す
+    $.ajaxSetup({ async: true });
+}
 	</script>
+
+    <%
+    //<ajaxToolkit:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server"></ajaxToolkit:ToolkitScriptManager>
+     %>
+
     <!-- キー項目部 -->
     <asp:Panel id="PanelKeyItems" Runat="server">
 	    <table cellspacing="2" width="100%">
@@ -81,8 +96,13 @@ function CheckInputEntry(argMode)
 	    <table cellspacing="2" width="100%">
             <tr>
                 <td class="ItemName" width="120">組織名</td>
-                <td class="ItemPanel">
+                <td class="ItemPanel" style="height: 20px">
                     <asp:TextBox ID="組織名" CssClass="TextInput" runat="server" MaxLength="40" Width="200" Text='<%# InputRow["組織名"] %>' />
+                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="組織名" ErrorMessage="入力してください" Display="None"></asp:RequiredFieldValidator>
+                    <%
+                    //<ajaxToolkit:ValidatorCalloutExtender ID="RequiredFieldValidator1_ValidatorCalloutExtender" runat="server" Enabled="True" TargetControlID="RequiredFieldValidator1">
+                    //</ajaxToolkit:ValidatorCalloutExtender>
+                    %>
                 </td>
             </tr>
             <tr>
@@ -98,6 +118,12 @@ function CheckInputEntry(argMode)
                     <input id="B上位組織CD" class="SelectButton" runat="server" type="button" value="..."
                         onclick="ShowSelectJyouiSoshikiCd(this, 上位組織CD, 上位組織名, 組織階層区分)" />
 					<asp:TextBox ID="上位組織名" CssClass="ReadOnly" ReadOnly="true" runat="server" TabIndex="-1" Text='<%# InputRow["上位組織名"] %>' />
+
+                    <asp:CustomValidator ID="CustomValidator1" runat="server" ErrorMessage="CustomValidator" ControlToValidate="上位組織CD" ClientValidationFunction="CodeValidate" Display="None"></asp:CustomValidator>
+                    <% 
+                    //<ajaxToolkit:ValidatorCalloutExtender ID="CustomValidator1_ValidatorCalloutExtender" runat="server" Enabled="True" TargetControlID="CustomValidator1">
+                    //</ajaxToolkit:ValidatorCalloutExtender>
+                    %>
                 </td>
             </tr>
 	    </table>

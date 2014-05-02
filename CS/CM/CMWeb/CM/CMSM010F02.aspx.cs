@@ -83,7 +83,7 @@ public partial class CM_CMSM010F02 : CMBaseEntryForm
     protected void BtnCommit_Click(object sender, EventArgs e)
     {
         // 標準の登録ボタン押下時処理実行
-        OnCommitClick(Master.Body, m_facade);
+        if (Page.IsValid) OnCommitClick(Master.Body, m_facade);
     }
 
     //************************************************************************
