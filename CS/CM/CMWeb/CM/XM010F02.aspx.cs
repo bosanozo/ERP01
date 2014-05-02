@@ -17,6 +17,7 @@ using System.Web.UI.WebControls;
 using NEXS.ERP.CM.Common;
 using NEXS.ERP.CM.WEB;
 using NEXS.ERP.CM.BL;
+using NEXS.ERP.CM.DA;
 
 //************************************************************************
 /// <summary>
@@ -259,10 +260,28 @@ public partial class CM_XM010F02 : CMBaseEntryForm
     //************************************************************************
     protected void BtnDownLoad_Click(object sender, EventArgs e)
     {
+        // 出力データ作成
+        CMEntityDataSet ds = new CMEntityDataSet();
+        ds.エンティティ.AddエンティティRow(エンティティ種別.SelectedValue + オブジェクト名.Text, null, null);
+        foreach (DataRow row in FormTable.Select("削除フラグ <> True", "項目NO"))
+        {
+            var newRow = ds.項目.New項目Row();
+            newRow.項目名 = row["項目名"].ToString();
+            newRow.項目型 = row["項目型名"].ToString();
+            newRow["項目長"] = row["長さ"];
+            newRow["小数桁"] = row["小数桁"];
+            if ((bool)row["必須"] == true) newRow.必須 = true;
+            if ((bool)row["主キー"] == true) newRow.Key = true;
+            if (row["デフォルト"].ToString().Length > 0)
+                newRow.デフォルト値 = row["デフォルト"].ToString();
+            ds.項目.Add項目Row(newRow);
+        }
+
+        // ヘッダの設定
         Response.AppendHeader("Content-Disposition", "Attachment; filename=" +
             HttpUtility.UrlEncode(FormRow1["オブジェクト名"].ToString()) + ".xml");
-        Response.Write(FormDataSet.GetXml());
-
+        // 出力
+        Response.Write(ds.GetXml());
         Response.End();
     }
 
