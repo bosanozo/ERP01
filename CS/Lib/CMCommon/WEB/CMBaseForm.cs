@@ -580,6 +580,16 @@ namespace NEXS.ERP.CM.WEB
         //******************************************************************************
         protected bool ExportExcel(DataSet argDataSet, string argPath)
         {
+            SLDocument xslDoc = CreateExcel(argDataSet);
+
+            // ブックを保存
+            xslDoc.SaveAs(argPath);
+
+            return true;
+        }
+
+        protected SLDocument CreateExcel(DataSet argDataSet)
+        {
             SLDocument xslDoc;
 
             // テンプレートファイル名作成
@@ -659,10 +669,8 @@ namespace NEXS.ERP.CM.WEB
                 }
             }
 
-            // ブックを保存
-            xslDoc.SaveAs(argPath);
-
-            return true;
+            // ブックを返却
+            return xslDoc;
         }
         #endregion
 

@@ -147,6 +147,13 @@ select
     ime-mode: disabled;
 }
 
+/* 数値入力 */
+.NumberInput
+{
+    ime-mode: disabled;
+    text-align: right;
+}
+
 /* 日付入力 */
 .DateInput
 {
@@ -154,7 +161,9 @@ select
 }
 
 /* 読み取り専用 */
-.ReadOnly
+.ReadOnly,
+input[readonly=readonly],
+select[disabled=disabled]
 {
 	/* border: none; */
 	background-color: #CCCCFF;

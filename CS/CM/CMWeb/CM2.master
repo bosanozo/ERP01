@@ -1,0 +1,91 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="CM2.master.cs" Inherits="CM2Master" ClientIDMode="Static" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <base target="_self" />
+    <title><%=LabelTitle.Text%></title>
+ 
+    <!--jQuery UI スタイルシート -->
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+    <!-- jqGrid スタイルシート -->
+    <link href="~/Content/jquery.jqGrid/ui.jqgrid.css" rel="stylesheet" />
+    <!-- ローカルスタイルシート -->
+    <link href="~/Styles/SsDefaultStyle.css" type="text/css" rel="stylesheet" />
+    <link href="~/Styles/jqStyle.css" rel="stylesheet" />
+    <!-- jQuery -->
+    <!--<script src="../Scripts/jquery-2.1.0.intellisense.js"></script>-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <!-- jQuery UI -->
+    <script src="../Scripts/jquery-ui-1.10.4.js"></script>
+    <!--<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>-->
+    <!-- jQuery UI datepicker 日本語 -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
+    <!-- jqGrid -->
+    <script src="../Scripts/jquery.jqGrid.src.js"></script>
+    <!-- jqGrid 日本語メッセージ -->
+    <script src="../Scripts/i18n/grid.locale-ja.js"></script>
+    <!-- バルーンチップ -->
+    <script src="../Scripts/jquery.balloon.js"></script>
+    <!-- jQuery Validation -->
+    <script src="../Scripts/jquery.validate-vsdoc.js"></script>
+    <!-- jQuery Validation 日本語メッセージ -->
+    <script src="../Scripts/localization/messages_ja.js"></script>
+    <!-- jQuery Validation 日本語 -->
+    <script src="../Scripts/jquery.validate.japlugin.js"></script>
+    <!-- jQuery Validation 日付 -->
+    <script src="../Scripts/jquery.ui.datepicker.validation.js"></script>
+    <!-- jQuery ローカル -->
+    <script src="../Scripts/CMJqCommon.js"></script>
+    <!--
+    <script type="text/vbscript">
+' メッセージを表示する
+Function MsgInfo(argMsg)
+    MsgBox argMsg, 64, "メッセージ"
+End Function
+
+' エラーメッセージを表示する
+Function MsgError(argMsg)
+    MsgBox argMsg, 16, "エラー"
+End Function
+    </script>
+    -->
+</head>
+<body id="Body1" runat="server">
+    <script type="text/javascript" src="<%=ResolveUrl("~") %>Scripts/CMCommon.js"></script>
+    <div class="page">
+        <!-- ヘッダ -->
+        <div class="header">
+            <table width="100%" style="border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #003580">
+                <tr>
+                    <td style="width: 24px">
+                        <asp:Image ID="Image1" runat="server" ImageUrl="~/Image/title.gif" 
+                            Height="30px"/></td>
+                    <td>
+                        <asp:Label ID="LabelTitle" runat="server" CssClass="Title"></asp:Label>
+                    </td>
+                    <td>
+                        <asp:Label ID="LabelUserName" runat="server" CssClass="Title"></asp:Label>
+                    </td>
+                    <td style="width: 130px">
+                        <asp:Label ID="LabelDateTime" runat="server" CssClass="TitleSmall"></asp:Label>
+                    </td>
+                    <td style="width: 120px">
+                        <asp:Label ID="LabelFormId" runat="server" CssClass="TitleSmall"></asp:Label>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!-- メッセージ領域 -->
+        <div class="footer">
+            <asp:Label ID="LabelMessage" runat="server"></asp:Label>
+        </div>
+        <!-- 内容 -->
+        <div class="main">
+            <asp:contentplaceholder id="Content1" runat="server"></asp:contentplaceholder>
+        </div>
+    </div>
+	</body>
+</html>

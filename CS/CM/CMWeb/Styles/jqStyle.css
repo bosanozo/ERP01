@@ -1,0 +1,76 @@
+﻿/* jquery ui */
+.ui-widget,
+.ui-widget button {
+	font-family: inherit;
+	font-size: inherit;
+}
+
+/******** jqGrid ********/
+.ui-jqgrid .ui-jqgrid-view {
+    font-size: inherit;
+    background: gray;
+}
+
+.ui-jqgrid .ui-jqgrid-titlebar { font-size: inherit; }
+
+.ui-jqgrid .ui-jqgrid-view input,
+.ui-jqgrid .ui-jqgrid-view select,
+.ui-jqgrid .ui-jqgrid-view textarea,
+.ui-jqgrid .ui-jqgrid-view button {
+	font-family: inherit;
+    font-size: inherit
+}
+
+/* 列ヘッダ */
+.ui-jqgrid .ui-th-column {
+    border-color: lightgray;
+    background: #003580;
+    color: white;
+}
+
+/* 行背景色１ */
+.ui-jqgrid .jqgrow {
+    border-color: gray;
+    /*background: white;
+    /*color: inherit;*/
+}
+
+/* 行背景色２ */
+.ui-jqgrid .jqgrow.ui-priority-secondary {
+    opacity: inherit;
+    /*filter: inherit;*/
+    background: #CCCCFF;
+    /*color: inherit;*/
+}
+
+/* フォーカス行 */
+.ui-jqgrid .jqgrow.ui-state-hover {
+    /*opacity: .7;
+    filter:Alpha(Opacity=70);*/
+    background: linear-gradient(#d0e5f5, white, #d0e5f5);
+    color: initial;
+}
+
+/* 選択行背景色 */
+.ui-jqgrid .jqgrow.ui-state-highlight {
+    /*opacity: .7;
+    filter:Alpha(Opacity=70);*/
+    background: #fbec88;
+}
+
+/* 選択フォーカス行背景色 */
+.ui-jqgrid .jqgrow.ui-state-highlight.ui-state-hover {
+    /*opacity: .7;
+    filter:Alpha(Opacity=70);*/
+    background: linear-gradient(#fbec88, white, #fbec88);
+}
+
+/* 入力必須 */
+.ui-jqgrid th.require {
+    color: yellow;
+}
+
+/* エラー */
+.ui-jqgrid td.error {
+    background: pink;
+}
