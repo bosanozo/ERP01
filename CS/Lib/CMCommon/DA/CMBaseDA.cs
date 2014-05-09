@@ -311,10 +311,19 @@ namespace NEXS.ERP.CM.DA
                 CMSelectType selectType = argSelectType == CMSelectType.Edit &&
                     result.Tables.Count > 0 ? CMSelectType.List : argSelectType;
 
+                // 結合テーブル
+                StringBuilder joinSb = new StringBuilder();
+                foreach (var row in ds.結合テーブル)
+                {
+                    if (!row.内部結合) joinSb.Append("LEFT ");
+                    joinSb.AppendFormat("JOIN {0} {1} ON {2}", row.テーブル名, row.シノニム, row.結合条件);
+                    joinSb.AppendLine();
+                }
+
                 // SELECT文の設定
                 IDbCommand cmd = CreateCommand(
                     CreateSelectSql(sb.ToString(), tableName, where.ToString(),
-                    ds.エンティティ[0].Join + " ", order, selectType));
+                    joinSb.ToString(), order, selectType));
                 Adapter.SelectCommand = cmd;
 
                 // パラメータの設定

@@ -1,6 +1,6 @@
 ﻿/* jquery ui */
-.ui-widget,
-.ui-widget button {
+.ui-widget, .ui-widget input, .ui-widget select,
+.ui-widget textarea, .ui-widget button {
 	font-family: inherit;
 	font-size: inherit;
 }

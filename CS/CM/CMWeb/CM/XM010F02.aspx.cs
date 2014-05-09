@@ -262,7 +262,7 @@ public partial class CM_XM010F02 : CMBaseEntryForm
     {
         // 出力データ作成
         CMEntityDataSet ds = new CMEntityDataSet();
-        ds.エンティティ.AddエンティティRow(エンティティ種別.SelectedValue + オブジェクト名.Text, null, null);
+        ds.エンティティ.AddエンティティRow(エンティティ種別.SelectedValue + オブジェクト名.Text, null);
         foreach (DataRow row in FormTable.Select("削除フラグ <> True", "項目NO"))
         {
             var newRow = ds.項目.New項目Row();

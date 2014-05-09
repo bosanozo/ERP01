@@ -10,6 +10,7 @@ function commonInit() {
         shrinkToFit: false,
         viewrecords: true,
         width: 950,
+        height: 'auto',
     };
 
     // Date型取得設定
@@ -44,6 +45,227 @@ function statusFormatter(cellval, opts) {
     return ret + '<input type="button" value="取消" onclick="cancelEdit(' + "'" + opts.gid + "'," + opts.rowId + ')"/>';
 }
 
+// グリッド作成
+function createGrid(gid, colNames, colModel, editurl, pagerId) {
+    var lastRowId;
+    var grid = $("#" + gid);
+
+    // グリッド作成
+    grid.jqGrid({
+        colNames: colNames,
+        colModel: colModel,
+        editurl: editurl,
+        pager: pagerId,
+        //url: 'CMSM010F01.aspx',
+        // 行選択
+        onSelectRow: function (id) {
+            if (lastRowId) {
+                $(this).restoreRow(lastRowId);
+                lastRowId = null;
+            }
+
+            // ボタンの操作可否を設定
+            var flg = $(this).getGridParam('selrow') == null;
+            setButtonState(flg);
+        },
+        // 行追加
+        //afterInsertRow : function (id) {},
+        // 行編集
+        ondblClickRow: function (id) {
+            if (id !== lastRowId) {
+                $(this).restoreRow(lastRowId);
+                lastRowId = id;
+            }
+
+            // 削除行は編集不可
+            var sts = $(this).getCell(id, '状態');
+            if (sts.match(/^削除/)) return;
+
+            $(this).editRow(id, true, null, null, null, null, function (rowid, result) {
+                if (sts == "") {
+                    $(this).setCell(rowid, '状態', '2');
+                    //$(this).setFrozenColumns();
+                    $(this).trigger("reloadGrid");
+                    setButtonState(true);
+                }
+            });
+        },
+    });
+
+    // 列固定
+    grid.setFrozenColumns();
+
+    // 検索有効
+    grid.navGrid('#' + pagerId, { edit: false, add: true, del: true, search: true, view: true },
+        {},
+        // 新規ボタン
+        {
+            jqModal: false, savekey: [true, 13], closeOnEscape: true, closeAfterAdd: true, afterSubmit:
+            function (response, postdata) {
+                // グリッドに行追加
+                var id = parseInt(response.responseText);
+                $(this).addRowData(id, postdata);
+                $(this).setCell(id, '状態', '1');
+                $(this).trigger("reloadGrid");
+                setButtonState(true);
+
+                return [true];
+            }
+        },
+        // 削除ボタン
+        {
+            jqModal: false, width: 350, closeOnEscape: true, afterComplete:
+            function (response, postdata) {
+                $(this).trigger("reloadGrid"); setButtonState(true);
+            }
+        },
+        { modal: true, multipleSearch: true, closeOnEscape: true },
+        { jqModal: false, navkeys: [true, 38, 40], closeOnEscape: true }
+    );
+
+    return grid;
+}
+
+// コード検索
+function GetCodeValue() {
+    var code = $(this);
+
+    // Webサービス呼び出し
+    $.getJSON("../CMCommonService.svc/GetCodeName", {
+        argCode: code.val(),
+        argSelectId: code.attr('selectId'),
+        argSelectParam: code.attr('selectParam'),
+    }).done(function (json) {
+        var name = $("#" + code.attr('selectOut'));
+        var nameVal = json.d.Name;
+
+        // 名称を設定
+        name.val(nameVal);
+
+        // 背景色設定
+        var color = nameVal.length > 0 ? "" : "Pink";
+        code.css("background-color", color);
+
+        // エラー表示＆フォーカス
+        if (nameVal.length == 0) {
+            name.val("データなし");
+            code.focus();
+        }
+    }).fail(function (xhr) {
+        showError(xhr.responseText);
+    });
+}
+
+// 検索子画面表示
+function ShowSelectSub() {
+    var buttonId = $(this).attr('id');
+    var codeId = $(this).attr('codeId');
+    var nameId = $(this).attr('nameId');
+    var param = 'SelectId=' + escape($(this).attr('selectId')) +
+        "&DbCodeCol=" + escape($(this).attr('dbCodeCol')) +
+        "&DbNameCol=" + escape($(this).attr('dbNameCol')) +
+        "&CodeId=" + escape(codeId) +
+        "&CodeLen=" + $("#" + codeId).attr('maxLength');
+
+    $('<div id="SubDialog"><iframe width="100%" height="100%" frameborder="0" src="../CM2/CMSubForm.aspx?' + param + '"></iframe></div>').dialog({
+        title: 'タイトル',
+        modal: true,
+        width: 430,
+        height: 400,
+        open: function () {
+            $(this).attr({ buttonId: buttonId, codeId: codeId, nameId: nameId });
+        },
+        close: function () {
+            $(this).dialog('destroy');
+        }
+    });
+}
+
+// インラインフレームのダイアログ側から呼んで
+// ダイアログを閉じる
+function colseSubDialog(rowData) {
+    var dlg = $("#SubDialog");
+    dlg.dialog('close');
+
+    if (rowData) {
+        var code = $("#" + dlg.attr('codeId'));
+        code.val(rowData.code);
+
+        var name = $("#" + dlg.attr('nameId'));
+        if (name) name.val(rowData.name);
+
+        var button = $("#" + dlg.attr('buttonId'));
+        var next = button.next('input[readonly!=readonly], select, textarea');
+        if (next.length > 0) next.focus();
+        else button.focus();
+    }
+}
+
+// サブグリッド作成
+function createSubGrid(gid, colNames, colModel, pagerId) {
+    var grid = $("#" + gid);
+
+    // グリッド作成
+    grid.jqGrid({
+        colNames: colNames,
+        colModel: colModel,
+        pager: pagerId,
+        multiselect: false,
+        //shrinkToFit: true,
+        viewrecords: true,
+        width: 390,
+        // 行選択
+        onSelectRow: function (id) {
+            window.parent.colseSubDialog(grid.getRowData(id));
+        },
+    });
+
+    // 検索有効
+    grid.navGrid('#' + pagerId, { edit: false, add: false, del: false, search: true },
+        {}, {}, {},
+        { modal: true, multipleSearch: true, closeOnEscape: true }
+    );
+
+    return grid;
+}
+
+// 詳細ダイアログ作成
+function createDetailDialog(dlgId, rules, gid) {
+    var dlg = $("#" + dlgId);
+    var form = $("form", "#" + dlgId);
+    var grid = $("#" + gid);
+
+    // validator作成
+    var validator = form.validate({
+        errorClass: 'ui-state-error',
+        rules: rules
+    });
+
+    // 詳細ダイアログ作成
+    dlg.dialog({
+        autoOpen: false,
+        modal: true,
+        open: function () {
+            // 選択行があればデータを表示
+            var selrow = grid.getGridParam('selrow');
+            if (selrow) grid.GridToForm(selrow, form);
+            else form.find(":text").val("");
+
+            // エラー消去
+            validator.resetForm();
+        },
+        close: function () {
+            // エラー表示消去
+            form.find(":text").each(function () {
+                $(this).hideBalloon();
+            });
+        },
+        width: 'auto'
+    });
+
+    return dlg;
+}
+
 // Infoダイアログ表示
 function showInfo(msg) {
     $('<div><table><tr><td><span class="ui-icon ui-icon-info"/></td><td>' +
@@ -72,12 +294,12 @@ function showError(msg) {
 }
 
 // 検索ボタン
-function onSelectClick(formId, gid) {
-    var grid = $("#" + gid);
+function onSelectClick(evt) {
+    var grid = evt.data.grid;
     var postData = grid.getGridParam('postData');
 
     // Formのデータを結合
-    $("#" + formId).serializeArray().forEach(function (data) {
+    evt.data.form.serializeArray().forEach(function (data) {
         postData[data.name] = data.value;
     });
 
@@ -88,8 +310,8 @@ function onSelectClick(formId, gid) {
 }
 
 // CSV出力ボタン
-function onCsvExportClick(formId) {
-    location.href = '?oper=csvexp&' + $("#" + formId).serialize();
+function onCsvExportClick(evt) {
+    location.href = '?oper=csvexp&' + evt.data.form.serialize();
 }
 
 // 取消ボタン
@@ -97,50 +319,58 @@ function cancelEdit(gid, id) {
     var grid = $("#" + gid);
 
     $.ajax({
-        //url: grid.getGridParam('url'),
+        dataType: 'json',
+        type: 'POST',
         data: { oper: 'cancel', id: id },
-        dataType: 'json'
     }).done(function (data) {
-        // 状態を初期化
-        var sts = grid.getCell(id, '状態');
-        if (sts.match(/^新規/)) grid.delRowData(id);
-        else {
-            if (grid.setRowData(id, data))
-                grid.setCell(id, '状態', '0');
+        if (data.error) {
+            showError(data.messages[0].message);
+        } else {
+            // 状態を初期化
+            var sts = grid.getCell(id, '状態');
+            if (sts.match(/^新規/)) grid.delRowData(id);
+            else {
+                if (grid.setRowData(id, data))
+                    grid.setCell(id, '状態', '0');
+            }
+            grid.trigger("reloadGrid");
+            setButtonState(true);
         }
-        grid.trigger("reloadGrid");
-        setButtonState(true);
     }).fail(function (xhr) {
         showError(xhr.responseText);
     });
 }
 
 // 新規ボタン
-function onAddClick(gid, dlgId) {
-    var grid = $("#" + gid);
-    var dlg = $("#" + dlgId);
+function onAddClick(evt) {
+    var grid = evt.data.grid;
+    var dlg = evt.data.editDlg;
 
     // オプション設定
     dlg.dialog('option', 'title', '新規');
     dlg.dialog('option', 'buttons', {
         '登録': function () {
             // 操作対象のフォーム要素を取得
-            var form = $("form", "#" + dlgId);
+            var form = dlg.find("form");
 
             // 入力値検証
             if (form.valid()) {
                 // 送信
                 $.ajax({
+                    dataType: 'json',
                     type: 'POST',
-                    data: 'oper=add&id=_empty&' + form.serialize()
-                }).done(function () {
-                    // グリッドに行追加
-                    var id = grid.getGridParam('records');
-                    grid.FormToGrid(id, $("form", "#" + dlgId), 'add');
-                    grid.setCell(id, '状態', '1');
-                    grid.trigger("reloadGrid");
-                    setButtonState(true);
-                    dlg.dialog("close");
+                    data: 'oper=new&id=_empty&' + form.serialize()
+                }).done(function (data) {
+                    if (data.error) {
+                        showError(data.messages[0].message);
+                    } else {
+                        // グリッドに行追加
+                        grid.FormToGrid(data.id, form, 'add');
+                        grid.setCell(data.id, '状態', '1');
+                        grid.trigger("reloadGrid");
+                        setButtonState(true);
+                        dlg.dialog("close");
+                    }
                 }).fail(function (xhr) {
                     showError(xhr.responseText);
                 });
@@ -157,9 +387,9 @@ function onAddClick(gid, dlgId) {
 }
 
 // 修正ボタン
-function onEditClick(gid, dlgId) {
-    var grid = $("#" + gid);
-    var dlg = $("#" + dlgId);
+function onEditClick(evt) {
+    var grid = evt.data.grid;
+    var dlg = evt.data.editDlg;
 
     var id = grid.getGridParam('selrow');
 
@@ -178,31 +408,36 @@ function onEditClick(gid, dlgId) {
     dlg.dialog('option', 'buttons', {
         '登録': function () {
             // 操作対象のフォーム要素を取得
-            var form = $("form", "#" + dlgId);
+            var form = dlg.find("form");
 
             // 入力値検証
             if (form.valid()) {
                 // 送信
                 $.ajax({
+                    //dataType: 'json',
                     type: 'POST',
                     data: 'oper=edit&id=' + id + '&' + form.serialize()
-                }).done(function () {
-                    // グリッドにデータ設定
-                    grid.FormToGrid(id, form);
-                    if (sts == "") grid.setCell(id, '状態', '2');
-                    grid.trigger("reloadGrid");
-                    setButtonState(true);
+                }).done(function (data) {
+                    if (data.error) {
+                        showError(data.messages[0].message);
+                    } else {
+                        // グリッドにデータ設定
+                        grid.FormToGrid(id, form);
+                        if (sts == "") grid.setCell(id, '状態', '2');
+                        grid.trigger("reloadGrid");
+                        setButtonState(true);
 
-                    // 読み取り専用を戻す
-                    inputs.each(function () {
-                        $(this).removeAttr('readonly');
-                    });
+                        // 読み取り専用を戻す
+                        inputs.each(function () {
+                            $(this).removeAttr('readonly');
+                        });
 
-                    selects.each(function () {
-                        $(this).removeAttr('disabled');
-                    });
+                        selects.each(function () {
+                            $(this).removeAttr('disabled');
+                        });
 
-                    dlg.dialog("close");
+                        dlg.dialog("close");
+                    }
                 }).fail(function (xhr) {
                     showError(xhr.responseText);
                 });
@@ -236,9 +471,9 @@ function onEditClick(gid, dlgId) {
 }
 
 // 参照ボタン
-function onViewClick(gid, dlgId) {
-    var grid = $("#" + gid);
-    var dlg = $("#" + dlgId);
+function onViewClick(evt) {
+    var grid = evt.data.grid;
+    var dlg = evt.data.editDlg;
 
     var inputs = dlg.find("input[readonly!=readonly]");
     var selects = dlg.find("select[disabled!=disabled]");
@@ -274,8 +509,8 @@ function onViewClick(gid, dlgId) {
 }
 
 // 削除ボタン
-function onDelClick(gid) {
-    var grid = $("#" + gid);
+function onDelClick(evt) {
+    var grid = evt.data.grid;
     var selarrrow = grid.getGridParam('selarrrow');
     var errmsg = null;
 
@@ -306,15 +541,18 @@ function onDelClick(gid) {
                     '削除': function () {
                         $.ajax({
                             type: 'POST',
-                            //url: grid.getGridParam('editurl'),
                             data: { oper: 'del', id: id }
-                        }).done(function (msg) {
-                            // 状態を削除に変更
-                            for (var i = 0; i < ids.length; i++) {
-                                grid.setCell(ids[i], '状態', '3');
+                        }).done(function (data) {
+                            if (data.error) {
+                                showError(data.messages[0].message);
+                            } else {
+                                // 状態を削除に変更
+                                for (var i = 0; i < ids.length; i++) {
+                                    grid.setCell(ids[i], '状態', '3');
+                                }
+                                grid.trigger("reloadGrid");
+                                setButtonState(true);
                             }
-                            grid.trigger("reloadGrid");
-                            setButtonState(true);
                         }).fail(function (xhr) {
                             showError(xhr.responseText);
                         });
@@ -335,7 +573,9 @@ function onDelClick(gid) {
 }
 
 // 登録ボタン
-function onCommitClick(gid) {
+function onCommitClick(evt) {
+    if (!confirm("登録しますか？")) return;
+
     $.ajax({
         dataType: 'json',
         type: 'POST',
@@ -347,7 +587,7 @@ function onCommitClick(gid) {
             showInfo('登録しました。');
 
             // 再検索
-            var grid = $("#" + gid);
+            var grid = evt.data.grid;
             grid.setGridParam({ datatype: 'json' });
             grid.trigger('reloadGrid');
             setButtonState(true);
@@ -357,3 +597,13 @@ function onCommitClick(gid) {
     });
 }
 
+// 編集グリッドクラス
+function EditGrid(conf) {
+    //conf.grid
+    //conf.editDlg
+}
+
+// 編集グリッド prototype
+EditGrid.prototype = {
+    constructor: EditGrid,
+}

@@ -87,6 +87,11 @@
     <Compile Include="Common\CMCommonSelectArgs.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Common\CMFormDataSet.Designer.cs">
+      <DependentUpon>CMFormDataSet.xsd</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Common\CMEntityDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -155,10 +160,27 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Common\CMFormDataSet.xsc">
+      <DependentUpon>CMFormDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="Common\CMFormDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>CMFormDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Common\CMFormDataSet.xss">
+      <DependentUpon>CMFormDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="Common\CMEntityDataSet.xsc">
+      <DependentUpon>CMEntityDataSet.xsd</DependentUpon>
+    </None>
     <None Include="Common\CMEntityDataSet.xsd">
       <SubType>Designer</SubType>
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>CMEntityDataSet.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Common\CMEntityDataSet.xss">
+      <DependentUpon>CMEntityDataSet.xsd</DependentUpon>
     </None>
     <None Include="Common\CMMessageDataSet.xsd">
       <SubType>Designer</SubType>

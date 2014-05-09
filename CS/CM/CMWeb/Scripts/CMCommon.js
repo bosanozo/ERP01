@@ -1,4 +1,5 @@
-﻿// 検索子画面表示
+﻿/*
+// 検索子画面表示
 function ShowSelectSub(argButton, argCd, argNm, argParam) {
     argParam += "&Code=" + escape(argCd.id) + "&CodeLen=" + argCd.maxLength;
     var result = window.showModalDialog("../CM/CMSubForm.aspx?" + argParam, "", "help:no");
@@ -21,7 +22,7 @@ function ShowSelectSoshikiCd(argButton, argCd, argNm) {
 
     ShowSelectSub(argButton, argCd, argNm, param);
 }
-
+*/
 // 上位組織検索画面表示
 function ShowSelectJyouiSoshikiCd(argButton, argCd, argNm, argSoshikiKaisoKbn) {
     var param = "SelectId=" + escape("CS上位組織") +

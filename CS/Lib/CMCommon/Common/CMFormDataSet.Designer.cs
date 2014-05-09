@@ -20,25 +20,21 @@ namespace NEXS.ERP.CM.Common {
     [global::System.ComponentModel.DesignerCategoryAttribute("code")]
     [global::System.ComponentModel.ToolboxItem(true)]
     [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedDataSetSchema")]
-    [global::System.Xml.Serialization.XmlRootAttribute("CMEntityDataSet")]
+    [global::System.Xml.Serialization.XmlRootAttribute("CMFormDataSet")]
     [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.DataSet")]
-    public partial class CMEntityDataSet : global::System.Data.DataSet {
+    public partial class CMFormDataSet : global::System.Data.DataSet {
         
-        private エンティティDataTable tableエンティティ;
+        private フォームDataTable tableフォーム;
         
         private 項目DataTable table項目;
         
-        private 結合テーブルDataTable table結合テーブル;
-        
         private global::System.Data.DataRelation relationエンティティ_項目;
-        
-        private global::System.Data.DataRelation relationエンティティ_結合テーブル;
         
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        public CMEntityDataSet() {
+        public CMFormDataSet() {
             this.BeginInit();
             this.InitClass();
             global::System.ComponentModel.CollectionChangeEventHandler schemaChangedHandler = new global::System.ComponentModel.CollectionChangeEventHandler(this.SchemaChanged);
@@ -49,7 +45,7 @@ namespace NEXS.ERP.CM.Common {
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        protected CMEntityDataSet(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+        protected CMFormDataSet(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
                 base(info, context, false) {
             if ((this.IsBinarySerialized(info, context) == true)) {
                 this.InitVars(false);
@@ -62,14 +58,11 @@ namespace NEXS.ERP.CM.Common {
             if ((this.DetermineSchemaSerializationMode(info, context) == global::System.Data.SchemaSerializationMode.IncludeSchema)) {
                 global::System.Data.DataSet ds = new global::System.Data.DataSet();
                 ds.ReadXmlSchema(new global::System.Xml.XmlTextReader(new global::System.IO.StringReader(strSchema)));
-                if ((ds.Tables["エンティティ"] != null)) {
-                    base.Tables.Add(new エンティティDataTable(ds.Tables["エンティティ"]));
+                if ((ds.Tables["フォーム"] != null)) {
+                    base.Tables.Add(new フォームDataTable(ds.Tables["フォーム"]));
                 }
                 if ((ds.Tables["項目"] != null)) {
                     base.Tables.Add(new 項目DataTable(ds.Tables["項目"]));
-                }
-                if ((ds.Tables["結合テーブル"] != null)) {
-                    base.Tables.Add(new 結合テーブルDataTable(ds.Tables["結合テーブル"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -93,9 +86,9 @@ namespace NEXS.ERP.CM.Common {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Browsable(false)]
         [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
-        public エンティティDataTable エンティティ {
+        public フォームDataTable フォーム {
             get {
-                return this.tableエンティティ;
+                return this.tableフォーム;
             }
         }
         
@@ -106,16 +99,6 @@ namespace NEXS.ERP.CM.Common {
         public 項目DataTable 項目 {
             get {
                 return this.table項目;
-            }
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        [global::System.ComponentModel.Browsable(false)]
-        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
-        public 結合テーブルDataTable 結合テーブル {
-            get {
-                return this.table結合テーブル;
             }
         }
         
@@ -161,7 +144,7 @@ namespace NEXS.ERP.CM.Common {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         public override global::System.Data.DataSet Clone() {
-            CMEntityDataSet cln = ((CMEntityDataSet)(base.Clone()));
+            CMFormDataSet cln = ((CMFormDataSet)(base.Clone()));
             cln.InitVars();
             cln.SchemaSerializationMode = this.SchemaSerializationMode;
             return cln;
@@ -186,14 +169,11 @@ namespace NEXS.ERP.CM.Common {
                 this.Reset();
                 global::System.Data.DataSet ds = new global::System.Data.DataSet();
                 ds.ReadXml(reader);
-                if ((ds.Tables["エンティティ"] != null)) {
-                    base.Tables.Add(new エンティティDataTable(ds.Tables["エンティティ"]));
+                if ((ds.Tables["フォーム"] != null)) {
+                    base.Tables.Add(new フォームDataTable(ds.Tables["フォーム"]));
                 }
                 if ((ds.Tables["項目"] != null)) {
                     base.Tables.Add(new 項目DataTable(ds.Tables["項目"]));
-                }
-                if ((ds.Tables["結合テーブル"] != null)) {
-                    base.Tables.Add(new 結合テーブルDataTable(ds.Tables["結合テーブル"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -228,10 +208,10 @@ namespace NEXS.ERP.CM.Common {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         internal void InitVars(bool initTable) {
-            this.tableエンティティ = ((エンティティDataTable)(base.Tables["エンティティ"]));
+            this.tableフォーム = ((フォームDataTable)(base.Tables["フォーム"]));
             if ((initTable == true)) {
-                if ((this.tableエンティティ != null)) {
-                    this.tableエンティティ.InitVars();
+                if ((this.tableフォーム != null)) {
+                    this.tableフォーム.InitVars();
                 }
             }
             this.table項目 = ((項目DataTable)(base.Tables["項目"]));
@@ -240,71 +220,44 @@ namespace NEXS.ERP.CM.Common {
                     this.table項目.InitVars();
                 }
             }
-            this.table結合テーブル = ((結合テーブルDataTable)(base.Tables["結合テーブル"]));
-            if ((initTable == true)) {
-                if ((this.table結合テーブル != null)) {
-                    this.table結合テーブル.InitVars();
-                }
-            }
             this.relationエンティティ_項目 = this.Relations["エンティティ_項目"];
-            this.relationエンティティ_結合テーブル = this.Relations["エンティティ_結合テーブル"];
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         private void InitClass() {
-            this.DataSetName = "CMEntityDataSet";
+            this.DataSetName = "CMFormDataSet";
             this.Prefix = "";
             this.EnforceConstraints = true;
             this.SchemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
-            this.tableエンティティ = new エンティティDataTable();
-            base.Tables.Add(this.tableエンティティ);
+            this.tableフォーム = new フォームDataTable();
+            base.Tables.Add(this.tableフォーム);
             this.table項目 = new 項目DataTable();
             base.Tables.Add(this.table項目);
-            this.table結合テーブル = new 結合テーブルDataTable();
-            base.Tables.Add(this.table結合テーブル);
             global::System.Data.ForeignKeyConstraint fkc;
             fkc = new global::System.Data.ForeignKeyConstraint("エンティティ_項目", new global::System.Data.DataColumn[] {
-                        this.tableエンティティ.エンティティ_IdColumn}, new global::System.Data.DataColumn[] {
-                        this.table項目.エンティティ_IdColumn});
+                        this.tableフォーム.フォーム_IdColumn}, new global::System.Data.DataColumn[] {
+                        this.table項目.フォーム_IdColumn});
             this.table項目.Constraints.Add(fkc);
             fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.None;
             fkc.DeleteRule = global::System.Data.Rule.Cascade;
             fkc.UpdateRule = global::System.Data.Rule.Cascade;
-            fkc = new global::System.Data.ForeignKeyConstraint("エンティティ_結合テーブル", new global::System.Data.DataColumn[] {
-                        this.tableエンティティ.エンティティ_IdColumn}, new global::System.Data.DataColumn[] {
-                        this.table結合テーブル.エンティティ_IdColumn});
-            this.table結合テーブル.Constraints.Add(fkc);
-            fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.None;
-            fkc.DeleteRule = global::System.Data.Rule.Cascade;
-            fkc.UpdateRule = global::System.Data.Rule.Cascade;
             this.relationエンティティ_項目 = new global::System.Data.DataRelation("エンティティ_項目", new global::System.Data.DataColumn[] {
-                        this.tableエンティティ.エンティティ_IdColumn}, new global::System.Data.DataColumn[] {
-                        this.table項目.エンティティ_IdColumn}, false);
+                        this.tableフォーム.フォーム_IdColumn}, new global::System.Data.DataColumn[] {
+                        this.table項目.フォーム_IdColumn}, false);
             this.relationエンティティ_項目.Nested = true;
             this.Relations.Add(this.relationエンティティ_項目);
-            this.relationエンティティ_結合テーブル = new global::System.Data.DataRelation("エンティティ_結合テーブル", new global::System.Data.DataColumn[] {
-                        this.tableエンティティ.エンティティ_IdColumn}, new global::System.Data.DataColumn[] {
-                        this.table結合テーブル.エンティティ_IdColumn}, false);
-            this.relationエンティティ_結合テーブル.Nested = true;
-            this.Relations.Add(this.relationエンティティ_結合テーブル);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        private bool ShouldSerializeエンティティ() {
+        private bool ShouldSerializeフォーム() {
             return false;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         private bool ShouldSerialize項目() {
-            return false;
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        private bool ShouldSerialize結合テーブル() {
             return false;
         }
         
@@ -319,7 +272,7 @@ namespace NEXS.ERP.CM.Common {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedDataSetSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
-            CMEntityDataSet ds = new CMEntityDataSet();
+            CMFormDataSet ds = new CMFormDataSet();
             global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
             global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
             global::System.Xml.Schema.XmlSchemaAny any = new global::System.Xml.Schema.XmlSchemaAny();
@@ -364,31 +317,26 @@ namespace NEXS.ERP.CM.Common {
         }
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        public delegate void エンティティRowChangeEventHandler(object sender, エンティティRowChangeEvent e);
+        public delegate void フォームRowChangeEventHandler(object sender, フォームRowChangeEvent e);
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         public delegate void 項目RowChangeEventHandler(object sender, 項目RowChangeEvent e);
-        
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        public delegate void 結合テーブルRowChangeEventHandler(object sender, 結合テーブルRowChangeEvent e);
         
         /// <summary>
         ///Represents the strongly named DataTable class.
         ///</summary>
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class エンティティDataTable : global::System.Data.TypedTableBase<エンティティRow> {
+        public partial class フォームDataTable : global::System.Data.TypedTableBase<フォームRow> {
             
-            private global::System.Data.DataColumn columnエンティティ_Id;
-            
-            private global::System.Data.DataColumn columnテーブル名;
+            private global::System.Data.DataColumn columnフォーム_Id;
             
             private global::System.Data.DataColumn columnOrderBy;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public エンティティDataTable() {
-                this.TableName = "エンティティ";
+            public フォームDataTable() {
+                this.TableName = "フォーム";
                 this.BeginInit();
                 this.InitClass();
                 this.EndInit();
@@ -396,7 +344,7 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            internal エンティティDataTable(global::System.Data.DataTable table) {
+            internal フォームDataTable(global::System.Data.DataTable table) {
                 this.TableName = table.TableName;
                 if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
                     this.CaseSensitive = table.CaseSensitive;
@@ -413,24 +361,16 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            protected エンティティDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+            protected フォームDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
                     base(info, context) {
                 this.InitVars();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn エンティティ_IdColumn {
+            public global::System.Data.DataColumn フォーム_IdColumn {
                 get {
-                    return this.columnエンティティ_Id;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn テーブル名Column {
-                get {
-                    return this.columnテーブル名;
+                    return this.columnフォーム_Id;
                 }
             }
             
@@ -453,47 +393,46 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public エンティティRow this[int index] {
+            public フォームRow this[int index] {
                 get {
-                    return ((エンティティRow)(this.Rows[index]));
+                    return ((フォームRow)(this.Rows[index]));
                 }
             }
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event エンティティRowChangeEventHandler エンティティRowChanging;
+            public event フォームRowChangeEventHandler フォームRowChanging;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event エンティティRowChangeEventHandler エンティティRowChanged;
+            public event フォームRowChangeEventHandler フォームRowChanged;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event エンティティRowChangeEventHandler エンティティRowDeleting;
+            public event フォームRowChangeEventHandler フォームRowDeleting;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event エンティティRowChangeEventHandler エンティティRowDeleted;
+            public event フォームRowChangeEventHandler フォームRowDeleted;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void AddエンティティRow(エンティティRow row) {
+            public void AddフォームRow(フォームRow row) {
                 this.Rows.Add(row);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public エンティティRow AddエンティティRow(string テーブル名, string OrderBy) {
-                エンティティRow rowエンティティRow = ((エンティティRow)(this.NewRow()));
+            public フォームRow AddフォームRow(string OrderBy) {
+                フォームRow rowフォームRow = ((フォームRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
-                        テーブル名,
                         OrderBy};
-                rowエンティティRow.ItemArray = columnValuesArray;
-                this.Rows.Add(rowエンティティRow);
-                return rowエンティティRow;
+                rowフォームRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowフォームRow);
+                return rowフォームRow;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public override global::System.Data.DataTable Clone() {
-                エンティティDataTable cln = ((エンティティDataTable)(base.Clone()));
+                フォームDataTable cln = ((フォームDataTable)(base.Clone()));
                 cln.InitVars();
                 return cln;
             }
@@ -501,58 +440,55 @@ namespace NEXS.ERP.CM.Common {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override global::System.Data.DataTable CreateInstance() {
-                return new エンティティDataTable();
+                return new フォームDataTable();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
-                this.columnエンティティ_Id = base.Columns["エンティティ_Id"];
-                this.columnテーブル名 = base.Columns["テーブル名"];
+                this.columnフォーム_Id = base.Columns["フォーム_Id"];
                 this.columnOrderBy = base.Columns["OrderBy"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             private void InitClass() {
-                this.columnエンティティ_Id = new global::System.Data.DataColumn("エンティティ_Id", typeof(int), null, global::System.Data.MappingType.Hidden);
-                base.Columns.Add(this.columnエンティティ_Id);
-                this.columnテーブル名 = new global::System.Data.DataColumn("テーブル名", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnテーブル名);
+                this.columnフォーム_Id = new global::System.Data.DataColumn("フォーム_Id", typeof(int), null, global::System.Data.MappingType.Hidden);
+                base.Columns.Add(this.columnフォーム_Id);
                 this.columnOrderBy = new global::System.Data.DataColumn("OrderBy", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnOrderBy);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
-                                this.columnエンティティ_Id}, true));
-                this.columnエンティティ_Id.AutoIncrement = true;
-                this.columnエンティティ_Id.AllowDBNull = false;
-                this.columnエンティティ_Id.Unique = true;
-                this.columnエンティティ_Id.Namespace = "";
+                                this.columnフォーム_Id}, true));
+                this.columnフォーム_Id.AutoIncrement = true;
+                this.columnフォーム_Id.AllowDBNull = false;
+                this.columnフォーム_Id.Unique = true;
+                this.columnフォーム_Id.Namespace = "";
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public エンティティRow NewエンティティRow() {
-                return ((エンティティRow)(this.NewRow()));
+            public フォームRow NewフォームRow() {
+                return ((フォームRow)(this.NewRow()));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
-                return new エンティティRow(builder);
+                return new フォームRow(builder);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override global::System.Type GetRowType() {
-                return typeof(エンティティRow);
+                return typeof(フォームRow);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowChanged(e);
-                if ((this.エンティティRowChanged != null)) {
-                    this.エンティティRowChanged(this, new エンティティRowChangeEvent(((エンティティRow)(e.Row)), e.Action));
+                if ((this.フォームRowChanged != null)) {
+                    this.フォームRowChanged(this, new フォームRowChangeEvent(((フォームRow)(e.Row)), e.Action));
                 }
             }
             
@@ -560,8 +496,8 @@ namespace NEXS.ERP.CM.Common {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowChanging(e);
-                if ((this.エンティティRowChanging != null)) {
-                    this.エンティティRowChanging(this, new エンティティRowChangeEvent(((エンティティRow)(e.Row)), e.Action));
+                if ((this.フォームRowChanging != null)) {
+                    this.フォームRowChanging(this, new フォームRowChangeEvent(((フォームRow)(e.Row)), e.Action));
                 }
             }
             
@@ -569,8 +505,8 @@ namespace NEXS.ERP.CM.Common {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowDeleted(e);
-                if ((this.エンティティRowDeleted != null)) {
-                    this.エンティティRowDeleted(this, new エンティティRowChangeEvent(((エンティティRow)(e.Row)), e.Action));
+                if ((this.フォームRowDeleted != null)) {
+                    this.フォームRowDeleted(this, new フォームRowChangeEvent(((フォームRow)(e.Row)), e.Action));
                 }
             }
             
@@ -578,14 +514,14 @@ namespace NEXS.ERP.CM.Common {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowDeleting(e);
-                if ((this.エンティティRowDeleting != null)) {
-                    this.エンティティRowDeleting(this, new エンティティRowChangeEvent(((エンティティRow)(e.Row)), e.Action));
+                if ((this.フォームRowDeleting != null)) {
+                    this.フォームRowDeleting(this, new フォームRowChangeEvent(((フォームRow)(e.Row)), e.Action));
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void RemoveエンティティRow(エンティティRow row) {
+            public void RemoveフォームRow(フォームRow row) {
                 this.Rows.Remove(row);
             }
             
@@ -594,7 +530,7 @@ namespace NEXS.ERP.CM.Common {
             public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
                 global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
                 global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
-                CMEntityDataSet ds = new CMEntityDataSet();
+                CMFormDataSet ds = new CMFormDataSet();
                 global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
                 any1.Namespace = "http://www.w3.org/2001/XMLSchema";
                 any1.MinOccurs = new decimal(0);
@@ -612,7 +548,7 @@ namespace NEXS.ERP.CM.Common {
                 type.Attributes.Add(attribute1);
                 global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
                 attribute2.Name = "tableTypeName";
-                attribute2.FixedValue = "エンティティDataTable";
+                attribute2.FixedValue = "フォームDataTable";
                 type.Attributes.Add(attribute2);
                 type.Particle = sequence;
                 global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
@@ -660,35 +596,43 @@ namespace NEXS.ERP.CM.Common {
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
         public partial class 項目DataTable : global::System.Data.TypedTableBase<項目Row> {
             
-            private global::System.Data.DataColumn columnエンティティ_Id;
+            private global::System.Data.DataColumn columnフォーム_Id;
             
             private global::System.Data.DataColumn column項目名;
             
-            private global::System.Data.DataColumn column説明;
+            private global::System.Data.DataColumn columnエンティティ項目名;
+            
+            private global::System.Data.DataColumn columnKey;
+            
+            private global::System.Data.DataColumn column入力制限;
             
             private global::System.Data.DataColumn column項目型;
             
             private global::System.Data.DataColumn column項目長;
             
-            private global::System.Data.DataColumn column小数桁;
-            
-            private global::System.Data.DataColumn column必須;
-            
             private global::System.Data.DataColumn column基準値分類CD;
-            
-            private global::System.Data.DataColumn columnデフォルト値;
-            
-            private global::System.Data.DataColumn columnKey;
-            
-            private global::System.Data.DataColumn column更新対象外;
-            
-            private global::System.Data.DataColumn column存在チェックテーブル名;
             
             private global::System.Data.DataColumn column共通検索ID;
             
             private global::System.Data.DataColumn column共通検索パラメータ;
             
-            private global::System.Data.DataColumn columnSourceColumn;
+            private global::System.Data.DataColumn column共通検索結果出力項目;
+            
+            private global::System.Data.DataColumn column選択ボタン;
+            
+            private global::System.Data.DataColumn column共通検索ID2;
+            
+            private global::System.Data.DataColumn columnコード値列名;
+            
+            private global::System.Data.DataColumn column名称列名;
+            
+            private global::System.Data.DataColumn columnFromTo;
+            
+            private global::System.Data.DataColumn column条件クリア対象外;
+            
+            private global::System.Data.DataColumn columnLike;
+            
+            private global::System.Data.DataColumn column改行;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -725,9 +669,9 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn エンティティ_IdColumn {
+            public global::System.Data.DataColumn フォーム_IdColumn {
                 get {
-                    return this.columnエンティティ_Id;
+                    return this.columnフォーム_Id;
                 }
             }
             
@@ -741,9 +685,25 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn 説明Column {
+            public global::System.Data.DataColumn エンティティ項目名Column {
                 get {
-                    return this.column説明;
+                    return this.columnエンティティ項目名;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn KeyColumn {
+                get {
+                    return this.columnKey;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn 入力制限Column {
+                get {
+                    return this.column入力制限;
                 }
             }
             
@@ -765,57 +725,9 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn 小数桁Column {
-                get {
-                    return this.column小数桁;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn 必須Column {
-                get {
-                    return this.column必須;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public global::System.Data.DataColumn 基準値分類CDColumn {
                 get {
                     return this.column基準値分類CD;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn デフォルト値Column {
-                get {
-                    return this.columnデフォルト値;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn KeyColumn {
-                get {
-                    return this.columnKey;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn 更新対象外Column {
-                get {
-                    return this.column更新対象外;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn 存在チェックテーブル名Column {
-                get {
-                    return this.column存在チェックテーブル名;
                 }
             }
             
@@ -837,9 +749,73 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn SourceColumnColumn {
+            public global::System.Data.DataColumn 共通検索結果出力項目Column {
                 get {
-                    return this.columnSourceColumn;
+                    return this.column共通検索結果出力項目;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn 選択ボタンColumn {
+                get {
+                    return this.column選択ボタン;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn 共通検索ID2Column {
+                get {
+                    return this.column共通検索ID2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn コード値列名Column {
+                get {
+                    return this.columnコード値列名;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn 名称列名Column {
+                get {
+                    return this.column名称列名;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn FromToColumn {
+                get {
+                    return this.columnFromTo;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn 条件クリア対象外Column {
+                get {
+                    return this.column条件クリア対象外;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn LikeColumn {
+                get {
+                    return this.columnLike;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn 改行Column {
+                get {
+                    return this.column改行;
                 }
             }
             
@@ -880,26 +856,49 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public 項目Row Add項目Row(エンティティRow parentエンティティRowByエンティティ_項目, string 項目名, string 説明, string 項目型, int 項目長, int 小数桁, bool 必須, string 基準値分類CD, string デフォルト値, bool Key, bool 更新対象外, string 存在チェックテーブル名, string 共通検索ID, string 共通検索パラメータ, string SourceColumn) {
+            public 項目Row Add項目Row(
+                        フォームRow parentフォームRowByエンティティ_項目, 
+                        string 項目名, 
+                        string エンティティ項目名, 
+                        bool Key, 
+                        string 入力制限, 
+                        string 項目型, 
+                        int 項目長, 
+                        string 基準値分類CD, 
+                        string 共通検索ID, 
+                        string 共通検索パラメータ, 
+                        string 共通検索結果出力項目, 
+                        bool 選択ボタン, 
+                        string 共通検索ID2, 
+                        string コード値列名, 
+                        string 名称列名, 
+                        bool FromTo, 
+                        bool 条件クリア対象外, 
+                        string Like, 
+                        bool 改行) {
                 項目Row row項目Row = ((項目Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
                         項目名,
-                        説明,
+                        エンティティ項目名,
+                        Key,
+                        入力制限,
                         項目型,
                         項目長,
-                        小数桁,
-                        必須,
                         基準値分類CD,
-                        デフォルト値,
-                        Key,
-                        更新対象外,
-                        存在チェックテーブル名,
                         共通検索ID,
                         共通検索パラメータ,
-                        SourceColumn};
-                if ((parentエンティティRowByエンティティ_項目 != null)) {
-                    columnValuesArray[0] = parentエンティティRowByエンティティ_項目[0];
+                        共通検索結果出力項目,
+                        選択ボタン,
+                        共通検索ID2,
+                        コード値列名,
+                        名称列名,
+                        FromTo,
+                        条件クリア対象外,
+                        Like,
+                        改行};
+                if ((parentフォームRowByエンティティ_項目 != null)) {
+                    columnValuesArray[0] = parentフォームRowByエンティティ_項目[0];
                 }
                 row項目Row.ItemArray = columnValuesArray;
                 this.Rows.Add(row項目Row);
@@ -923,57 +922,69 @@ namespace NEXS.ERP.CM.Common {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
-                this.columnエンティティ_Id = base.Columns["エンティティ_Id"];
+                this.columnフォーム_Id = base.Columns["フォーム_Id"];
                 this.column項目名 = base.Columns["項目名"];
-                this.column説明 = base.Columns["説明"];
+                this.columnエンティティ項目名 = base.Columns["エンティティ項目名"];
+                this.columnKey = base.Columns["Key"];
+                this.column入力制限 = base.Columns["入力制限"];
                 this.column項目型 = base.Columns["項目型"];
                 this.column項目長 = base.Columns["項目長"];
-                this.column小数桁 = base.Columns["小数桁"];
-                this.column必須 = base.Columns["必須"];
                 this.column基準値分類CD = base.Columns["基準値分類CD"];
-                this.columnデフォルト値 = base.Columns["デフォルト値"];
-                this.columnKey = base.Columns["Key"];
-                this.column更新対象外 = base.Columns["更新対象外"];
-                this.column存在チェックテーブル名 = base.Columns["存在チェックテーブル名"];
                 this.column共通検索ID = base.Columns["共通検索ID"];
                 this.column共通検索パラメータ = base.Columns["共通検索パラメータ"];
-                this.columnSourceColumn = base.Columns["SourceColumn"];
+                this.column共通検索結果出力項目 = base.Columns["共通検索結果出力項目"];
+                this.column選択ボタン = base.Columns["選択ボタン"];
+                this.column共通検索ID2 = base.Columns["共通検索ID2"];
+                this.columnコード値列名 = base.Columns["コード値列名"];
+                this.column名称列名 = base.Columns["名称列名"];
+                this.columnFromTo = base.Columns["FromTo"];
+                this.column条件クリア対象外 = base.Columns["条件クリア対象外"];
+                this.columnLike = base.Columns["Like"];
+                this.column改行 = base.Columns["改行"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             private void InitClass() {
-                this.columnエンティティ_Id = new global::System.Data.DataColumn("エンティティ_Id", typeof(int), null, global::System.Data.MappingType.Hidden);
-                base.Columns.Add(this.columnエンティティ_Id);
+                this.columnフォーム_Id = new global::System.Data.DataColumn("フォーム_Id", typeof(int), null, global::System.Data.MappingType.Hidden);
+                base.Columns.Add(this.columnフォーム_Id);
                 this.column項目名 = new global::System.Data.DataColumn("項目名", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.column項目名);
-                this.column説明 = new global::System.Data.DataColumn("説明", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.column説明);
+                this.columnエンティティ項目名 = new global::System.Data.DataColumn("エンティティ項目名", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnエンティティ項目名);
+                this.columnKey = new global::System.Data.DataColumn("Key", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnKey);
+                this.column入力制限 = new global::System.Data.DataColumn("入力制限", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.column入力制限);
                 this.column項目型 = new global::System.Data.DataColumn("項目型", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.column項目型);
                 this.column項目長 = new global::System.Data.DataColumn("項目長", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.column項目長);
-                this.column小数桁 = new global::System.Data.DataColumn("小数桁", typeof(int), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.column小数桁);
-                this.column必須 = new global::System.Data.DataColumn("必須", typeof(bool), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.column必須);
                 this.column基準値分類CD = new global::System.Data.DataColumn("基準値分類CD", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.column基準値分類CD);
-                this.columnデフォルト値 = new global::System.Data.DataColumn("デフォルト値", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnデフォルト値);
-                this.columnKey = new global::System.Data.DataColumn("Key", typeof(bool), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnKey);
-                this.column更新対象外 = new global::System.Data.DataColumn("更新対象外", typeof(bool), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.column更新対象外);
-                this.column存在チェックテーブル名 = new global::System.Data.DataColumn("存在チェックテーブル名", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.column存在チェックテーブル名);
                 this.column共通検索ID = new global::System.Data.DataColumn("共通検索ID", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.column共通検索ID);
                 this.column共通検索パラメータ = new global::System.Data.DataColumn("共通検索パラメータ", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.column共通検索パラメータ);
-                this.columnSourceColumn = new global::System.Data.DataColumn("SourceColumn", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnSourceColumn);
-                this.columnエンティティ_Id.Namespace = "";
+                this.column共通検索結果出力項目 = new global::System.Data.DataColumn("共通検索結果出力項目", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.column共通検索結果出力項目);
+                this.column選択ボタン = new global::System.Data.DataColumn("選択ボタン", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.column選択ボタン);
+                this.column共通検索ID2 = new global::System.Data.DataColumn("共通検索ID2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.column共通検索ID2);
+                this.columnコード値列名 = new global::System.Data.DataColumn("コード値列名", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnコード値列名);
+                this.column名称列名 = new global::System.Data.DataColumn("名称列名", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.column名称列名);
+                this.columnFromTo = new global::System.Data.DataColumn("FromTo", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnFromTo);
+                this.column条件クリア対象外 = new global::System.Data.DataColumn("条件クリア対象外", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.column条件クリア対象外);
+                this.columnLike = new global::System.Data.DataColumn("Like", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnLike);
+                this.column改行 = new global::System.Data.DataColumn("改行", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.column改行);
+                this.columnフォーム_Id.Namespace = "";
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1041,7 +1052,7 @@ namespace NEXS.ERP.CM.Common {
             public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
                 global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
                 global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
-                CMEntityDataSet ds = new CMEntityDataSet();
+                CMFormDataSet ds = new CMFormDataSet();
                 global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
                 any1.Namespace = "http://www.w3.org/2001/XMLSchema";
                 any1.MinOccurs = new decimal(0);
@@ -1101,349 +1112,27 @@ namespace NEXS.ERP.CM.Common {
         }
         
         /// <summary>
-        ///Represents the strongly named DataTable class.
-        ///</summary>
-        [global::System.Serializable()]
-        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class 結合テーブルDataTable : global::System.Data.TypedTableBase<結合テーブルRow> {
-            
-            private global::System.Data.DataColumn columnエンティティ_Id;
-            
-            private global::System.Data.DataColumn columnテーブル名;
-            
-            private global::System.Data.DataColumn columnシノニム;
-            
-            private global::System.Data.DataColumn column内部結合;
-            
-            private global::System.Data.DataColumn column結合条件;
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public 結合テーブルDataTable() {
-                this.TableName = "結合テーブル";
-                this.BeginInit();
-                this.InitClass();
-                this.EndInit();
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            internal 結合テーブルDataTable(global::System.Data.DataTable table) {
-                this.TableName = table.TableName;
-                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
-                    this.CaseSensitive = table.CaseSensitive;
-                }
-                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
-                    this.Locale = table.Locale;
-                }
-                if ((table.Namespace != table.DataSet.Namespace)) {
-                    this.Namespace = table.Namespace;
-                }
-                this.Prefix = table.Prefix;
-                this.MinimumCapacity = table.MinimumCapacity;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            protected 結合テーブルDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
-                    base(info, context) {
-                this.InitVars();
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn エンティティ_IdColumn {
-                get {
-                    return this.columnエンティティ_Id;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn テーブル名Column {
-                get {
-                    return this.columnテーブル名;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn シノニムColumn {
-                get {
-                    return this.columnシノニム;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn 内部結合Column {
-                get {
-                    return this.column内部結合;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn 結合条件Column {
-                get {
-                    return this.column結合条件;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            [global::System.ComponentModel.Browsable(false)]
-            public int Count {
-                get {
-                    return this.Rows.Count;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public 結合テーブルRow this[int index] {
-                get {
-                    return ((結合テーブルRow)(this.Rows[index]));
-                }
-            }
-            
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event 結合テーブルRowChangeEventHandler 結合テーブルRowChanging;
-            
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event 結合テーブルRowChangeEventHandler 結合テーブルRowChanged;
-            
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event 結合テーブルRowChangeEventHandler 結合テーブルRowDeleting;
-            
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event 結合テーブルRowChangeEventHandler 結合テーブルRowDeleted;
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void Add結合テーブルRow(結合テーブルRow row) {
-                this.Rows.Add(row);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public 結合テーブルRow Add結合テーブルRow(エンティティRow parentエンティティRowByエンティティ_結合テーブル, string テーブル名, string シノニム, bool 内部結合, string 結合条件) {
-                結合テーブルRow row結合テーブルRow = ((結合テーブルRow)(this.NewRow()));
-                object[] columnValuesArray = new object[] {
-                        null,
-                        テーブル名,
-                        シノニム,
-                        内部結合,
-                        結合条件};
-                if ((parentエンティティRowByエンティティ_結合テーブル != null)) {
-                    columnValuesArray[0] = parentエンティティRowByエンティティ_結合テーブル[0];
-                }
-                row結合テーブルRow.ItemArray = columnValuesArray;
-                this.Rows.Add(row結合テーブルRow);
-                return row結合テーブルRow;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public override global::System.Data.DataTable Clone() {
-                結合テーブルDataTable cln = ((結合テーブルDataTable)(base.Clone()));
-                cln.InitVars();
-                return cln;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            protected override global::System.Data.DataTable CreateInstance() {
-                return new 結合テーブルDataTable();
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            internal void InitVars() {
-                this.columnエンティティ_Id = base.Columns["エンティティ_Id"];
-                this.columnテーブル名 = base.Columns["テーブル名"];
-                this.columnシノニム = base.Columns["シノニム"];
-                this.column内部結合 = base.Columns["内部結合"];
-                this.column結合条件 = base.Columns["結合条件"];
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            private void InitClass() {
-                this.columnエンティティ_Id = new global::System.Data.DataColumn("エンティティ_Id", typeof(int), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnエンティティ_Id);
-                this.columnテーブル名 = new global::System.Data.DataColumn("テーブル名", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnテーブル名);
-                this.columnシノニム = new global::System.Data.DataColumn("シノニム", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnシノニム);
-                this.column内部結合 = new global::System.Data.DataColumn("内部結合", typeof(bool), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.column内部結合);
-                this.column結合条件 = new global::System.Data.DataColumn("結合条件", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.column結合条件);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public 結合テーブルRow New結合テーブルRow() {
-                return ((結合テーブルRow)(this.NewRow()));
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
-                return new 結合テーブルRow(builder);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            protected override global::System.Type GetRowType() {
-                return typeof(結合テーブルRow);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
-                base.OnRowChanged(e);
-                if ((this.結合テーブルRowChanged != null)) {
-                    this.結合テーブルRowChanged(this, new 結合テーブルRowChangeEvent(((結合テーブルRow)(e.Row)), e.Action));
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
-                base.OnRowChanging(e);
-                if ((this.結合テーブルRowChanging != null)) {
-                    this.結合テーブルRowChanging(this, new 結合テーブルRowChangeEvent(((結合テーブルRow)(e.Row)), e.Action));
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
-                base.OnRowDeleted(e);
-                if ((this.結合テーブルRowDeleted != null)) {
-                    this.結合テーブルRowDeleted(this, new 結合テーブルRowChangeEvent(((結合テーブルRow)(e.Row)), e.Action));
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
-                base.OnRowDeleting(e);
-                if ((this.結合テーブルRowDeleting != null)) {
-                    this.結合テーブルRowDeleting(this, new 結合テーブルRowChangeEvent(((結合テーブルRow)(e.Row)), e.Action));
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void Remove結合テーブルRow(結合テーブルRow row) {
-                this.Rows.Remove(row);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
-                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
-                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
-                CMEntityDataSet ds = new CMEntityDataSet();
-                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
-                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
-                any1.MinOccurs = new decimal(0);
-                any1.MaxOccurs = decimal.MaxValue;
-                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
-                sequence.Items.Add(any1);
-                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
-                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
-                any2.MinOccurs = new decimal(1);
-                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
-                sequence.Items.Add(any2);
-                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
-                attribute1.Name = "namespace";
-                attribute1.FixedValue = ds.Namespace;
-                type.Attributes.Add(attribute1);
-                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
-                attribute2.Name = "tableTypeName";
-                attribute2.FixedValue = "結合テーブルDataTable";
-                type.Attributes.Add(attribute2);
-                type.Particle = sequence;
-                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
-                if (xs.Contains(dsSchema.TargetNamespace)) {
-                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
-                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
-                    try {
-                        global::System.Xml.Schema.XmlSchema schema = null;
-                        dsSchema.Write(s1);
-                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext(); ) {
-                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
-                            s2.SetLength(0);
-                            schema.Write(s2);
-                            if ((s1.Length == s2.Length)) {
-                                s1.Position = 0;
-                                s2.Position = 0;
-                                for (; ((s1.Position != s1.Length) 
-                                            && (s1.ReadByte() == s2.ReadByte())); ) {
-                                    ;
-                                }
-                                if ((s1.Position == s1.Length)) {
-                                    return type;
-                                }
-                            }
-                        }
-                    }
-                    finally {
-                        if ((s1 != null)) {
-                            s1.Close();
-                        }
-                        if ((s2 != null)) {
-                            s2.Close();
-                        }
-                    }
-                }
-                xs.Add(dsSchema);
-                return type;
-            }
-        }
-        
-        /// <summary>
         ///Represents strongly named DataRow class.
         ///</summary>
-        public partial class エンティティRow : global::System.Data.DataRow {
+        public partial class フォームRow : global::System.Data.DataRow {
             
-            private エンティティDataTable tableエンティティ;
+            private フォームDataTable tableフォーム;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            internal エンティティRow(global::System.Data.DataRowBuilder rb) : 
+            internal フォームRow(global::System.Data.DataRowBuilder rb) : 
                     base(rb) {
-                this.tableエンティティ = ((エンティティDataTable)(this.Table));
+                this.tableフォーム = ((フォームDataTable)(this.Table));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public int エンティティ_Id {
+            public int フォーム_Id {
                 get {
-                    return ((int)(this[this.tableエンティティ.エンティティ_IdColumn]));
+                    return ((int)(this[this.tableフォーム.フォーム_IdColumn]));
                 }
                 set {
-                    this[this.tableエンティティ.エンティティ_IdColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string テーブル名 {
-                get {
-                    try {
-                        return ((string)(this[this.tableエンティティ.テーブル名Column]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'エンティティ\' にある列 \'テーブル名\' の値は DBNull です。", e);
-                    }
-                }
-                set {
-                    this[this.tableエンティティ.テーブル名Column] = value;
+                    this[this.tableフォーム.フォーム_IdColumn] = value;
                 }
             }
             
@@ -1455,36 +1144,24 @@ namespace NEXS.ERP.CM.Common {
                         return null;
                     }
                     else {
-                        return ((string)(this[this.tableエンティティ.OrderByColumn]));
+                        return ((string)(this[this.tableフォーム.OrderByColumn]));
                     }
                 }
                 set {
-                    this[this.tableエンティティ.OrderByColumn] = value;
+                    this[this.tableフォーム.OrderByColumn] = value;
                 }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool Isテーブル名Null() {
-                return this.IsNull(this.tableエンティティ.テーブル名Column);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void Setテーブル名Null() {
-                this[this.tableエンティティ.テーブル名Column] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsOrderByNull() {
-                return this.IsNull(this.tableエンティティ.OrderByColumn);
+                return this.IsNull(this.tableフォーム.OrderByColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetOrderByNull() {
-                this[this.tableエンティティ.OrderByColumn] = global::System.Convert.DBNull;
+                this[this.tableフォーム.OrderByColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1495,17 +1172,6 @@ namespace NEXS.ERP.CM.Common {
                 }
                 else {
                     return ((項目Row[])(base.GetChildRows(this.Table.ChildRelations["エンティティ_項目"])));
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public 結合テーブルRow[] Get結合テーブルRows() {
-                if ((this.Table.ChildRelations["エンティティ_結合テーブル"] == null)) {
-                    return new 結合テーブルRow[0];
-                }
-                else {
-                    return ((結合テーブルRow[])(base.GetChildRows(this.Table.ChildRelations["エンティティ_結合テーブル"])));
                 }
             }
         }
@@ -1526,17 +1192,17 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public int エンティティ_Id {
+            public int フォーム_Id {
                 get {
                     try {
-                        return ((int)(this[this.table項目.エンティティ_IdColumn]));
+                        return ((int)(this[this.table項目.フォーム_IdColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'エンティティ_Id\' の値は DBNull です。", e);
+                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'フォーム_Id\' の値は DBNull です。", e);
                     }
                 }
                 set {
-                    this[this.table項目.エンティティ_IdColumn] = value;
+                    this[this.table項目.フォーム_IdColumn] = value;
                 }
             }
             
@@ -1558,17 +1224,49 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string 説明 {
+            public string エンティティ項目名 {
                 get {
                     try {
-                        return ((string)(this[this.table項目.説明Column]));
+                        return ((string)(this[this.table項目.エンティティ項目名Column]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'説明\' の値は DBNull です。", e);
+                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'エンティティ項目名\' の値は DBNull です。", e);
                     }
                 }
                 set {
-                    this[this.table項目.説明Column] = value;
+                    this[this.table項目.エンティティ項目名Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool Key {
+                get {
+                    if (this.IsKeyNull()) {
+                        return false;
+                    }
+                    else {
+                        return ((bool)(this[this.table項目.KeyColumn]));
+                    }
+                }
+                set {
+                    this[this.table項目.KeyColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string 入力制限 {
+                get {
+                    if (this.Is入力制限Null()) {
+                        return null;
+                    }
+                    else {
+                        return ((string)(this[this.table項目.入力制限Column]));
+                    }
+                }
+                set {
+                    this[this.table項目.入力制限Column] = value;
                 }
             }
             
@@ -1592,11 +1290,11 @@ namespace NEXS.ERP.CM.Common {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public int 項目長 {
                 get {
-                    try {
-                        return ((int)(this[this.table項目.項目長Column]));
+                    if (this.Is項目長Null()) {
+                        return 0;
                     }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'項目長\' の値は DBNull です。", e);
+                    else {
+                        return ((int)(this[this.table項目.項目長Column]));
                     }
                 }
                 set {
@@ -1606,45 +1304,13 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public int 小数桁 {
-                get {
-                    try {
-                        return ((int)(this[this.table項目.小数桁Column]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'小数桁\' の値は DBNull です。", e);
-                    }
-                }
-                set {
-                    this[this.table項目.小数桁Column] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool 必須 {
-                get {
-                    if (this.Is必須Null()) {
-                        return false;
-                    }
-                    else {
-                        return ((bool)(this[this.table項目.必須Column]));
-                    }
-                }
-                set {
-                    this[this.table項目.必須Column] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string 基準値分類CD {
                 get {
-                    try {
-                        return ((string)(this[this.table項目.基準値分類CDColumn]));
+                    if (this.Is基準値分類CDNull()) {
+                        return null;
                     }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'基準値分類CD\' の値は DBNull です。", e);
+                    else {
+                        return ((string)(this[this.table項目.基準値分類CDColumn]));
                     }
                 }
                 set {
@@ -1654,77 +1320,13 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string デフォルト値 {
+            public string 共通検索ID {
                 get {
-                    if (this.Isデフォルト値Null()) {
+                    if (this.Is共通検索IDNull()) {
                         return null;
                     }
                     else {
-                        return ((string)(this[this.table項目.デフォルト値Column]));
-                    }
-                }
-                set {
-                    this[this.table項目.デフォルト値Column] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool Key {
-                get {
-                    if (this.IsKeyNull()) {
-                        return false;
-                    }
-                    else {
-                        return ((bool)(this[this.table項目.KeyColumn]));
-                    }
-                }
-                set {
-                    this[this.table項目.KeyColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool 更新対象外 {
-                get {
-                    if (this.Is更新対象外Null()) {
-                        return false;
-                    }
-                    else {
-                        return ((bool)(this[this.table項目.更新対象外Column]));
-                    }
-                }
-                set {
-                    this[this.table項目.更新対象外Column] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string 存在チェックテーブル名 {
-                get {
-                    try {
-                        return ((string)(this[this.table項目.存在チェックテーブル名Column]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'存在チェックテーブル名\' の値は DBNull です。", e);
-                    }
-                }
-                set {
-                    this[this.table項目.存在チェックテーブル名Column] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string 共通検索ID {
-                get {
-                    try {
                         return ((string)(this[this.table項目.共通検索IDColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'共通検索ID\' の値は DBNull です。", e);
                     }
                 }
                 set {
@@ -1750,25 +1352,153 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string SourceColumn {
+            public string 共通検索結果出力項目 {
                 get {
-                    if (this.IsSourceColumnNull()) {
+                    if (this.Is共通検索結果出力項目Null()) {
                         return null;
                     }
                     else {
-                        return ((string)(this[this.table項目.SourceColumnColumn]));
+                        return ((string)(this[this.table項目.共通検索結果出力項目Column]));
                     }
                 }
                 set {
-                    this[this.table項目.SourceColumnColumn] = value;
+                    this[this.table項目.共通検索結果出力項目Column] = value;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public エンティティRow エンティティRow {
+            public bool 選択ボタン {
                 get {
-                    return ((エンティティRow)(this.GetParentRow(this.Table.ParentRelations["エンティティ_項目"])));
+                    if (this.Is選択ボタンNull()) {
+                        return false;
+                    }
+                    else {
+                        return ((bool)(this[this.table項目.選択ボタンColumn]));
+                    }
+                }
+                set {
+                    this[this.table項目.選択ボタンColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string 共通検索ID2 {
+                get {
+                    try {
+                        return ((string)(this[this.table項目.共通検索ID2Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'共通検索ID2\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.table項目.共通検索ID2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string コード値列名 {
+                get {
+                    try {
+                        return ((string)(this[this.table項目.コード値列名Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'コード値列名\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.table項目.コード値列名Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string 名称列名 {
+                get {
+                    try {
+                        return ((string)(this[this.table項目.名称列名Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'名称列名\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.table項目.名称列名Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool FromTo {
+                get {
+                    if (this.IsFromToNull()) {
+                        return false;
+                    }
+                    else {
+                        return ((bool)(this[this.table項目.FromToColumn]));
+                    }
+                }
+                set {
+                    this[this.table項目.FromToColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool 条件クリア対象外 {
+                get {
+                    if (this.Is条件クリア対象外Null()) {
+                        return false;
+                    }
+                    else {
+                        return ((bool)(this[this.table項目.条件クリア対象外Column]));
+                    }
+                }
+                set {
+                    this[this.table項目.条件クリア対象外Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Like {
+                get {
+                    try {
+                        return ((string)(this[this.table項目.LikeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'Like\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.table項目.LikeColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool 改行 {
+                get {
+                    if (this.Is改行Null()) {
+                        return false;
+                    }
+                    else {
+                        return ((bool)(this[this.table項目.改行Column]));
+                    }
+                }
+                set {
+                    this[this.table項目.改行Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public フォームRow エンティティRow {
+                get {
+                    return ((フォームRow)(this.GetParentRow(this.Table.ParentRelations["エンティティ_項目"])));
                 }
                 set {
                     this.SetParentRow(value, this.Table.ParentRelations["エンティティ_項目"]);
@@ -1777,14 +1507,14 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool Isエンティティ_IdNull() {
-                return this.IsNull(this.table項目.エンティティ_IdColumn);
+            public bool Isフォーム_IdNull() {
+                return this.IsNull(this.table項目.フォーム_IdColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void Setエンティティ_IdNull() {
-                this[this.table項目.エンティティ_IdColumn] = global::System.Convert.DBNull;
+            public void Setフォーム_IdNull() {
+                this[this.table項目.フォーム_IdColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1801,14 +1531,38 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool Is説明Null() {
-                return this.IsNull(this.table項目.説明Column);
+            public bool Isエンティティ項目名Null() {
+                return this.IsNull(this.table項目.エンティティ項目名Column);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void Set説明Null() {
-                this[this.table項目.説明Column] = global::System.Convert.DBNull;
+            public void Setエンティティ項目名Null() {
+                this[this.table項目.エンティティ項目名Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsKeyNull() {
+                return this.IsNull(this.table項目.KeyColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetKeyNull() {
+                this[this.table項目.KeyColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool Is入力制限Null() {
+                return this.IsNull(this.table項目.入力制限Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void Set入力制限Null() {
+                this[this.table項目.入力制限Column] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1837,30 +1591,6 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool Is小数桁Null() {
-                return this.IsNull(this.table項目.小数桁Column);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void Set小数桁Null() {
-                this[this.table項目.小数桁Column] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool Is必須Null() {
-                return this.IsNull(this.table項目.必須Column);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void Set必須Null() {
-                this[this.table項目.必須Column] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool Is基準値分類CDNull() {
                 return this.IsNull(this.table項目.基準値分類CDColumn);
             }
@@ -1869,54 +1599,6 @@ namespace NEXS.ERP.CM.Common {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void Set基準値分類CDNull() {
                 this[this.table項目.基準値分類CDColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool Isデフォルト値Null() {
-                return this.IsNull(this.table項目.デフォルト値Column);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void Setデフォルト値Null() {
-                this[this.table項目.デフォルト値Column] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsKeyNull() {
-                return this.IsNull(this.table項目.KeyColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetKeyNull() {
-                this[this.table項目.KeyColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool Is更新対象外Null() {
-                return this.IsNull(this.table項目.更新対象外Column);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void Set更新対象外Null() {
-                this[this.table項目.更新対象外Column] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool Is存在チェックテーブル名Null() {
-                return this.IsNull(this.table項目.存在チェックテーブル名Column);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void Set存在チェックテーブル名Null() {
-                this[this.table項目.存在チェックテーブル名Column] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1945,180 +1627,110 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsSourceColumnNull() {
-                return this.IsNull(this.table項目.SourceColumnColumn);
+            public bool Is共通検索結果出力項目Null() {
+                return this.IsNull(this.table項目.共通検索結果出力項目Column);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetSourceColumnNull() {
-                this[this.table項目.SourceColumnColumn] = global::System.Convert.DBNull;
-            }
-        }
-        
-        /// <summary>
-        ///Represents strongly named DataRow class.
-        ///</summary>
-        public partial class 結合テーブルRow : global::System.Data.DataRow {
-            
-            private 結合テーブルDataTable table結合テーブル;
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            internal 結合テーブルRow(global::System.Data.DataRowBuilder rb) : 
-                    base(rb) {
-                this.table結合テーブル = ((結合テーブルDataTable)(this.Table));
+            public void Set共通検索結果出力項目Null() {
+                this[this.table項目.共通検索結果出力項目Column] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public int エンティティ_Id {
-                get {
-                    try {
-                        return ((int)(this[this.table結合テーブル.エンティティ_IdColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'結合テーブル\' にある列 \'エンティティ_Id\' の値は DBNull です。", e);
-                    }
-                }
-                set {
-                    this[this.table結合テーブル.エンティティ_IdColumn] = value;
-                }
+            public bool Is選択ボタンNull() {
+                return this.IsNull(this.table項目.選択ボタンColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string テーブル名 {
-                get {
-                    try {
-                        return ((string)(this[this.table結合テーブル.テーブル名Column]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'結合テーブル\' にある列 \'テーブル名\' の値は DBNull です。", e);
-                    }
-                }
-                set {
-                    this[this.table結合テーブル.テーブル名Column] = value;
-                }
+            public void Set選択ボタンNull() {
+                this[this.table項目.選択ボタンColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string シノニム {
-                get {
-                    try {
-                        return ((string)(this[this.table結合テーブル.シノニムColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'結合テーブル\' にある列 \'シノニム\' の値は DBNull です。", e);
-                    }
-                }
-                set {
-                    this[this.table結合テーブル.シノニムColumn] = value;
-                }
+            public bool Is共通検索ID2Null() {
+                return this.IsNull(this.table項目.共通検索ID2Column);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool 内部結合 {
-                get {
-                    if (this.Is内部結合Null()) {
-                        return false;
-                    }
-                    else {
-                        return ((bool)(this[this.table結合テーブル.内部結合Column]));
-                    }
-                }
-                set {
-                    this[this.table結合テーブル.内部結合Column] = value;
-                }
+            public void Set共通検索ID2Null() {
+                this[this.table項目.共通検索ID2Column] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string 結合条件 {
-                get {
-                    try {
-                        return ((string)(this[this.table結合テーブル.結合条件Column]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'結合テーブル\' にある列 \'結合条件\' の値は DBNull です。", e);
-                    }
-                }
-                set {
-                    this[this.table結合テーブル.結合条件Column] = value;
-                }
+            public bool Isコード値列名Null() {
+                return this.IsNull(this.table項目.コード値列名Column);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public エンティティRow エンティティRow {
-                get {
-                    return ((エンティティRow)(this.GetParentRow(this.Table.ParentRelations["エンティティ_結合テーブル"])));
-                }
-                set {
-                    this.SetParentRow(value, this.Table.ParentRelations["エンティティ_結合テーブル"]);
-                }
+            public void Setコード値列名Null() {
+                this[this.table項目.コード値列名Column] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool Isエンティティ_IdNull() {
-                return this.IsNull(this.table結合テーブル.エンティティ_IdColumn);
+            public bool Is名称列名Null() {
+                return this.IsNull(this.table項目.名称列名Column);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void Setエンティティ_IdNull() {
-                this[this.table結合テーブル.エンティティ_IdColumn] = global::System.Convert.DBNull;
+            public void Set名称列名Null() {
+                this[this.table項目.名称列名Column] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool Isテーブル名Null() {
-                return this.IsNull(this.table結合テーブル.テーブル名Column);
+            public bool IsFromToNull() {
+                return this.IsNull(this.table項目.FromToColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void Setテーブル名Null() {
-                this[this.table結合テーブル.テーブル名Column] = global::System.Convert.DBNull;
+            public void SetFromToNull() {
+                this[this.table項目.FromToColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsシノニムNull() {
-                return this.IsNull(this.table結合テーブル.シノニムColumn);
+            public bool Is条件クリア対象外Null() {
+                return this.IsNull(this.table項目.条件クリア対象外Column);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetシノニムNull() {
-                this[this.table結合テーブル.シノニムColumn] = global::System.Convert.DBNull;
+            public void Set条件クリア対象外Null() {
+                this[this.table項目.条件クリア対象外Column] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool Is内部結合Null() {
-                return this.IsNull(this.table結合テーブル.内部結合Column);
+            public bool IsLikeNull() {
+                return this.IsNull(this.table項目.LikeColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void Set内部結合Null() {
-                this[this.table結合テーブル.内部結合Column] = global::System.Convert.DBNull;
+            public void SetLikeNull() {
+                this[this.table項目.LikeColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool Is結合条件Null() {
-                return this.IsNull(this.table結合テーブル.結合条件Column);
+            public bool Is改行Null() {
+                return this.IsNull(this.table項目.改行Column);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void Set結合条件Null() {
-                this[this.table結合テーブル.結合条件Column] = global::System.Convert.DBNull;
+            public void Set改行Null() {
+                this[this.table項目.改行Column] = global::System.Convert.DBNull;
             }
         }
         
@@ -2126,22 +1738,22 @@ namespace NEXS.ERP.CM.Common {
         ///Row event argument class
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        public class エンティティRowChangeEvent : global::System.EventArgs {
+        public class フォームRowChangeEvent : global::System.EventArgs {
             
-            private エンティティRow eventRow;
+            private フォームRow eventRow;
             
             private global::System.Data.DataRowAction eventAction;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public エンティティRowChangeEvent(エンティティRow row, global::System.Data.DataRowAction action) {
+            public フォームRowChangeEvent(フォームRow row, global::System.Data.DataRowAction action) {
                 this.eventRow = row;
                 this.eventAction = action;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public エンティティRow Row {
+            public フォームRow Row {
                 get {
                     return this.eventRow;
                 }
@@ -2176,40 +1788,6 @@ namespace NEXS.ERP.CM.Common {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public 項目Row Row {
-                get {
-                    return this.eventRow;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataRowAction Action {
-                get {
-                    return this.eventAction;
-                }
-            }
-        }
-        
-        /// <summary>
-        ///Row event argument class
-        ///</summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        public class 結合テーブルRowChangeEvent : global::System.EventArgs {
-            
-            private 結合テーブルRow eventRow;
-            
-            private global::System.Data.DataRowAction eventAction;
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public 結合テーブルRowChangeEvent(結合テーブルRow row, global::System.Data.DataRowAction action) {
-                this.eventRow = row;
-                this.eventAction = action;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public 結合テーブルRow Row {
                 get {
                     return this.eventRow;
                 }

@@ -12,6 +12,7 @@
             $("#BtnView").attr('disabled', flg);
         }
 
+        // jquery
         $(document).ready(function () {
             // グリッド列名
             var grid1ColNames = [
@@ -25,129 +26,40 @@
                 <%= GetColModel("CMSM組織") %>
             ];
 
+            // ValidationRule
+            var rules = {
+                <%= GetValidationRules("CMSM組織") %>
+            };
+
             // 初期化
             commonInit();
 
             // 検索条件部
             $("#PanelCondition").accordion({ collapsible: true, heightStyle: 'content' });
 
-            // 日時
-            $("#更新日時From,#更新日時To").datepicker({ dateFormat: 'yy/mm/dd' });
+            // コード検索
+            $(".CodeInput[selectId]").change(GetCodeValue);
 
-            // グリッド要素取得
-            var grid1 = $("#Grid1");
-            var grid1LastRowId;
+            // 選択ボタン
+            $(".SelectButton").click(ShowSelectSub);
+
+            // 日付
+            $(".DateInput").datepicker({ dateFormat: 'yy/mm/dd' });
 
             // グリッド作成
-            grid1.jqGrid({
-                colNames: grid1ColNames,
-                colModel: grid1ColModel,
-                editurl: 'CMSM010F01.aspx',
-                pager: 'Grid1_Pager',
-                //url: 'CMSM010F01.aspx',
-                // 行選択
-                onSelectRow: function (id) {
-                    if (grid1LastRowId) {
-                        $(this).restoreRow(grid1LastRowId);
-                        grid1LastRowId = null;
-                    }
-
-                    // ボタンの操作可否を設定
-                    var flg = $(this).getGridParam('selrow') == null;
-                    setButtonState(flg);
-                },
-                // 行追加
-                /*
-                afterInsertRow : function (id) {
-                },*/
-                // 行編集
-                ondblClickRow: function (id) {
-                    if (id !== grid1LastRowId) {
-                        $(this).restoreRow(grid1LastRowId);
-                        grid1LastRowId = id;
-                    }
-
-                    // 削除行は編集不可
-                    var sts = $(this).getCell(id, '状態');
-                    if (sts.match(/^削除/)) return;
-
-                    $(this).editRow(id, true, null, null, null, null, function (rowid, result) {
-                        if (sts == "") {
-                            $(this).setCell(rowid, '状態', '2');
-                            //$(this).setFrozenColumns();
-                            $(this).trigger("reloadGrid");
-                            setButtonState(true);
-                        }
-                    });
-                },
-            });
-
-            // 列固定
-            grid1.setFrozenColumns();
-
-            // 検索有効
-            grid1.navGrid('#Grid1_Pager', { edit: false, add: true, del: true, search: true, view: true },
-                {},
-                // 新規ボタン
-                {
-                    jqModal: false, savekey: [true, 13], closeOnEscape: true, closeAfterAdd: true, afterSubmit:
-                    function (response, postdata) {
-                        // グリッドに行追加
-                        var id = $(this).getGridParam('records');
-                        $(this).addRowData(id, postdata);
-                        $(this).setCell(id, '状態', '1');
-                        $(this).trigger("reloadGrid");
-                        setButtonState(true);
-
-                        return [true];
-                    }
-                },
-                // 削除ボタン
-                {
-                    jqModal: false, width: 350, closeOnEscape: true, afterComplete:
-                    function (response, postdata) {
-                        $(this).trigger("reloadGrid"); setButtonState(true);
-                    }
-                },
-                { modal: true, multipleSearch: true, closeOnEscape: true },
-                { jqModal: false, navkeys: [true, 38, 40], closeOnEscape: true }
-            );
-
-            // validator作成
-            var validator = $("#FormDetail").validate({
-                errorClass: 'ui-state-error',
-                rules: {
-                    <%= GetValidationRules("CMSM組織") %>
-                }
-            });
+            var grid1 = createGrid('Grid1', grid1ColNames, grid1ColModel, 'CMSM010F01.aspx', 'Grid1_Pager');
 
             // 詳細ダイアログ作成
-            $("#DlgDetail").dialog({
-                autoOpen: false,
-                modal: true,
-                open: function () {
-                    // 操作対象のフォーム要素を取得
-                    var form = $("form", "#" + this.id);
+            var editDlg1 = createDetailDialog('DlgDetail', rules, 'Grid1');
 
-                    // 選択行があればデータを表示
-                    var selrow = grid1.getGridParam('selrow');
-                    if (selrow) grid1.GridToForm(selrow, form);
-                    else form.find(":text").val("");
-
-                    // エラー消去
-                    validator.resetForm();
-                },
-                close: function () {
-                    // 操作対象のフォーム要素を取得
-                    var form = $("form", "#" + this.id);
-
-                    // エラー表示消去
-                    form.find(":text").each(function () {
-                        $(this).hideBalloon();
-                    });
-                },
-                width: 'auto'
-            });
+            // ボタンイベント登録
+            $("#BtnSelect").click({ grid: grid1, form: $("#Form1") }, onSelectClick);
+            $("#BtnCsvExport").click({ form: $("#Form1") }, onCsvExportClick);
+            $("#BtnAdd").click({ grid: grid1, editDlg: editDlg1 }, onAddClick);
+            $("#BtnEdit").click({ grid: grid1, editDlg: editDlg1 }, onEditClick);
+            $("#BtnDel").click({ grid: grid1 }, onDelClick);
+            $("#BtnView").click({ grid: grid1, editDlg: editDlg1 }, onViewClick);
+            $("#BtnCommit").click({ grid: grid1 }, onCommitClick);
         });
     </script>
 
@@ -176,6 +88,7 @@
         <asp:Panel id="PanelCondition" Runat="server">
             <span>検索条件</span>
             <table width="100%" cellspacing="2">
+                <%= CreateForm("CMSM組織検索条件", true) %>
                 <tr>
                     <td class="ItemName">組織コード</td>
                     <td class="ItemPanel">
@@ -198,11 +111,11 @@
                     <td class="ItemName">会社コード</td>
                     <td class="ItemPanel">
                         <asp:TextBox ID="会社CDFrom" CssClass="CodeInput" runat="server" MaxLength="4" Width="40" />
-                        <input id="B会社CDFrom" class="SelectButton" runat="server" type="button" value="..."
-                            onclick="ShowSelectKaishaCd(this, 会社CDFrom, null)" /> ～
+                        <input id="B会社CDFrom" class="SelectButton" type="button" value="..." 
+                            codeId="会社CDFrom" nameId="組織名" selectId="CS組織" dbCodeCol="組織CD" dbNameCol="組織名"/> ～
                         <asp:TextBox ID="会社CDTo" CssClass="CodeInput" runat="server" MaxLength="4" Width="40" />
-                        <input id="B会社CDTo" class="SelectButton" runat="server" type="button" value="..."
-                            onclick="ShowSelectKaishaCd(this, 会社CDTo, null)" />
+                        <input id="B会社CDTo" class="SelectButton" type="button" value="..." 
+                            codeId="会社CDTo" selectId="CS組織" dbCodeCol="組織CD" dbNameCol="組織名"/>
                     </td>
                     <td class="ItemName">更新年月日</td>
                     <td class="ItemPanel">
@@ -218,39 +131,39 @@
 		    <table cellspacing="0" cellpadding="0" width="100%">
 			    <tr>
 				    <td>
-                        <input id="BtnSelect" class="FuncButton" type="button" value="検索" onclick="onSelectClick('Form1', 'Grid1')" />
+                        <input id="BtnSelect" class="FuncButton" type="button" value="検索"/>
                     </td>
 				    <td>
                         <input id="BtnClear" class="FuncButton" type="button" value="条件クリア" onclick="ClearCondition()"/>
                      </td>
 				    <td>
-                        <input id="BtnCsvExport" class="FuncButton" type="button" value="ＣＳＶ出力" onclick="onCsvExportClick('Form1')" />
+                        <input id="BtnCsvExport" class="FuncButton" type="button" value="ＣＳＶ出力" />
                     </td>
 			    </tr>
 		    </table>
         </div>
         <!-- 明細部 -->
         <table id="Grid1"></table>
-        <div id="Grid1_Pager"></div>    
+        <div id="Grid1_Pager"></div>
 
         <!-- 機能ボタン２ -->
         <div class="FuncPanel">
 		    <table cellspacing="0" cellpadding="0" width="100%">
 			    <tr>
 				    <td>
-                        <input id="BtnAdd" class="FuncButton" type="button" value="新規" onclick="onAddClick('Grid1', 'DlgDetail')"/>
+                        <input id="BtnAdd" class="FuncButton" type="button" value="新規"/>
                     </td>
 				    <td>
-                        <input id="BtnEdit" class="FuncButton" type="button" value="修正" disabled onclick="onEditClick('Grid1', 'DlgDetail')"/>
+                        <input id="BtnEdit" class="FuncButton" type="button" value="修正" disabled/>
                     </td>
 				    <td>
-                        <input id="BtnDel" class="FuncButton" type="button" value="削除" disabled onclick="onDelClick('Grid1')"/>
+                        <input id="BtnDel" class="FuncButton" type="button" value="削除" disabled/>
                     </td>
 				    <td>
-                        <input id="BtnView" class="FuncButton" type="button" value="参照" disabled onclick="onViewClick('Grid1', 'DlgDetail')"/>
+                        <input id="BtnView" class="FuncButton" type="button" value="参照" disabled/>
                     </td>
 				    <td>
-                        <input id="BtnCommit" class="FuncButton" type="button" value="登録" onclick="onCommitClick('Grid1')"/>
+                        <input id="BtnCommit" class="FuncButton" type="button" value="登録"/>
                     </td>
 			    </tr>
 		    </table>
@@ -263,7 +176,7 @@
 
     <!-- 詳細ダイアログ -->
     <div id="DlgDetail" >
-        <form id="FormDetail">
+        <form>
             <table>
                 <%= CreateForm("CMSM組織") %>
             </table>

@@ -45,25 +45,48 @@ public class CMCommonService
     /// <summary>
     /// コード値から名称を取得する。
     /// </summary>
-    /// <param name="argCodeId">コード値要素ID属性</param>
-    /// <param name="argNameId">名称要素ID属性</param>
-    /// <param name="argSelectId">共通検索ID</param>
     /// <param name="argCode">コード値</param>
+    /// <param name="argSelectId">共通検索ID</param>
+    /// <param name="argSelectParam">共通検索パラメータ</param>
     /// <returns>コード値に対する名称</returns>
     //************************************************************************
     [OperationContract]
     [WebGet]
-    public CodeName GetCodeName(string argCodeId, string argNameId, string argSelectId, string argCode)
+    public CodeName GetCodeName(string argCode, string argSelectId, string argSelectParam)
 	{
         string name = "";
 
+        List<object> paramList = new List<object>();
+        paramList.Add(argCode);
+
+        // 共通検索パラメータ作成
+        if (!string.IsNullOrEmpty(argSelectParam))
+        {
+            foreach (string p0 in argSelectParam.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                string p = p0.TrimStart();
+                if (p.Length < 2) continue;
+
+                // 'から始まる場合はそのまま設定
+                if (p[0] == '\'') paramList.Add(p.Substring(1));
+                // "#"から始まる場合はUserInfoから設定
+                else if (p[0] == '#')
+                {
+                    System.Reflection.PropertyInfo pi = CMInformationManager.UserInfo.GetType().GetProperty(p.Substring(1));
+                    paramList.Add(pi.GetValue(CMInformationManager.UserInfo, null));
+                }
+                // Rowの値を取得
+                //else paramList.Add(row[p]);
+            }
+        }
+
         // 検索実行
-        DataTable result = m_commonBL.Select(argSelectId, argCode);
+        DataTable result = m_commonBL.Select(argSelectId, paramList.ToArray());
         if (result != null && result.Rows.Count > 0)
             name = result.Rows[0][0].ToString();
 
         // 結果を返却
-        return new CodeName() { CodeId = argCodeId, NameId = argNameId, Name = name };
+        return new CodeName() { Name = name };
     }
     #endregion
 
@@ -74,10 +97,6 @@ public class CMCommonService
     //************************************************************************
     public class CodeName
     {
-        /// <summary>コード値要素ID属性</summary>
-        public string CodeId { get; set; }
-        /// <summary>名称要素ID属性</summary>
-        public string NameId { get; set; }
         /// <summary>コード値に対する名称</summary>
         public string Name { get; set; }
     }
