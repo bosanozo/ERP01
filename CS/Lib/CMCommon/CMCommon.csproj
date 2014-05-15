@@ -157,6 +157,7 @@
     <Compile Include="WEB\CMBaseListForm.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="WEB\CMResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

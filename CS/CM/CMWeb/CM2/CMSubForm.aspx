@@ -71,14 +71,6 @@
 	        if (CheckName(Form1.Name, "<%# GetNameLabel() %>")) return false;
 	        if (CheckCode(Form1.Code, "<%# GetCodeLabel() %>")) return false;
 	    }
-
-	    // 選択ボタン押下
-	    function SelectRow(argRow) {
-	        var code = argRow.cells[1].innerText;
-	        var name = argRow.cells[2].innerText;
-	        window.returnValue = new Array(code, name);
-	        window.close();
-	    }
 	</script>
 </head>
 <body>

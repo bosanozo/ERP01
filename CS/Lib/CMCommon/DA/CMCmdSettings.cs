@@ -107,7 +107,6 @@ namespace NEXS.ERP.CM.DA
                     cmdParam.Name = row.çÄñ⁄ñº;
                     cmdParam.DbType = (CMDbType)Enum.Parse(typeof(CMDbType), row.çÄñ⁄å^);
                     cmdParam.IsKey = row.Key;
-                    cmdParam.SourceColumn = row.SourceColumn;
 
                     paramList.Add(cmdParam);
                 }

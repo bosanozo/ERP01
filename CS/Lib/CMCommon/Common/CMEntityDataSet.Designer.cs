@@ -688,7 +688,7 @@ namespace NEXS.ERP.CM.Common {
             
             private global::System.Data.DataColumn column共通検索パラメータ;
             
-            private global::System.Data.DataColumn columnSourceColumn;
+            private global::System.Data.DataColumn columnSQL列表現;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -837,9 +837,9 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn SourceColumnColumn {
+            public global::System.Data.DataColumn SQL列表現Column {
                 get {
-                    return this.columnSourceColumn;
+                    return this.columnSQL列表現;
                 }
             }
             
@@ -880,7 +880,7 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public 項目Row Add項目Row(エンティティRow parentエンティティRowByエンティティ_項目, string 項目名, string 説明, string 項目型, int 項目長, int 小数桁, bool 必須, string 基準値分類CD, string デフォルト値, bool Key, bool 更新対象外, string 存在チェックテーブル名, string 共通検索ID, string 共通検索パラメータ, string SourceColumn) {
+            public 項目Row Add項目Row(エンティティRow parentエンティティRowByエンティティ_項目, string 項目名, string 説明, string 項目型, int 項目長, int 小数桁, bool 必須, string 基準値分類CD, string デフォルト値, bool Key, bool 更新対象外, string 存在チェックテーブル名, string 共通検索ID, string 共通検索パラメータ, string SQL列表現) {
                 項目Row row項目Row = ((項目Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
@@ -897,7 +897,7 @@ namespace NEXS.ERP.CM.Common {
                         存在チェックテーブル名,
                         共通検索ID,
                         共通検索パラメータ,
-                        SourceColumn};
+                        SQL列表現};
                 if ((parentエンティティRowByエンティティ_項目 != null)) {
                     columnValuesArray[0] = parentエンティティRowByエンティティ_項目[0];
                 }
@@ -937,7 +937,7 @@ namespace NEXS.ERP.CM.Common {
                 this.column存在チェックテーブル名 = base.Columns["存在チェックテーブル名"];
                 this.column共通検索ID = base.Columns["共通検索ID"];
                 this.column共通検索パラメータ = base.Columns["共通検索パラメータ"];
-                this.columnSourceColumn = base.Columns["SourceColumn"];
+                this.columnSQL列表現 = base.Columns["SQL列表現"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -971,8 +971,8 @@ namespace NEXS.ERP.CM.Common {
                 base.Columns.Add(this.column共通検索ID);
                 this.column共通検索パラメータ = new global::System.Data.DataColumn("共通検索パラメータ", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.column共通検索パラメータ);
-                this.columnSourceColumn = new global::System.Data.DataColumn("SourceColumn", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnSourceColumn);
+                this.columnSQL列表現 = new global::System.Data.DataColumn("SQL列表現", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSQL列表現);
                 this.columnエンティティ_Id.Namespace = "";
             }
             
@@ -1750,17 +1750,17 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string SourceColumn {
+            public string SQL列表現 {
                 get {
-                    if (this.IsSourceColumnNull()) {
+                    if (this.IsSQL列表現Null()) {
                         return null;
                     }
                     else {
-                        return ((string)(this[this.table項目.SourceColumnColumn]));
+                        return ((string)(this[this.table項目.SQL列表現Column]));
                     }
                 }
                 set {
-                    this[this.table項目.SourceColumnColumn] = value;
+                    this[this.table項目.SQL列表現Column] = value;
                 }
             }
             
@@ -1945,14 +1945,14 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsSourceColumnNull() {
-                return this.IsNull(this.table項目.SourceColumnColumn);
+            public bool IsSQL列表現Null() {
+                return this.IsNull(this.table項目.SQL列表現Column);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetSourceColumnNull() {
-                this[this.table項目.SourceColumnColumn] = global::System.Convert.DBNull;
+            public void SetSQL列表現Null() {
+                this[this.table項目.SQL列表現Column] = global::System.Convert.DBNull;
             }
         }
         

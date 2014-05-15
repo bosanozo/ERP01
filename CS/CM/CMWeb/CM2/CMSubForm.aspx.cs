@@ -30,36 +30,6 @@ public partial class CM2_CMSubForm : CMBaseListForm
     private string m_codeName;
     #endregion
 
-    #region 返却データ
-    public class ResultData
-    {
-        public int total;
-        public int page;
-        public int records;
-        public List<ResultRecord> rows = new List<ResultRecord>();
-    }
-
-    public class ResultRecord
-    {
-        public int id;
-        public object[] cell;
-    }
-
-    public class ResultStatus
-    {
-        public bool error;
-        public int id;
-        public List<ResultMessage> messages = new List<ResultMessage>();
-    }
-
-    public class ResultMessage
-    {
-        public string messageCd;
-        public string message;
-        public CMRowField rowField;
-    }
-    #endregion
-
     #region イベントハンドラ
     //************************************************************************
     /// <summary>
@@ -132,6 +102,12 @@ public partial class CM2_CMSubForm : CMBaseListForm
         }
     }
 
+    //************************************************************************
+    /// <summary>
+    /// 検索パラメータ作成
+    /// </summary>
+    /// <returns>検索パラメータ</returns>
+    //************************************************************************
     protected List<CMSelectParam> CreateSelectParam2()
     {
         // 画面の条件を取得
@@ -180,43 +156,6 @@ public partial class CM2_CMSubForm : CMBaseListForm
 
         return param;
     }
-
-    //************************************************************************
-    /// <summary>
-    /// 検索ボタン押下
-    /// </summary>
-    //************************************************************************
-    protected void Select_Command(object sender, CommandEventArgs e)
-    {
-        // 画面の条件を取得
-        List<CMSelectParam> formParam = CreateSelectParam(PanelCondition);
-
-        /*
-        // 項目名の置き換え
-        foreach (var p in formParam)
-        {
-            if (p.name == "Code") p.name = string.IsNullOrEmpty(Request.Params["DbCodeCol"]) ?
-                GridView1.Columns[1].HeaderText.Replace("コード", "CD") : Request.Params["DbCodeCol"];
-            else if (p.name == "Name")
-            {
-                p.name = string.IsNullOrEmpty(Request.Params["DbNameCol"]) ?
-                   GridView1.Columns[2].HeaderText : Request.Params["DbNameCol"];
-                p.condtion = "LIKE @" + p.name;
-                p.paramFrom = "%" + p.paramFrom + "%";
-            }
-        }*/
-
-
-        /*
-        bool hasError = DoSelect(param, GridView1);
-
-        // 正常終了の場合
-        if (!hasError)
-        {
-            // 検索条件を記憶
-            Session["SelectCondition"] = param;
-        }*/
-    }
     #endregion
 
     #region protectedメソッド
@@ -240,61 +179,6 @@ public partial class CM2_CMSubForm : CMBaseListForm
     protected string GetNameLabel()
     {
         return Regex.Replace(m_codeName, "(CD|ID)", "名");
-    }
-    #endregion
-
-    #region privateメソッド
-    //************************************************************************
-    /// <summary>
-    /// 検索を実行する。
-    /// </summary>
-    /// <param name="argParam">検索条件パラメータ</param>
-    /// <param name="argGrid">一覧表示用グリッド</param>
-    /// <param name="argPage">ページ</param>
-    /// <returns>True:エラーあり, False:エラーなし</returns>
-    //************************************************************************
-    private bool DoSelect(List<CMSelectParam> argParam, GridView argGrid, int argPage = 0)
-    {
-        try
-        {
-            // ファサードの呼び出し
-            CMMessage message;
-            DataTable result = CommonBL.SelectSub(Request.Params["SelectId"], argParam, out message);
-
-            // 返却メッセージの表示
-            if (message != null) ShowMessage(message);
-
-            int idx = 0;
-            foreach (var col in argGrid.Columns)
-            {
-                // 列ヘッダ設定
-                if (col is BoundField)
-                {
-                    BoundField bf = col as BoundField;
-                    if (idx > 1) bf.HeaderText = result.Columns[idx].ColumnName;
-                    bf.DataField = result.Columns[idx].ColumnName;
-                    idx++;
-                }
-            }
-
-            // DataSource設定
-            argGrid.DataSource = result;
-            // ページセット
-            argGrid.PageIndex = argPage;
-            // バインド
-            argGrid.DataBind();
-        }
-        catch (Exception ex)
-        {
-            // DataSourceクリア
-            argGrid.DataSource = null;
-            argGrid.DataBind();
-
-            ShowError(ex);
-            return true;
-        }
-
-        return false;
     }
     #endregion
 }

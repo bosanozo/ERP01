@@ -331,6 +331,8 @@ namespace NEXS.ERP.CM.Common {
             
             private global::System.Data.DataColumn columnフォーム_Id;
             
+            private global::System.Data.DataColumn columnエンティティ;
+            
             private global::System.Data.DataColumn columnOrderBy;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -371,6 +373,14 @@ namespace NEXS.ERP.CM.Common {
             public global::System.Data.DataColumn フォーム_IdColumn {
                 get {
                     return this.columnフォーム_Id;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn エンティティColumn {
+                get {
+                    return this.columnエンティティ;
                 }
             }
             
@@ -419,10 +429,11 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public フォームRow AddフォームRow(string OrderBy) {
+            public フォームRow AddフォームRow(string エンティティ, string OrderBy) {
                 フォームRow rowフォームRow = ((フォームRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
+                        エンティティ,
                         OrderBy};
                 rowフォームRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowフォームRow);
@@ -447,6 +458,7 @@ namespace NEXS.ERP.CM.Common {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
                 this.columnフォーム_Id = base.Columns["フォーム_Id"];
+                this.columnエンティティ = base.Columns["エンティティ"];
                 this.columnOrderBy = base.Columns["OrderBy"];
             }
             
@@ -455,6 +467,8 @@ namespace NEXS.ERP.CM.Common {
             private void InitClass() {
                 this.columnフォーム_Id = new global::System.Data.DataColumn("フォーム_Id", typeof(int), null, global::System.Data.MappingType.Hidden);
                 base.Columns.Add(this.columnフォーム_Id);
+                this.columnエンティティ = new global::System.Data.DataColumn("エンティティ", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnエンティティ);
                 this.columnOrderBy = new global::System.Data.DataColumn("OrderBy", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnOrderBy);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
@@ -600,7 +614,7 @@ namespace NEXS.ERP.CM.Common {
             
             private global::System.Data.DataColumn column項目名;
             
-            private global::System.Data.DataColumn columnエンティティ項目名;
+            private global::System.Data.DataColumn columnラベル;
             
             private global::System.Data.DataColumn columnKey;
             
@@ -610,7 +624,11 @@ namespace NEXS.ERP.CM.Common {
             
             private global::System.Data.DataColumn column項目長;
             
+            private global::System.Data.DataColumn column小数桁;
+            
             private global::System.Data.DataColumn column基準値分類CD;
+            
+            private global::System.Data.DataColumn columnデフォルト値;
             
             private global::System.Data.DataColumn column共通検索ID;
             
@@ -631,6 +649,8 @@ namespace NEXS.ERP.CM.Common {
             private global::System.Data.DataColumn column条件クリア対象外;
             
             private global::System.Data.DataColumn columnLike;
+            
+            private global::System.Data.DataColumn column非表示;
             
             private global::System.Data.DataColumn column改行;
             
@@ -685,9 +705,9 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn エンティティ項目名Column {
+            public global::System.Data.DataColumn ラベルColumn {
                 get {
-                    return this.columnエンティティ項目名;
+                    return this.columnラベル;
                 }
             }
             
@@ -725,9 +745,25 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn 小数桁Column {
+                get {
+                    return this.column小数桁;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public global::System.Data.DataColumn 基準値分類CDColumn {
                 get {
                     return this.column基準値分類CD;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn デフォルト値Column {
+                get {
+                    return this.columnデフォルト値;
                 }
             }
             
@@ -813,6 +849,14 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn 非表示Column {
+                get {
+                    return this.column非表示;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public global::System.Data.DataColumn 改行Column {
                 get {
                     return this.column改行;
@@ -859,12 +903,14 @@ namespace NEXS.ERP.CM.Common {
             public 項目Row Add項目Row(
                         フォームRow parentフォームRowByエンティティ_項目, 
                         string 項目名, 
-                        string エンティティ項目名, 
+                        string ラベル, 
                         bool Key, 
                         string 入力制限, 
                         string 項目型, 
                         int 項目長, 
+                        int 小数桁, 
                         string 基準値分類CD, 
+                        string デフォルト値, 
                         string 共通検索ID, 
                         string 共通検索パラメータ, 
                         string 共通検索結果出力項目, 
@@ -875,17 +921,20 @@ namespace NEXS.ERP.CM.Common {
                         bool FromTo, 
                         bool 条件クリア対象外, 
                         string Like, 
+                        string 非表示, 
                         bool 改行) {
                 項目Row row項目Row = ((項目Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
                         項目名,
-                        エンティティ項目名,
+                        ラベル,
                         Key,
                         入力制限,
                         項目型,
                         項目長,
+                        小数桁,
                         基準値分類CD,
+                        デフォルト値,
                         共通検索ID,
                         共通検索パラメータ,
                         共通検索結果出力項目,
@@ -896,6 +945,7 @@ namespace NEXS.ERP.CM.Common {
                         FromTo,
                         条件クリア対象外,
                         Like,
+                        非表示,
                         改行};
                 if ((parentフォームRowByエンティティ_項目 != null)) {
                     columnValuesArray[0] = parentフォームRowByエンティティ_項目[0];
@@ -924,12 +974,14 @@ namespace NEXS.ERP.CM.Common {
             internal void InitVars() {
                 this.columnフォーム_Id = base.Columns["フォーム_Id"];
                 this.column項目名 = base.Columns["項目名"];
-                this.columnエンティティ項目名 = base.Columns["エンティティ項目名"];
+                this.columnラベル = base.Columns["ラベル"];
                 this.columnKey = base.Columns["Key"];
                 this.column入力制限 = base.Columns["入力制限"];
                 this.column項目型 = base.Columns["項目型"];
                 this.column項目長 = base.Columns["項目長"];
+                this.column小数桁 = base.Columns["小数桁"];
                 this.column基準値分類CD = base.Columns["基準値分類CD"];
+                this.columnデフォルト値 = base.Columns["デフォルト値"];
                 this.column共通検索ID = base.Columns["共通検索ID"];
                 this.column共通検索パラメータ = base.Columns["共通検索パラメータ"];
                 this.column共通検索結果出力項目 = base.Columns["共通検索結果出力項目"];
@@ -940,6 +992,7 @@ namespace NEXS.ERP.CM.Common {
                 this.columnFromTo = base.Columns["FromTo"];
                 this.column条件クリア対象外 = base.Columns["条件クリア対象外"];
                 this.columnLike = base.Columns["Like"];
+                this.column非表示 = base.Columns["非表示"];
                 this.column改行 = base.Columns["改行"];
             }
             
@@ -950,8 +1003,8 @@ namespace NEXS.ERP.CM.Common {
                 base.Columns.Add(this.columnフォーム_Id);
                 this.column項目名 = new global::System.Data.DataColumn("項目名", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.column項目名);
-                this.columnエンティティ項目名 = new global::System.Data.DataColumn("エンティティ項目名", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnエンティティ項目名);
+                this.columnラベル = new global::System.Data.DataColumn("ラベル", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnラベル);
                 this.columnKey = new global::System.Data.DataColumn("Key", typeof(bool), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnKey);
                 this.column入力制限 = new global::System.Data.DataColumn("入力制限", typeof(string), null, global::System.Data.MappingType.Element);
@@ -960,8 +1013,12 @@ namespace NEXS.ERP.CM.Common {
                 base.Columns.Add(this.column項目型);
                 this.column項目長 = new global::System.Data.DataColumn("項目長", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.column項目長);
+                this.column小数桁 = new global::System.Data.DataColumn("小数桁", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.column小数桁);
                 this.column基準値分類CD = new global::System.Data.DataColumn("基準値分類CD", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.column基準値分類CD);
+                this.columnデフォルト値 = new global::System.Data.DataColumn("デフォルト値", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnデフォルト値);
                 this.column共通検索ID = new global::System.Data.DataColumn("共通検索ID", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.column共通検索ID);
                 this.column共通検索パラメータ = new global::System.Data.DataColumn("共通検索パラメータ", typeof(string), null, global::System.Data.MappingType.Element);
@@ -982,6 +1039,8 @@ namespace NEXS.ERP.CM.Common {
                 base.Columns.Add(this.column条件クリア対象外);
                 this.columnLike = new global::System.Data.DataColumn("Like", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLike);
+                this.column非表示 = new global::System.Data.DataColumn("非表示", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.column非表示);
                 this.column改行 = new global::System.Data.DataColumn("改行", typeof(bool), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.column改行);
                 this.columnフォーム_Id.Namespace = "";
@@ -1138,6 +1197,22 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string エンティティ {
+                get {
+                    try {
+                        return ((string)(this[this.tableフォーム.エンティティColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'フォーム\' にある列 \'エンティティ\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.tableフォーム.エンティティColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string OrderBy {
                 get {
                     if (this.IsOrderByNull()) {
@@ -1150,6 +1225,18 @@ namespace NEXS.ERP.CM.Common {
                 set {
                     this[this.tableフォーム.OrderByColumn] = value;
                 }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsエンティティNull() {
+                return this.IsNull(this.tableフォーム.エンティティColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetエンティティNull() {
+                this[this.tableフォーム.エンティティColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1224,17 +1311,17 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string エンティティ項目名 {
+            public string ラベル {
                 get {
-                    try {
-                        return ((string)(this[this.table項目.エンティティ項目名Column]));
+                    if (this.IsラベルNull()) {
+                        return null;
                     }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'エンティティ項目名\' の値は DBNull です。", e);
+                    else {
+                        return ((string)(this[this.table項目.ラベルColumn]));
                     }
                 }
                 set {
-                    this[this.table項目.エンティティ項目名Column] = value;
+                    this[this.table項目.ラベルColumn] = value;
                 }
             }
             
@@ -1304,6 +1391,22 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int 小数桁 {
+                get {
+                    try {
+                        return ((int)(this[this.table項目.小数桁Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'小数桁\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.table項目.小数桁Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string 基準値分類CD {
                 get {
                     if (this.Is基準値分類CDNull()) {
@@ -1315,6 +1418,22 @@ namespace NEXS.ERP.CM.Common {
                 }
                 set {
                     this[this.table項目.基準値分類CDColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string デフォルト値 {
+                get {
+                    try {
+                        return ((string)(this[this.table項目.デフォルト値Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'デフォルト値\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.table項目.デフォルト値Column] = value;
                 }
             }
             
@@ -1480,6 +1599,22 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string 非表示 {
+                get {
+                    if (this.Is非表示Null()) {
+                        return null;
+                    }
+                    else {
+                        return ((string)(this[this.table項目.非表示Column]));
+                    }
+                }
+                set {
+                    this[this.table項目.非表示Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool 改行 {
                 get {
                     if (this.Is改行Null()) {
@@ -1531,14 +1666,14 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool Isエンティティ項目名Null() {
-                return this.IsNull(this.table項目.エンティティ項目名Column);
+            public bool IsラベルNull() {
+                return this.IsNull(this.table項目.ラベルColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void Setエンティティ項目名Null() {
-                this[this.table項目.エンティティ項目名Column] = global::System.Convert.DBNull;
+            public void SetラベルNull() {
+                this[this.table項目.ラベルColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1591,6 +1726,18 @@ namespace NEXS.ERP.CM.Common {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool Is小数桁Null() {
+                return this.IsNull(this.table項目.小数桁Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void Set小数桁Null() {
+                this[this.table項目.小数桁Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool Is基準値分類CDNull() {
                 return this.IsNull(this.table項目.基準値分類CDColumn);
             }
@@ -1599,6 +1746,18 @@ namespace NEXS.ERP.CM.Common {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void Set基準値分類CDNull() {
                 this[this.table項目.基準値分類CDColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool Isデフォルト値Null() {
+                return this.IsNull(this.table項目.デフォルト値Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void Setデフォルト値Null() {
+                this[this.table項目.デフォルト値Column] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1719,6 +1878,18 @@ namespace NEXS.ERP.CM.Common {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetLikeNull() {
                 this[this.table項目.LikeColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool Is非表示Null() {
+                return this.IsNull(this.table項目.非表示Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void Set非表示Null() {
+                this[this.table項目.非表示Column] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

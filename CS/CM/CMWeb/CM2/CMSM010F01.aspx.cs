@@ -25,35 +25,7 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
     protected CMSM010BL m_facade;
     #endregion
 
-    #region 返却データ
-    public class ResultData
-    {
-        public int total;
-        public int page;
-        public int records;
-        public List<ResultRecord> rows = new List<ResultRecord>();
-    }
-
-    public class ResultRecord
-    {
-        public int id;
-        public object[] cell;
-    }
-
-    public class ResultStatus
-    {
-        public bool error;
-        public int id;
-        public List<ResultMessage> messages = new List<ResultMessage>();
-    }
-
-    public class ResultMessage
-    {
-        public string messageCd;
-        public string message;
-        public CMRowField rowField;
-    }
-    #endregion
+    private Dictionary<string, CMFormDataSet> m_formDsDic = new Dictionary<string, CMFormDataSet>();
 
     #region イベントハンドラ
     //************************************************************************
@@ -68,6 +40,10 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
         {
             dynamic result = null;
 
+            // ファサードの呼び出し用変数
+            DateTime operationTime;
+            CMMessage message;
+
             try
             {
                 // 検索の場合
@@ -77,8 +53,6 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
                     List<CMSelectParam> param = CreateSelectParam(PanelCondition);
 
                     // ファサードの呼び出し
-                    DateTime operationTime;
-                    CMMessage message;
                     DataSet ds = m_facade.Select(param, CMSelectType.List, out operationTime, out message);
 
                     // 返却メッセージの表示
@@ -99,113 +73,137 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
                     DataTable table = (DataTable)Session["dataTable"];
 
                     string oper = Request.Params["oper"];
-                    if (oper == "add" || oper == "new")
+
+                    switch (oper)
                     {
-                        // todo:未検索時はtableをクリアする
+                        case "add":
+                        case "new":
+                            // todo:未検索時はtableをクリアする
 
-                        DataRow row = table.NewRow();
+                            DataRow row = table.NewRow();
 
-                        // 新規のidを取得
-                        int retId = Convert.ToInt32(table.AsEnumerable().Max(tr => tr["ROWNUMBER"])) + 1;
-                        row["ROWNUMBER"] = retId;
+                            // 新規のidを取得
+                            int retId = Convert.ToInt32(table.AsEnumerable().Max(tr => tr["ROWNUMBER"])) + 1;
+                            row["ROWNUMBER"] = retId;
 
-                        foreach (string key in Request.Form.Keys)
-                        {
-                            if (key == "oper" || key == "id") continue;
-
-                            row[key] = Request.Form[key];
-                        }
-
-                        table.Rows.Add(row);
-
-                        // idを返却
-                        if (oper == "new") result = new ResultStatus { id = retId };
-                        else Response.Write(retId.ToString());
-                    }
-                    else if (oper == "edit")
-                    {
-                        int idx = int.Parse(Request.Params["id"]);
-                        DataRow row = table.Select("ROWNUMBER=" + idx).First();
-
-                        foreach (string key in Request.Form.Keys)
-                        {
-                            if (key == "oper" || key == "id") continue;
-
-                            row[key] = Request.Form[key];
-                        }
-
-                        // idを返却
-                        //result = new ResultStatus { id = idx };
-                    }
-                    else if (oper == "del")
-                    {
-                        foreach (string id in Request.Params["id"].Split(','))
-                        {
-                            DataRow row = table.Select("ROWNUMBER=" + id).First();
-                            row["削除"] = "1";
-                        }
-                    }
-                    else if (oper == "cancel")
-                    {
-                        DataRow row = table.Select("ROWNUMBER=" + Request.Params["id"]).First();
-                        row.CancelEdit();
-
-                        // 返却データクラス作成
-                        result = new Dictionary<string, object>();
-
-                        if (row.RowState == DataRowState.Added) row.Delete();
-                        else
-                        {
-                            foreach (DataColumn dcol in table.Columns)
+                            foreach (string key in Request.Form.Keys)
                             {
-                                if (dcol.ColumnName == "作成日時") break;
-                                result.Add(dcol.ColumnName, row[dcol.ColumnName, DataRowVersion.Original]);
+                                if (!table.Columns.Contains(key)) continue;
+
+                                row[key] = Request.Form[key];
                             }
-                        }
-                    }
-                    else if (oper == "csvexp")
-                    {
-                        // 検索パラメータ取得
-                        List<CMSelectParam> param = CreateSelectParam(PanelCondition);
 
-                        // ファサードの呼び出し
-                        DateTime operationTime;
-                        CMMessage message;
-                        DataSet ds = m_facade.Select(param, CMSelectType.Csv, out operationTime, out message);
+                            table.Rows.Add(row);
 
-                        // ヘッダ設定
-                        Response.AppendHeader("Content-type", "application/octet-stream; charset=UTF-8");
-                        Response.AppendHeader("Content-Disposition", "Attachment; filename=" +
-                            Master.Title + ".xlsx");
+                            // idを返却
+                            if (oper == "new") result = new ResultStatus { id = retId };
+                            else Response.Write(retId.ToString());
+                            break;
 
-                        // Excelファイル作成
-                        var xslDoc = CreateExcel(ds);
-                        xslDoc.SaveAs(Response.OutputStream);
-                    }
-                    else if (oper == "commit")
-                    {
-                        result = new ResultStatus();
-                        DataSet updateDs = table.DataSet.GetChanges();
+                        case "edit":
+                            int idx = int.Parse(Request.Params["id"]);
+                            row = table.Select("ROWNUMBER=" + idx).First();
 
-                        if (updateDs != null)
-                        {
-                            // 削除行を確定
-                            foreach (var row in updateDs.Tables[0].Select("削除 = '1'")) row.Delete();
+                            foreach (string key in Request.Form.Keys)
+                            {
+                                if (!table.Columns.Contains(key)) continue;
+
+                                switch (table.Columns[key].DataType.Name)
+                                {
+                                    case "bool":
+                                        break;
+
+                                    case "decimal":
+                                        decimal dVal = Convert.ToDecimal(Request.Form[key]);
+                                        if ((decimal)row[key] != dVal) row[key] = dVal;
+                                        break;
+
+                                    case "int32":
+                                        int iVal = Convert.ToInt32(Request.Form[key]);
+                                        if ((int)row[key] != iVal) row[key] = iVal;
+                                        break;
+
+                                    case "DateTime":
+                                        break;
+
+                                    default:
+                                        if (row[key].ToString() != Request.Form[key])
+                                            row[key] = Request.Form[key];
+                                        break;
+                                }
+                            }
+
+                            // 変更ありの場合、idを返却
+                            Response.Write(row.RowState == DataRowState.Modified ? idx.ToString() : "");
+                            break;
+
+                        case "del":
+                            result = new ResultStatus();
+                            foreach (string id in Request.Params["id"].Split(','))
+                            {
+                                DataRow delRow = table.Select("ROWNUMBER=" + id).First();
+                                delRow["削除"] = "1";
+                            }
+                            break;
+
+                        case "cancel":
+                            row = table.Select("ROWNUMBER=" + Request.Params["id"]).First();
+                            row.RejectChanges();
+
+                            // 返却データクラス作成
+                            result = new Dictionary<string, object>();
+
+                            if (row.RowState == DataRowState.Detached) row.Delete();
+                            else
+                            {
+                                foreach (DataColumn dcol in table.Columns)
+                                {
+                                    if (dcol.ColumnName == "作成日時") break;
+                                    result.Add(dcol.ColumnName, row[dcol.ColumnName, DataRowVersion.Original]);
+                                }
+                            }
+                            break;
+
+                        case "commit":
+                            result = new ResultStatus();
+                            DataSet updateDs = table.DataSet.GetChanges();
+
+                            if (updateDs != null)
+                            {
+                                // 削除行を確定
+                                foreach (var delRow in updateDs.Tables[0].Select("削除 = '1'")) delRow.Delete();
+
+                                // ファサードの呼び出し
+                                m_facade.Update(updateDs, out operationTime);
+                            }
+                            else
+                            {
+                                result.error = true;
+                                // エラーメッセージを設定
+                                result.messages.Add(new ResultMessage
+                                {
+                                    messageCd = "WV106",
+                                    message = CMMessageManager.GetMessage("WV106"),
+                                });
+                            }
+                            break;
+
+                        case "csvexp":
+                            // 検索パラメータ取得
+                            List<CMSelectParam> param = CreateSelectParam(PanelCondition);
 
                             // ファサードの呼び出し
-                            DateTime operationTime;
-                            m_facade.Update(updateDs, out operationTime);
-                        }
-                        else
-                        {
-                            result.error = true;
-                            // エラーメッセージを設定
-                            result.messages.Add(new ResultMessage
-                            {
-                                messageCd = "WV106",
-                                message = CMMessageManager.GetMessage("WV106"),
-                            });
-                        }
+                            DataSet ds = m_facade.Select(param, CMSelectType.Csv, out operationTime, out message);
+
+                            // ヘッダ設定
+                            Response.AppendHeader("Content-type", "application/octet-stream; charset=UTF-8");
+                            Response.AppendHeader("Content-Disposition", "Attachment; filename=" +
+                                Master.Title + ".xlsx");
+
+                            // Excelファイル作成
+                            var xslDoc = CreateExcel(ds);
+                            xslDoc.SaveAs(Response.OutputStream);
+                            break;
                     }
                 }
             }
@@ -302,20 +300,15 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
     //************************************************************************
     protected string GetColNames(string argName)
     {
-        // データセットにファイルを読み込み
-        CMEntityDataSet ds = new CMEntityDataSet();
-        ds.ReadXml(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", argName + ".xml"));
+        // データセットを取得
+        CMFormDataSet ds = GetFormDataSet(argName);
 
         // StringBuilder作成
         StringBuilder sb = new StringBuilder();
 
         // DataColumn追加
         foreach (var row in ds.項目)
-        {
-            string col = string.IsNullOrEmpty(row.SourceColumn) ?
-                row.項目名 : row.SourceColumn;
-            sb.AppendFormat("'{0}', ", col);
-        }
+            sb.AppendFormat("'{0}', ", string.IsNullOrEmpty(row.ラベル) ? row.項目名 : row.ラベル);
 
         string[] updateCols = 
         {
@@ -340,9 +333,8 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
     //************************************************************************
     protected string GetColModel(string argName)
     {
-        // データセットにファイルを読み込み
-        CMEntityDataSet ds = new CMEntityDataSet();
-        ds.ReadXml(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", argName + ".xml"));
+        // データセットを取得
+        CMFormDataSet ds = GetFormDataSet(argName);
 
         // StringBuilder作成
         StringBuilder sb = new StringBuilder();
@@ -353,10 +345,10 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
             string cssClass;
             int maxLen;
             int width;
-            string col = GetColParams(row, out cssClass, out maxLen, out width);
+            GetColParams(row, out cssClass, out maxLen, out width);
 
             // 項目名
-            sb.AppendFormat("{{ name: '{0}', width: {1}, ", col, width);
+            sb.AppendFormat("{{ name: '{0}', width: {1}, ", row.項目名, width);
 
             // 型
             CMDbType dbType = (CMDbType)Enum.Parse(typeof(CMDbType), row.項目型);
@@ -371,38 +363,51 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
             if (row.Key) sb.Append("frozen: true, ");
 
             // 編集
-            if (!row.更新対象外)
+            if (row.入力制限 != "不可")
             {
                 sb.Append("editable: true, editrules: { ");
 
                 // 必須入力
-                if (row.必須) sb.Append("required: true, ");
+                if (row.入力制限 == "必須") sb.Append("required: true, ");
                 sb.Append("}, ");
 
-
-                if (dbType == CMDbType.区分)
+                switch (dbType)
                 {
-                    sb.Append("edittype: 'select', formatter:'select', editoptions: { value:'");
-                    int sbLen = sb.Length;
-                    foreach (DataRow kbnRow in CommonBL.SelectKbn(row.基準値分類CD).Rows)
-                    {
-                        if (sb.Length > sbLen) sb.Append(";");
-                        sb.AppendFormat("{0}:{1}", kbnRow["基準値CD"], kbnRow["表示名"]);
-                    }
-                    sb.Append("'}");
-                }
-                else if (dbType == CMDbType.フラグ)
-                    sb.Append("edittype: 'checkbox', ");
-                else if (dbType == CMDbType.日付)
-                {
-                    sb.AppendLine();
-                    sb.AppendLine("editoptions: { size: 12, maxlength: 10, " +
-                        "dataInit: function (el) { $(el).datepicker({ dateFormat: 'yy/mm/dd' }); $(el).addClass('DateInput'); }}");
-                }
-                else
-                {
-                    sb.AppendFormat("editoptions: {{ size: {0}, maxlength: {0}, " +
-                        "dataInit: function (el) {{ $(el).addClass('{1}'); }} }}", maxLen, cssClass);
+                    case CMDbType.区分:
+                        sb.Append("edittype: 'select', formatter:'select', editoptions: { value:'");
+                        int sbLen = sb.Length;
+                        foreach (DataRow kbnRow in CommonBL.SelectKbn(row.基準値分類CD).Rows)
+                        {
+                            if (sb.Length > sbLen) sb.Append(";");
+                            sb.AppendFormat("{0}:{1}", kbnRow["基準値CD"], kbnRow["表示名"]);
+                        }
+                        sb.Append("'}");
+                        break;
+                    case CMDbType.フラグ:
+                        sb.Append("edittype: 'checkbox', ");
+                        break;
+                    case CMDbType.日付:
+                        sb.AppendLine();
+                        sb.AppendLine("editoptions: { size: 12, maxlength: 10, " +
+                            "dataInit: function (el) { $(el).datepicker({ dateFormat: 'yy/mm/dd' }); $(el).addClass('DateInput'); }}");
+                        break;
+                    default:
+                        sb.AppendFormat("editoptions: {{ size: {0}, maxlength: {0}, " +
+                            "dataInit: function (el) {{ $(el).addClass('{1}'); ", maxLen, cssClass);
+                        // 共通検索
+                        if (!string.IsNullOrEmpty(row.共通検索ID))
+                        {
+                            sb.AppendFormat("$(el).change({{ selectId: '{0}', selectParam: \"{1}\", selectOut: '{2}' }}, GetCodeValueGrid); ",
+                                row.共通検索ID, row.共通検索パラメータ, row.共通検索結果出力項目);
+                        }
+                        // 選択ボタン
+                        if (row.選択ボタン)
+                        {
+                            sb.AppendFormat("addSelectButton($(el), {{ nameId: '{0}', selectId: '{1}', dbCodeCol: '{2}', dbNameCol: '{3}'}});",
+                                row.共通検索結果出力項目, row.共通検索ID2, row.コード値列名, row.名称列名);
+                        }                        
+                        sb.Append("} }");
+                        break;
                 }
             }
 
@@ -437,9 +442,8 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
     //************************************************************************
     protected string GetValidationRules(string argName)
     {
-        // データセットにファイルを読み込み
-        CMEntityDataSet ds = new CMEntityDataSet();
-        ds.ReadXml(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", argName + ".xml"));
+        // データセットを取得
+        CMFormDataSet ds = GetFormDataSet(argName);
 
         // StringBuilder作成
         StringBuilder sb = new StringBuilder();
@@ -447,16 +451,13 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
         // DataColumn追加
         foreach (var row in ds.項目)
         {
-            string col = string.IsNullOrEmpty(row.SourceColumn) ?
-                row.項目名 : row.SourceColumn;
-
             StringBuilder rule = new StringBuilder();
 
             // 必須入力
-            if (row.必須) rule.Append("required: true, ");
+            if (row.入力制限 == "必須") rule.Append("required: true, ");
 
             if (rule.Length > 0)
-                sb.Append(col).Append(": { ").Append(rule).AppendLine("},");
+                sb.Append(row.項目名).Append(": { ").Append(rule).AppendLine("},");
         }
 
         return sb.ToString();
@@ -471,9 +472,9 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
     /// <param name="argMaxLen">最大長</param>
     /// <returns>項目名</returns>
     //************************************************************************
-    private string GetColParams(CMEntityDataSet.項目Row argRow, out string argCssClass, out int argMaxLen, out int argWidth)
+    private string GetColParams(CMFormDataSet.項目Row argRow, out string argCssClass, out int argMaxLen, out int argWidth)
     {
-        string name = argRow.IsSourceColumnNull() ? argRow.項目名 : argRow.SourceColumn;
+        string name = string.IsNullOrEmpty(argRow.ラベル) ? argRow.項目名 : argRow.ラベル;
                 
         // 型
         CMDbType dbType = (CMDbType)Enum.Parse(typeof(CMDbType), argRow.項目型);
@@ -559,7 +560,11 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
             default:
                 sb.AppendFormat("<input id=\"Txt{0}\" name=\"{0}\" class=\"{1}\" type=\"text\"", col, cssClass);
                 if (row.Key) sb.Append(" key=\"true\"");
-                if (row.入力制限 == "不可") sb.Append(" readonly=\"readonly\"");
+                if (row.入力制限 == "不可")
+                {
+                    sb.Append(" readonly=\"readonly\"/>");
+                    break;
+                }
                 else
                 {
                     // 共通検索
@@ -579,7 +584,7 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
         {
             sb.AppendLine();
             sb.AppendFormat("<input id=\"Btn{0}\" class=\"SelectButton\" type=\"button\" value=\"...\"", col);
-            sb.AppendFormat(" codeId=\"Txt{0}\" nameId=\"{0}_{1}\" selectId=\"{2}\" dbCodeCol=\"{3}\" dbNameCol=\"{4}\"/>",
+            sb.AppendFormat(" clickParam = \"{{ codeId: 'Txt{0}', nameId: '{0}_{1}', selectId: '{2}', dbCodeCol: '{3}', dbNameCol: '{4}' }}\" />",
                 col, row.共通検索結果出力項目, row.共通検索ID2, row.コード値列名, row.名称列名
             );
         }
@@ -596,6 +601,59 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
 
     //************************************************************************
     /// <summary>
+    /// フォームデータセットを取得する。
+    /// </summary>
+    /// <param name="argName">Xmlファイル名</param>
+    /// <returns>フォームデータセット</returns>
+    //************************************************************************
+    protected CMFormDataSet GetFormDataSet(string argName)
+    {
+        if (!m_formDsDic.ContainsKey(argName))
+        {
+            // データセットにファイルを読み込み
+            CMFormDataSet ds = new CMFormDataSet();
+            ds.ReadXml(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "View", argName + ".xml"));
+
+            string entName = ds.フォーム.First().エンティティ;
+            if (!string.IsNullOrEmpty(entName))
+            {
+                CMEntityDataSet entDs = new CMEntityDataSet();
+                entDs.ReadXml(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", entName + ".xml"));
+
+                // マージする項目名
+                string[] colNames =
+                {
+                    "Key", "項目型", "項目長", "小数桁", "基準値分類CD", "デフォルト値", "共通検索ID", "共通検索パラメータ"
+                };
+                
+                // フォームにエンティティの情報をマージ
+                foreach(var row in ds.項目)
+                {
+                    DataRow[] entRows = entDs.項目.Select("項目名='" + row.項目名 + "'");
+                    if (entRows.Length == 0) continue;
+
+                    CMEntityDataSet.項目Row entRow = (CMEntityDataSet.項目Row)entRows[0];
+
+                    foreach (string col in colNames)
+                        if (row[col] == DBNull.Value) row[col] = entRow[col];
+
+                    if (row["入力制限"] == DBNull.Value)
+                    {
+                        if (entRow.必須 == true) row.入力制限 = "必須";
+                        else if (entRow.更新対象外 == true) row.入力制限 = "不可";
+                    }
+                }
+            }
+
+            // 編集したデータセットを記憶
+            m_formDsDic[argName] = ds;
+        }
+
+        return m_formDsDic[argName];
+    }
+
+    //************************************************************************
+    /// <summary>
     /// 指定のXmlファイルからフォームを作成する。
     /// </summary>
     /// <param name="argName">Xmlファイル名</param>
@@ -604,9 +662,8 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
     //************************************************************************
     protected string CreateForm(string argName, bool selectForm = false)
     {
-        // データセットにファイルを読み込み
-        CMFormDataSet ds = new CMFormDataSet();
-        ds.ReadXml(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "View", argName + ".xml"));
+        // データセットを取得
+        CMFormDataSet ds = GetFormDataSet(argName);
 
         // StringBuilder作成
         StringBuilder sb = new StringBuilder();
@@ -616,18 +673,15 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
         // 入力欄作成ループ
         foreach (var row in ds.項目)
         {
+            if (row.非表示 == "F") continue;
+
             if (colCnt == 0) sb.Append("<tr>");
 
             string cssClass;
             int maxLen;
             int width;
 
-            var eTable = new CMEntityDataSet.項目DataTable();
-            var eRow = eTable.New項目Row();
-            eRow.項目名 = row.項目名;
-            eRow.項目型 = row.項目型;
-            eRow.項目長 = row.項目長;
-            string col = GetColParams(eRow, out cssClass, out maxLen, out width);
+            string col = GetColParams(row, out cssClass, out maxLen, out width);
 
             // 項目名
             sb.AppendFormat("<td class=\"ItemName\">{0}</td><td class=\"ItemPanel\">", col);
@@ -635,11 +689,11 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
             // 入力欄
             if (row.FromTo)
             {
-                sb.Append(CreateInput(col + "From", cssClass, maxLen, row, selectForm));
+                sb.Append(CreateInput(row.項目名 + "From", cssClass, maxLen, row, selectForm));
                 sb.Append(" ～ ");
-                sb.Append(CreateInput(col + "To", cssClass, maxLen, row, selectForm));
+                sb.Append(CreateInput(row.項目名 + "To", cssClass, maxLen, row, selectForm));
             }
-            else sb.Append(CreateInput(col, cssClass, maxLen, row, selectForm));
+            else sb.Append(CreateInput(row.項目名, cssClass, maxLen, row, selectForm));
 
             sb.Append("</td>");
 

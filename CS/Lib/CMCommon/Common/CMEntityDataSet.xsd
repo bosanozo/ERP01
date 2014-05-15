@@ -9,12 +9,12 @@
       </DataSource>
     </xs:appinfo>
   </xs:annotation>
-  <xs:element name="エンティティ" msprop:Generator_TableClassName="エンティティDataTable" msprop:Generator_TableVarName="tableエンティティ" msprop:Generator_RowChangedName="エンティティRowChanged" msprop:Generator_TablePropName="エンティティ" msprop:Generator_RowDeletingName="エンティティRowDeleting" msprop:Generator_RowChangingName="エンティティRowChanging" msprop:Generator_RowEvHandlerName="エンティティRowChangeEventHandler" msprop:Generator_RowDeletedName="エンティティRowDeleted" msprop:Generator_RowClassName="エンティティRow" msprop:Generator_UserTableName="エンティティ" msprop:Generator_RowEvArgName="エンティティRowChangeEvent">
+  <xs:element name="エンティティ" msprop:Generator_TableClassName="エンティティDataTable" msprop:Generator_TableVarName="tableエンティティ" msprop:Generator_TablePropName="エンティティ" msprop:Generator_RowDeletingName="エンティティRowDeleting" msprop:Generator_RowChangingName="エンティティRowChanging" msprop:Generator_RowEvHandlerName="エンティティRowChangeEventHandler" msprop:Generator_RowDeletedName="エンティティRowDeleted" msprop:Generator_UserTableName="エンティティ" msprop:Generator_RowChangedName="エンティティRowChanged" msprop:Generator_RowEvArgName="エンティティRowChangeEvent" msprop:Generator_RowClassName="エンティティRow">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="テーブル名" msprop:Generator_ColumnVarNameInTable="columnテーブル名" msprop:Generator_ColumnPropNameInRow="テーブル名" msprop:Generator_ColumnPropNameInTable="テーブル名Column" msprop:Generator_UserColumnName="テーブル名" type="xs:string" minOccurs="0" />
         <xs:element name="OrderBy" msprop:nullValue="_null" msprop:Generator_ColumnPropNameInRow="OrderBy" msprop:Generator_ColumnVarNameInTable="columnOrderBy" msprop:Generator_ColumnPropNameInTable="OrderByColumn" msprop:Generator_UserColumnName="OrderBy" type="xs:string" minOccurs="0" />
-        <xs:element name="項目" msprop:Generator_TableClassName="項目DataTable" msprop:Generator_TableVarName="table項目" msprop:Generator_RowChangedName="項目RowChanged" msprop:Generator_TablePropName="項目" msprop:Generator_RowDeletingName="項目RowDeleting" msprop:Generator_RowChangingName="項目RowChanging" msprop:Generator_RowEvHandlerName="項目RowChangeEventHandler" msprop:Generator_RowDeletedName="項目RowDeleted" msprop:Generator_RowClassName="項目Row" msprop:Generator_UserTableName="項目" msprop:Generator_RowEvArgName="項目RowChangeEvent" minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="項目" msprop:Generator_TableClassName="項目DataTable" msprop:Generator_TableVarName="table項目" msprop:Generator_TablePropName="項目" msprop:Generator_RowDeletingName="項目RowDeleting" msprop:Generator_RowChangingName="項目RowChanging" msprop:Generator_RowEvHandlerName="項目RowChangeEventHandler" msprop:Generator_RowDeletedName="項目RowDeleted" msprop:Generator_UserTableName="項目" msprop:Generator_RowChangedName="項目RowChanged" msprop:Generator_RowEvArgName="項目RowChangeEvent" msprop:Generator_RowClassName="項目Row" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="項目名" msprop:Generator_ColumnVarNameInTable="column項目名" msprop:Generator_ColumnPropNameInRow="項目名" msprop:Generator_ColumnPropNameInTable="項目名Column" msprop:Generator_UserColumnName="項目名" type="xs:string" minOccurs="0" />
@@ -30,12 +30,12 @@
               <xs:element name="存在チェックテーブル名" msprop:Generator_ColumnVarNameInTable="column存在チェックテーブル名" msprop:Generator_ColumnPropNameInRow="存在チェックテーブル名" msprop:Generator_ColumnPropNameInTable="存在チェックテーブル名Column" msprop:Generator_UserColumnName="存在チェックテーブル名" type="xs:string" minOccurs="0" />
               <xs:element name="共通検索ID" msprop:Generator_ColumnVarNameInTable="column共通検索ID" msprop:Generator_ColumnPropNameInRow="共通検索ID" msprop:Generator_ColumnPropNameInTable="共通検索IDColumn" msprop:Generator_UserColumnName="共通検索ID" type="xs:string" minOccurs="0" />
               <xs:element name="共通検索パラメータ" msprop:Generator_ColumnVarNameInTable="column共通検索パラメータ" msprop:Generator_ColumnPropNameInRow="共通検索パラメータ" msprop:Generator_ColumnPropNameInTable="共通検索パラメータColumn" msprop:Generator_UserColumnName="共通検索パラメータ" type="xs:string" minOccurs="0" />
-              <xs:element name="SourceColumn" msprop:nullValue="_null" msprop:Generator_ColumnPropNameInRow="SourceColumn" msprop:Generator_ColumnVarNameInTable="columnSourceColumn" msprop:Generator_ColumnPropNameInTable="SourceColumnColumn" msprop:Generator_UserColumnName="SourceColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="SQL列表現" msprop:nullValue="_null" msprop:Generator_ColumnPropNameInRow="SQL列表現" msprop:Generator_ColumnVarNameInTable="columnSQL列表現" msprop:Generator_ColumnPropNameInTable="SQL列表現Column" msprop:Generator_UserColumnName="SQL列表現" type="xs:string" minOccurs="0" />
             </xs:sequence>
             <xs:attribute name="エンティティ_Id" msprop:Generator_ColumnVarNameInTable="columnエンティティ_Id" msprop:Generator_ColumnPropNameInRow="エンティティ_Id" msprop:Generator_ColumnPropNameInTable="エンティティ_IdColumn" msprop:Generator_UserColumnName="エンティティ_Id" type="xs:int" use="prohibited" />
           </xs:complexType>
         </xs:element>
-        <xs:element name="結合テーブル" msprop:Generator_TableClassName="結合テーブルDataTable" msprop:Generator_TableVarName="table結合テーブル" msprop:Generator_RowChangedName="結合テーブルRowChanged" msprop:Generator_TablePropName="結合テーブル" msprop:Generator_RowDeletingName="結合テーブルRowDeleting" msprop:Generator_RowChangingName="結合テーブルRowChanging" msprop:Generator_RowEvHandlerName="結合テーブルRowChangeEventHandler" msprop:Generator_RowDeletedName="結合テーブルRowDeleted" msprop:Generator_RowClassName="結合テーブルRow" msprop:Generator_UserTableName="結合テーブル" msprop:Generator_RowEvArgName="結合テーブルRowChangeEvent" minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="結合テーブル" msprop:Generator_TableClassName="結合テーブルDataTable" msprop:Generator_TableVarName="table結合テーブル" msprop:Generator_TablePropName="結合テーブル" msprop:Generator_RowDeletingName="結合テーブルRowDeleting" msprop:Generator_RowChangingName="結合テーブルRowChanging" msprop:Generator_RowEvHandlerName="結合テーブルRowChangeEventHandler" msprop:Generator_RowDeletedName="結合テーブルRowDeleted" msprop:Generator_UserTableName="結合テーブル" msprop:Generator_RowChangedName="結合テーブルRowChanged" msprop:Generator_RowEvArgName="結合テーブルRowChangeEvent" msprop:Generator_RowClassName="結合テーブルRow" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="エンティティ_Id" msprop:Generator_ColumnVarNameInTable="columnエンティティ_Id" msprop:Generator_ColumnPropNameInRow="エンティティ_Id" msprop:Generator_ColumnPropNameInTable="エンティティ_IdColumn" msprop:Generator_UserColumnName="エンティティ_Id" type="xs:int" minOccurs="0" />
@@ -60,11 +60,11 @@
       <xs:selector xpath=".//エンティティ" />
       <xs:field xpath="@エンティティ_Id" />
     </xs:unique>
-    <xs:keyref name="エンティティ_結合テーブル" refer="Constraint1" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="結合テーブル" msprop:rel_Generator_ChildPropName="Get結合テーブルRows" msprop:rel_Generator_UserRelationName="エンティティ_結合テーブル" msprop:rel_Generator_RelationVarName="relationエンティティ_結合テーブル" msprop:rel_Generator_UserParentTable="エンティティ" msprop:rel_Generator_ParentPropName="エンティティRow">
+    <xs:keyref name="エンティティ_結合テーブル" refer="Constraint1" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="結合テーブル" msprop:rel_Generator_ChildPropName="Get結合テーブルRows" msprop:rel_Generator_UserRelationName="エンティティ_結合テーブル" msprop:rel_Generator_ParentPropName="エンティティRow" msprop:rel_Generator_RelationVarName="relationエンティティ_結合テーブル" msprop:rel_Generator_UserParentTable="エンティティ">
       <xs:selector xpath=".//結合テーブル" />
       <xs:field xpath="エンティティ_Id" />
     </xs:keyref>
-    <xs:keyref name="エンティティ_項目" refer="Constraint1" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="項目" msprop:rel_Generator_ChildPropName="Get項目Rows" msprop:rel_Generator_UserRelationName="エンティティ_項目" msprop:rel_Generator_RelationVarName="relationエンティティ_項目" msprop:rel_Generator_UserParentTable="エンティティ" msprop:rel_Generator_ParentPropName="エンティティRow">
+    <xs:keyref name="エンティティ_項目" refer="Constraint1" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="項目" msprop:rel_Generator_ChildPropName="Get項目Rows" msprop:rel_Generator_UserRelationName="エンティティ_項目" msprop:rel_Generator_ParentPropName="エンティティRow" msprop:rel_Generator_RelationVarName="relationエンティティ_項目" msprop:rel_Generator_UserParentTable="エンティティ">
       <xs:selector xpath=".//項目" />
       <xs:field xpath="@エンティティ_Id" />
     </xs:keyref>

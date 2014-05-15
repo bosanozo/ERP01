@@ -16,13 +16,14 @@
         $(document).ready(function () {
             // グリッド列名
             var grid1ColNames = [
-                '状態',
+                '状態', '操作',
                 <%= GetColNames("CMSM組織") %>
             ];
 
             // グリッド列設定
             var grid1ColModel = [
-                { name: '状態', frozen: true, formatter: statusFormatter, width: 70 },
+                { name: '状態', align: 'center', frozen: true, formatter: statusFormatter, width: 40 },
+                { name: '操作', align: 'center', frozen: true, formatter: actionFormatter, width: 50 },
                 <%= GetColModel("CMSM組織") %>
             ];
 
@@ -57,7 +58,7 @@
             $("#BtnCsvExport").click({ form: $("#Form1") }, onCsvExportClick);
             $("#BtnAdd").click({ grid: grid1, editDlg: editDlg1 }, onAddClick);
             $("#BtnEdit").click({ grid: grid1, editDlg: editDlg1 }, onEditClick);
-            $("#BtnDel").click({ grid: grid1 }, onDelClick);
+            //$("#BtnDel").click({ grid: grid1 }, onDelClick);
             $("#BtnView").click({ grid: grid1, editDlg: editDlg1 }, onViewClick);
             $("#BtnCommit").click({ grid: grid1 }, onCommitClick);
         });
@@ -156,9 +157,11 @@
 				    <td>
                         <input id="BtnEdit" class="FuncButton" type="button" value="修正" disabled/>
                     </td>
+                    <!--
 				    <td>
                         <input id="BtnDel" class="FuncButton" type="button" value="削除" disabled/>
                     </td>
+                    -->
 				    <td>
                         <input id="BtnView" class="FuncButton" type="button" value="参照" disabled/>
                     </td>

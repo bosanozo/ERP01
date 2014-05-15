@@ -180,6 +180,7 @@ namespace NEXS.ERP.CM.DA
         private const string SELECT_SQL =
             "SELECT " +
             "'0' 削除," +
+            "'' 操作," +
             "{0}" +
             TOROKU_COLS + "," +
             "A.排他用バージョン," +
@@ -274,16 +275,18 @@ namespace NEXS.ERP.CM.DA
                 StringBuilder orderSb = new StringBuilder();
                 foreach (var row in ds.項目)
                 {
-                    // 項目名に.が無いものは駆動表から取得
-                    string col = row.項目名.Contains(".") ?
-                        row.項目名 : "A." + row.項目名;
+                    string col = row.項目名;
 
                     // 検索列を作成
-                    // SourceColumnの指定がある場合は別名をつける
-                    if (string.IsNullOrEmpty(row.SourceColumn))
-                        sb.AppendFormat("{0},", col);
+                    // SQL列表現の指定がある場合は項目名を別名に使用する
+                    if (!string.IsNullOrEmpty(row.SQL列表現))
+                        sb.AppendFormat("{0} {1},", row.SQL列表現, row.項目名);
                     else
-                        sb.AppendFormat("{0} {1},", col, row.SourceColumn);
+                    {
+                        // 項目名に.が無いものは駆動表から取得
+                        if (!col.Contains(".")) col = "A." + col; 
+                        sb.AppendFormat("{0},", col);
+                    }
 
                     // ソート条件を作成
                     if (row.Key)

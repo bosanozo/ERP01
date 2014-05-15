@@ -461,11 +461,8 @@ namespace NEXS.ERP.CM.WEB
             // DataColumn’Ç‰Á
             foreach (var row in ds.€–Ú)
             {
-                string col = string.IsNullOrEmpty(row.SourceColumn) ?
-                    row.€–Ú–¼ : row.SourceColumn;
-
                 // DataColumnì¬
-                DataColumn dcol = new DataColumn(col);
+                DataColumn dcol = new DataColumn(row.€–Ú–¼);
                 // Œ^
                 CMDbType dbType = (CMDbType)Enum.Parse(typeof(CMDbType), row.€–ÚŒ^);
                 switch (dbType)
