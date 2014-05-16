@@ -168,6 +168,77 @@ namespace NEXS.ERP.CM.WEB
 
         //************************************************************************
         /// <summary>
+        /// 検索パラメータを追加する。
+        /// </summary>
+        /// <param name="param">検索パラメータ</param>
+        /// <param name="wc">WebControl</param>
+        /// <param name="argPanel">検索条件パネル</param>
+        //************************************************************************
+        private void AddSelectParam(List<CMSelectParam> param, WebControl wc, Panel argPanel)
+        {
+            // テキストとドロップダウンが対象
+            if (!(wc is DropDownList) && !(wc is TextBox))
+            {
+                foreach (Control c in wc.Controls)
+                {
+                    if (c is WebControl) AddSelectParam(param, (WebControl)c, argPanel);
+                }
+
+                return;
+            }
+
+            // Toは無視
+            if (wc.ID.EndsWith("To")) return;
+
+            // Fromの場合
+            if (wc.ID.EndsWith("From"))
+            {
+                // Fromなし名称取得
+                string colName = wc.ID.Substring(0, wc.ID.IndexOf("From"));
+
+                WebControl toCnt = (WebControl)argPanel.FindControl(colName + "To");
+                bool isSetFrom = IsSetValue(wc);
+                bool isSetTo = IsSetValue(toCnt);
+
+                // FromTo
+                if (isSetFrom && isSetTo)
+                {
+                    param.Add(new CMSelectParam(colName.Substring(3),
+                        string.Format("BETWEEN @{0} AND @{1}", wc.ID, toCnt.ID),
+                        GetValue(wc), GetValue(toCnt)));
+                }
+                // From or To
+                else if (isSetFrom || isSetTo)
+                {
+                    string op = isSetFrom ? ">= @" : "<= @";
+                    WebControl condCnt = isSetFrom ? wc : toCnt;
+
+                    param.Add(new CMSelectParam(colName.Substring(3), op + condCnt.ID, GetValue(condCnt)));
+                }
+            }
+            // 単一項目の場合
+            else
+            {
+                // 設定ありの場合
+                if (IsSetValue(wc))
+                {
+                    string op = "= @";
+                    object value = GetValue(wc);
+
+                    // LIKE検索の場合
+                    if (wc is TextBox && wc.ID.EndsWith("名"))
+                    {
+                        op = "LIKE @";
+                        value = "%" + value + "%";
+                    }
+
+                    param.Add(new CMSelectParam(wc.ID.Substring(3), op + wc.ID, value));
+                }
+            }
+        }
+
+        //************************************************************************
+        /// <summary>
         /// 検索パラメータを作成する。
         /// </summary>
         /// <param name="argPanel">検索条件パネル</param>
@@ -179,59 +250,7 @@ namespace NEXS.ERP.CM.WEB
 
             foreach (Control c in argPanel.Controls)
             {
-                WebControl wc = c as WebControl;
-              
-                // テキストとドロップダウンが対象
-                if (!(wc is DropDownList) && !(wc is TextBox)) continue;
-
-                // Toは無視
-                if (wc.ID.EndsWith("To")) continue;
-
-                // Fromの場合
-                if (wc.ID.EndsWith("From"))
-                {
-                    // Fromなし名称取得
-                    string colName = wc.ID.Substring(0, wc.ID.IndexOf("From"));
-
-                    WebControl toCnt = (WebControl)argPanel.FindControl(colName + "To");
-                    bool isSetFrom = IsSetValue(wc);
-                    bool isSetTo = IsSetValue(toCnt);
-
-                    // FromTo
-                    if (isSetFrom && isSetTo)
-                    {
-                        param.Add(new CMSelectParam(colName,
-                            string.Format("BETWEEN @{0} AND @{1}", wc.ID, toCnt.ID),
-                            GetValue(wc), GetValue(toCnt)));
-                    }
-                    // From or To
-                    else if (isSetFrom || isSetTo)
-                    {
-                        string op = isSetFrom ? ">= @" : "<= @";
-                        WebControl condCnt = isSetFrom ? wc : toCnt;
-
-                        param.Add(new CMSelectParam(colName, op + condCnt.ID, GetValue(condCnt)));
-                    }
-                }
-                // 単一項目の場合
-                else
-                {
-                    // 設定ありの場合
-                    if (IsSetValue(wc))
-                    {
-                        string op = "= @";
-                        object value = GetValue(wc);
-
-                        // LIKE検索の場合
-                        if (wc is TextBox && wc.ID.EndsWith("名"))
-                        {
-                            op = "LIKE @";
-                            value = "%" + value + "%";
-                        }
-
-                        param.Add(new CMSelectParam(wc.ID, op + wc.ID, value));
-                    }
-                }
+                if (c is WebControl) AddSelectParam(param, (WebControl)c, argPanel);
             }
 
             return param;

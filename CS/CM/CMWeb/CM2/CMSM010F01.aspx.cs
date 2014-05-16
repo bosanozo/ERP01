@@ -19,7 +19,7 @@ using NEXS.ERP.CM.DA;
 /// 組織マスタメンテ
 /// </summary>
 //************************************************************************
-public partial class CM2_CMSM010F01 : CMBaseListForm
+public partial class CM2_CMSM010F01 : CMBaseForm
 {
     #region BLインジェクション用フィールド
     protected CMSM010BL m_facade;
@@ -28,6 +28,25 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
     private Dictionary<string, CMFormDataSet> m_formDsDic = new Dictionary<string, CMFormDataSet>();
 
     #region イベントハンドラ
+#if ASP_Form
+    //************************************************************************
+    /// <summary>
+    /// 検索条件初期化
+    /// </summary>
+    //************************************************************************
+    protected void TblCondition_Init(object sender, EventArgs e)
+    {
+        try
+        {
+            // 入力欄を作成
+            //CreateForm((Table)sender, "CMSM組織検索条件", true);
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex);
+        }
+    }
+#endif
     //************************************************************************
     /// <summary>
     /// ページロード
@@ -50,7 +69,7 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
                 if (Request.Params["_search"] != null)
                 {
                     // 検索パラメータ取得
-                    List<CMSelectParam> param = CreateSelectParam(PanelCondition);
+                    List<CMSelectParam> param = CreateSelectParam();
 
                     // ファサードの呼び出し
                     DataSet ds = m_facade.Select(param, CMSelectType.List, out operationTime, out message);
@@ -190,7 +209,7 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
 
                         case "csvexp":
                             // 検索パラメータ取得
-                            List<CMSelectParam> param = CreateSelectParam(PanelCondition);
+                            List<CMSelectParam> param = CreateSelectParam();
 
                             // ファサードの呼び出し
                             DataSet ds = m_facade.Select(param, CMSelectType.Csv, out operationTime, out message);
@@ -265,26 +284,7 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
                 B会社CDFrom.Visible = false;
                 B会社CDTo.Visible = false;
             }*/
-
-            try
-            {
-                // 区分値の検索
-                DataTable kbnTable = CommonBL.SelectKbn("M001");
-
-                // 区分値の設定
-                DataView dv = new DataView(kbnTable, "分類CD = 'M001'", null, DataViewRowState.CurrentRows);
-
-                // 組織階層区分のアイテム設定
-                DataTable table = dv.ToTable();
-                table.Rows.InsertAt(table.NewRow(), 0);
-                組織階層区分.DataSource = table;
-                組織階層区分.DataBind();
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex);
-            }
-
+            
             // 操作履歴を出力
             WriteOperationLog();
         }
@@ -397,7 +397,7 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
                         // 共通検索
                         if (!string.IsNullOrEmpty(row.共通検索ID))
                         {
-                            sb.AppendFormat("$(el).change({{ selectId: '{0}', selectParam: \"{1}\", selectOut: '{2}' }}, GetCodeValueGrid); ",
+                            sb.AppendFormat("$(el).change({{ selectId: '{0}', selectParam: \"{1}\", selectOut: '{2}' }}, GetCodeValue); ",
                                 row.共通検索ID, row.共通検索パラメータ, row.共通検索結果出力項目);
                         }
                         // 選択ボタン
@@ -570,7 +570,7 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
                     // 共通検索
                     if (!string.IsNullOrEmpty(row.共通検索ID))
                     {
-                        sb.AppendFormat(" selectId=\"{0}\" selectParam=\"{1}\" selectOut=\"{2}_{3}\"",
+                        sb.AppendFormat(" changeParam =\"{{ selectId: '{0}', selectParam: &quot;{1}&quot;, selectOut: '{2}_{3}' }}\"",
                             row.共通検索ID, row.共通検索パラメータ, col, row.共通検索結果出力項目);
                     }
                 }
@@ -599,6 +599,163 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
         return sb.ToString();
     }
 
+#if ASP_Form
+    //************************************************************************
+    /// <summary>
+    /// 入力欄の要素を作成する。
+    /// </summary>
+    /// <param name="cell">要素を追加するテーブルのセル</param>
+    /// <param name="col">要素に設定するid</param>
+    /// <param name="cssClass">要素のclass</param>
+    /// <param name="maxLen">最大長</param>
+    /// <param name="row">項目Row</param>
+    /// <param name="selectForm">検索条件フラグ</param>
+    /// <returns>入力欄の要素</returns>
+    //************************************************************************
+    protected void CreateInput(TableCell cell, string col, string cssClass, int maxLen, CMFormDataSet.項目Row row, bool selectForm)
+    {
+        // 項目型
+        switch ((CMDbType)Enum.Parse(typeof(CMDbType), row.項目型))
+        {
+            case CMDbType.区分:
+                DropDownList ddl = new DropDownList();
+                ddl.ID = "Ddl" + col;
+                if (row.Key) ddl.Attributes["key"] = "true";
+                // option
+                DataTable kbnTable = CommonBL.SelectKbn(row.基準値分類CD);
+                if (selectForm) kbnTable.Rows.InsertAt(kbnTable.NewRow(), 0);
+                ddl.DataSource = kbnTable;
+                ddl.DataTextField = "表示名";
+                ddl.DataValueField = "基準値CD";
+                ddl.DataBind();
+                cell.Controls.Add(ddl);
+                break;
+
+            case CMDbType.フラグ:
+                CheckBox chk = new CheckBox();
+                chk.ID = "Chk" + col;
+                cell.Controls.Add(chk);
+                break;
+
+            default:
+                TextBox txt = new TextBox();
+                txt.ID = "Txt" + col;
+                txt.CssClass = cssClass;
+                if (row.Key) txt.Attributes["key"] = "true";
+                if (row.入力制限 == "不可")
+                {
+                    txt.ReadOnly = true;;
+                    cell.Controls.Add(txt);
+                    break;
+                }
+                else
+                {
+                    // 共通検索
+                    if (!string.IsNullOrEmpty(row.共通検索ID))
+                    {
+                        txt.Attributes["changeParam"] =
+                            string.Format("{{ selectId: '{0}', selectParam: \"{1}\", selectOut: '{2}_{3}' }}",
+                            row.共通検索ID, row.共通検索パラメータ, col, row.共通検索結果出力項目);
+                    }
+                }
+
+                txt.MaxLength = maxLen;
+                txt.Attributes["size"] = maxLen.ToString();
+                cell.Controls.Add(txt);
+                break;
+        }
+
+        // 選択ボタン
+        if (row.選択ボタン)
+        {
+            var btn = new System.Web.UI.HtmlControls.HtmlButton();
+            btn.Attributes["type"] = "button";
+            btn.ID = "Btn" + col;
+            btn.Attributes["class"] = "SelectButton";
+            btn.InnerText = "...";
+            btn.Attributes["clickParam"] =
+            string.Format("{{ codeId: 'Txt{0}', nameId: '{0}_{1}', selectId: '{2}', dbCodeCol: '{3}', dbNameCol: '{4}' }}",
+                col, row.共通検索結果出力項目, row.共通検索ID2, row.コード値列名, row.名称列名
+            );
+            cell.Controls.Add(btn);
+        }
+
+        // 共通検索結果出力項目
+        if (!string.IsNullOrEmpty(row.共通検索結果出力項目))
+        {
+            TextBox txt = new TextBox();
+            txt.ID = col + "_" + row.共通検索結果出力項目;
+            txt.CssClass = "TextInput";
+            txt.ReadOnly = true;
+            txt.Attributes["size"] = "30";
+            cell.Controls.Add(txt);
+        }
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// 指定のXmlファイルからフォームを作成する。
+    /// </summary>
+    /// <param name="table">HTML table</param>
+    /// <param name="argName">Xmlファイル名</param>
+    /// <param name="selectForm">検索条件フラグ</param>
+    /// <returns>フォーム</returns>
+    //************************************************************************
+    protected void CreateForm(Table table, string argName, bool selectForm = false)
+    {
+        // データセットを取得
+        CMFormDataSet ds = GetFormDataSet(argName);
+
+        // StringBuilder作成
+        StringBuilder sb = new StringBuilder();
+
+        int colCnt = 0;
+        TableRow tableRow = null;
+
+        // 入力欄作成ループ
+        foreach (var row in ds.項目)
+        {
+            if (row.非表示 == "F") continue;
+
+            if (colCnt == 0)
+            {
+                tableRow = new TableRow();
+                table.Rows.Add(tableRow);
+            }
+
+            string cssClass;
+            int maxLen;
+            int width;
+
+            string col = GetColParams(row, out cssClass, out maxLen, out width);
+
+            // 項目名
+            TableCell labelCell = new TableCell();
+            labelCell.CssClass = "ItemName";
+            labelCell.Text = col;
+            tableRow.Cells.Add(labelCell);
+
+            TableCell inputCell = new TableCell();
+            inputCell.CssClass = "ItemPanel";
+            tableRow.Cells.Add(inputCell);
+
+            // 入力欄
+            if (row.FromTo)
+            {
+                CreateInput(inputCell, row.項目名 + "From", cssClass, maxLen, row, selectForm);
+                Label t = new Label();
+                t.Text= " ～ ";
+                inputCell.Controls.Add(t);
+                CreateInput(inputCell, row.項目名 + "To", cssClass, maxLen, row, selectForm);
+            }
+            else CreateInput(inputCell, row.項目名, cssClass, maxLen, row, selectForm);
+
+            // 改行判定
+            if (colCnt == 1) colCnt = 0;
+            else colCnt++;
+        }
+    }
+#endif
     //************************************************************************
     /// <summary>
     /// フォームデータセットを取得する。
@@ -711,5 +868,70 @@ public partial class CM2_CMSM010F01 : CMBaseListForm
         }
 
         return sb.ToString();
+    }
+
+    //************************************************************************
+    /// <summary>
+    /// 検索パラメータを作成する。
+    /// </summary>
+    /// <returns>検索パラメータ</returns>
+    //************************************************************************
+    protected List<CMSelectParam> CreateSelectParam()
+    {
+        List<CMSelectParam> param = new List<CMSelectParam>();
+
+        foreach (string key in Request.QueryString)
+        {
+            // 以下は無視
+            if (key.StartsWith("_") || key.StartsWith("ctl00$") || key.EndsWith("To") ||
+                System.Text.RegularExpressions.Regex.IsMatch(key, "(nd|rows|page|sidx|sord|oper)")) continue;
+
+            // Fromの場合
+            if (key.EndsWith("From"))
+            {
+                // Fromなし名称取得
+                string colName = key.Substring(0, key.IndexOf("From"));
+                string toName = colName + "To";
+
+                bool isSetFrom = Request.QueryString[key].Length > 0;
+                bool isSetTo = Request.QueryString[toName].Length > 0;
+
+                // FromTo
+                if (isSetFrom && isSetTo)
+                {
+                    param.Add(new CMSelectParam(colName,
+                        string.Format("BETWEEN @{0} AND @{1}", key, toName),
+                        Request.QueryString[key], Request.QueryString[toName]));
+                }
+                // From or To
+                else if (isSetFrom || isSetTo)
+                {
+                    string op = isSetFrom ? ">= @" + key : "<= @" + toName;
+
+                    param.Add(new CMSelectParam(colName, op, isSetFrom ? Request.QueryString[key] : Request.QueryString[toName]));
+                }
+            }
+            // 単一項目の場合
+            else
+            {
+                // 設定ありの場合
+                if (Request.QueryString[key].Length > 0)
+                {
+                    string op = "= @";
+                    string value = Request.QueryString[key];
+
+                    // LIKE検索の場合
+                    if (key.EndsWith("名"))
+                    {
+                        op = "LIKE @";
+                        value = "%" + value + "%";
+                    }
+
+                    param.Add(new CMSelectParam(key, op + key, value));
+                }
+            }
+        }
+
+        return param;
     }
 }

@@ -39,7 +39,7 @@
             $("#PanelCondition").accordion({ collapsible: true, heightStyle: 'content' });
 
             // コード検索
-            $(".CodeInput[selectId]").change(GetCodeValue);
+            $(".CodeInput[changeParam]").change(GetCodeValue);
 
             // 選択ボタン
             $(".SelectButton").click(ShowSelectSub);
@@ -90,42 +90,7 @@
             <span>検索条件</span>
             <table width="100%" cellspacing="2">
                 <%= CreateForm("CMSM組織検索条件", true) %>
-                <tr>
-                    <td class="ItemName">組織コード</td>
-                    <td class="ItemPanel">
-                        <asp:TextBox ID="組織CDFrom" CssClass="CodeInput" runat="server" MaxLength="4" Width="40" />
-                        ～
-                        <asp:TextBox ID="組織CDTo" CssClass="CodeInput" runat="server" MaxLength="4" Width="40" />
-                    </td>
-                    <td class="ItemName">組織名</td>
-                    <td class="ItemPanel">
-                        <asp:TextBox ID="組織名" CssClass="TextInput" runat="server" MaxLength="40" Width="200" />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="ItemName">組織階層区分</td>
-                    <td class="ItemPanel" colspan="3">
-                        <asp:DropDownList ID="組織階層区分" runat="server" DataTextField="表示名" DataValueField="基準値CD" />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="ItemName">会社コード</td>
-                    <td class="ItemPanel">
-                        <asp:TextBox ID="会社CDFrom" CssClass="CodeInput" runat="server" MaxLength="4" Width="40" />
-                        <input id="B会社CDFrom" class="SelectButton" type="button" value="..." 
-                            codeId="会社CDFrom" nameId="組織名" selectId="CS組織" dbCodeCol="組織CD" dbNameCol="組織名"/> ～
-                        <asp:TextBox ID="会社CDTo" CssClass="CodeInput" runat="server" MaxLength="4" Width="40" />
-                        <input id="B会社CDTo" class="SelectButton" type="button" value="..." 
-                            codeId="会社CDTo" selectId="CS組織" dbCodeCol="組織CD" dbNameCol="組織名"/>
-                    </td>
-                    <td class="ItemName">更新年月日</td>
-                    <td class="ItemPanel">
-                        <asp:TextBox ID="更新日時From" CssClass="DateInput" runat="server" MaxLength="10" Width="80" /> ～
-                        <asp:TextBox ID="更新日時To" CssClass="DateInput" runat="server" MaxLength="10" Width="80" />
-                    </td>
-                </tr>
             </table>
-            </td>
         </asp:Panel>
         <!-- 機能ボタン -->
         <div class="FuncPanel">

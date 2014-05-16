@@ -200,63 +200,57 @@ function addSelectButton(code, data) {
     $("#" + btnId).click(data, ShowSelectSub);
 }
 
-// コード検索 グリッド
-function GetCodeValueGrid(evt) {
-    var code = $(this);
-
-    // Webサービス呼び出し
-    $.getJSON("../CMCommonService.svc/GetCodeName", {
-        argCode: code.val(),
-        argSelectId: evt.data.selectId,
-        argSelectParam: evt.data.selectParam,
-    }).done(function (json) {
-        var row = code.parents('tr');
-        var grid = row.parents('table');
-        var nameVal = json.d.Name;
-
-        // 背景色設定
-        var color = nameVal.length > 0 ? "" : "Pink";
-        grid.setCell(row.attr('id'), code.attr('name'), '', 'error'); // リロードすると消える
-
-        // エラー表示＆フォーカス
-        if (nameVal.length == 0) {
-            nameVal = "データなし";
-            code.focus();
-        }
-
-        // 名称を設定
-        grid.setCell(row.attr('id'), evt.data.selectOut, nameVal);
-
-    }).fail(function (xhr) {
-        showError(xhr.responseText);
-    });
-}
-
 // コード検索
-function GetCodeValue() {
+function GetCodeValue(evt) {
     var code = $(this);
+    var p = !!evt.data ? evt.data : eval('(' + $(this).attr('changeParam') + ')');
+
+    // 名称設定
+    var setName = function (nodata, nameVal) {
+        // フォーカス
+        if (nodata) code.focus();
+
+        // グリッドの場合
+        if (!!evt.data) {
+            var row = code.parents('tr');
+            var grid = row.parents('table');
+
+            // 名称を設定
+            if (nameVal.length == 0) nameVal = " ";
+            grid.setCell(row.attr('id'), p.selectOut, nameVal);
+
+            // エラー設定
+            if (nodata) code.parent().addClass('error');  // リロードすると消える
+            else code.parent().removeClass('error');
+        }
+            // フォームの場合
+        else {
+            // 名称を設定
+            $("#" + p.selectOut).val(nameVal);
+
+            // エラー設定
+            if (nodata) code.addClass('ui-state-error');
+            else code.removeClass('ui-state-error');
+        }
+
+    };
+
+    if (code.val().length == 0)
+    {
+        setName(false, "");
+        return;
+    }
 
     // Webサービス呼び出し
     $.getJSON("../CMCommonService.svc/GetCodeName", {
         argCode: code.val(),
-        argSelectId: code.attr('selectId'),
-        argSelectParam: code.attr('selectParam'),
+        argSelectId: p.selectId,
+        argSelectParam: p.selectParam,
     }).done(function (json) {
-        var name = $("#" + code.attr('selectOut'));
-        var nameVal = json.d.Name;
+        var nodata = json.d.Name.length == 0;
+        var nameVal = nodata ? "データなし" : json.d.Name;
 
-        // 名称を設定
-        name.val(nameVal);
-
-        // 背景色設定
-        var color = nameVal.length > 0 ? "" : "Pink";
-        code.css("background-color", color);
-
-        // エラー表示＆フォーカス
-        if (nameVal.length == 0) {
-            name.val("データなし");
-            code.focus();
-        }
+        setName(nodata, nameVal);
     }).fail(function (xhr) {
         showError(xhr.responseText);
     });
@@ -327,6 +321,7 @@ function createSubGrid(gid, colNames, colModel, pagerId) {
     grid.jqGrid({
         colNames: colNames,
         colModel: colModel,
+        datatype: 'json', // 自動検索
         pager: pagerId,
         multiselect: false,
         //shrinkToFit: true,
@@ -439,7 +434,7 @@ function onSelectClick(evt) {
     var postData = grid.getGridParam('postData');
 
     // Formのデータを結合
-    evt.data.form.serializeArray().forEach(function (data) {
+    evt.data.form.find('*[readonly!=readonly]').serializeArray().forEach(function (data) {
         postData[data.name] = data.value;
     });
 
@@ -452,7 +447,7 @@ function onSelectClick(evt) {
 
 // CSV出力ボタン
 function onCsvExportClick(evt) {
-    location.href = '?oper=csvexp&' + evt.data.form.serialize();
+    location.href = '?oper=csvexp&' + evt.data.form.find('*[readonly!=readonly]').serialize();
 }
 
 // 行削除ボタン
