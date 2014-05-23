@@ -452,11 +452,11 @@ namespace NEXS.ERP.CM.WEB
         protected DataTable CreateDataTableFromXml(string argName)
         {
             // データセットにファイルを読み込み
-            CMEntityDataSet ds = new CMEntityDataSet();
+            CM項目DataSet ds = new CM項目DataSet();
             ds.ReadXml(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", argName + ".xml"));
 
             // データテーブル作成
-            DataTable table = new DataTable(ds.エンティティ[0].テーブル名);
+            DataTable table = new DataTable(ds.項目一覧[0].項目一覧ID);
 
             // DataColumn追加
             foreach (var row in ds.項目)

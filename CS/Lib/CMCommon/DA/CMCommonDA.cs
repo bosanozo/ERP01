@@ -462,7 +462,7 @@ namespace NEXS.ERP.CM.DA
             if (argFname == null) argFname = argTable.TableName;
 
             // データセットにファイルを読み込み
-            CMEntityDataSet ds = new CMEntityDataSet();
+            CM項目DataSet ds = new CM項目DataSet();
             ds.ReadXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", argFname + ".xml"));
 
             // 入力値チェックループ
@@ -472,10 +472,10 @@ namespace NEXS.ERP.CM.DA
                 if (row.RowState == DataRowState.Deleted) continue;
 
                 // 存在チェック項目ループ
-                foreach (CMEntityDataSet.項目Row irow in ds.項目.Select("Len(存在チェックテーブル名) > 0"))
+                foreach (CM項目DataSet.項目Row irow in ds.項目.Select("Len(存在チェックテーブル名) > 0"))
                 {
                     // キー項目は新規のみチェック
-                    if (irow.Key && row.RowState != DataRowState.Added) continue;
+                    if (irow.主キー && row.RowState != DataRowState.Added) continue;
 
                     List<object> checkParams = new List<object>();
                     string paramText;

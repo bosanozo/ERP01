@@ -39,6 +39,8 @@
     <script src="../Scripts/jquery.ui.datepicker.validation.js"></script>
     <!-- jQuery ローカル -->
     <script src="../Scripts/CMJqCommon.js"></script>
+    <script src="../Scripts/CMJqGrid.js"></script>
+    <script src="../Scripts/CMJqDetail.js"></script>
     <!--
     <script type="text/vbscript">
 ' メッセージを表示する

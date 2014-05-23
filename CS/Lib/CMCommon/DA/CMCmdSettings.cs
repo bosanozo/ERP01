@@ -88,25 +88,25 @@ namespace NEXS.ERP.CM.DA
             foreach (string fname in argFnames)
             {
                 // データセットにファイルを読み込み
-                CMEntityDataSet ds = new CMEntityDataSet();
+                CM項目DataSet ds = new CM項目DataSet();
                 ds.ReadXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", fname + ".xml"));
 
                 CMCmdSetting cmdSetting = new CMCmdSetting();
 
                 // テーブル名を設定
-                cmdSetting.Name = ds.エンティティ[0].テーブル名;
+                cmdSetting.Name = ds.項目一覧[0].項目一覧ID;
 
                 // パラメータ設定
                 List<CMCmdParam> paramList = new List<CMCmdParam>();
                 foreach (var row in ds.項目)
                 {
                     // 更新対象外は無視
-                    if (row.更新対象外) continue;
+                    if (row.入力制限 == "不可") continue;
 
                     CMCmdParam cmdParam = new CMCmdParam();
                     cmdParam.Name = row.項目名;
                     cmdParam.DbType = (CMDbType)Enum.Parse(typeof(CMDbType), row.項目型);
-                    cmdParam.IsKey = row.Key;
+                    cmdParam.IsKey = row.主キー;
 
                     paramList.Add(cmdParam);
                 }

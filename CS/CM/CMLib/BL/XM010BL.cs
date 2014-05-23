@@ -67,39 +67,40 @@ namespace NEXS.ERP.CM.BL
             CommonDA.Connection = Connection;
             int maxRow = CommonDA.GetMaxRow();
 
-            string[] tables = { "XM更新履歴" };
+            string[] fnames = { "XMEM項目一覧" };
 
             // 登録画面の場合
             if (argSelectType == CMSelectType.Edit)
             {
                 // 検索テーブル
-                tables = new string[] { "XM更新履歴", "XMエンティティ", "XMエンティティ項目" };
+                fnames = new string[] { "XMEM項目一覧", "XMEM結合テーブル", "XMEM項目" };
 
+                /*
                 // パラメータ
-                argParam[0].tableName = tables[0];
-                argParam[1].tableName = tables[0];
+                argParam[0].tableName = fnames[0];
+                argParam[1].tableName = fnames[0];
 
                 for (int i = 1; i <= 2; i++)
                 {
                     CMSelectParam param1 = new CMSelectParam("エンティティ名",
                         "= @エンティティ名", argParam[0].paramFrom);
-                    param1.tableName = tables[i];
+                    param1.tableName = fnames[i];
 
                     CMSelectParam param2 = new CMSelectParam("VER",
-                        string.Format(VER_COND, tables[i], i == 1 ? "" : " AND 項目NO = A.項目NO"),
+                        string.Format(VER_COND, fnames[i], i == 1 ? "" : " AND 項目NO = A.項目NO"),
                         argParam[1].paramFrom);
-                    param2.tableName = tables[i];
+                    param2.tableName = fnames[i];
 
                     argParam.Add(param1);
                     argParam.Add(param2);
-                }
+                }*/
             }
 
             // 検索実行
             bool isOver;
             m_dataAccess.Connection = Connection;
             DataSet result = m_dataAccess.SelectFromXml(argParam, argSelectType,
-                maxRow, out isOver, tables);
+                maxRow, out isOver, fnames);
 
             argMessage = null;
             // 検索結果なし

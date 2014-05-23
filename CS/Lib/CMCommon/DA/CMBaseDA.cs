@@ -209,6 +209,7 @@ namespace NEXS.ERP.CM.DA
         /// </summary>
         private const string SELECT_EDIT_SQL =
             "SELECT " +
+            "'0' 削除," +
             "{0}" +
             TOROKU_COLS + "," +
             "A.排他用バージョン," +
@@ -265,11 +266,11 @@ namespace NEXS.ERP.CM.DA
             foreach (string fname in argFname)
             {
                 // データセットにファイルを読み込み
-                CMEntityDataSet ds = new CMEntityDataSet();
+                CM項目DataSet ds = new CM項目DataSet();
                 ds.ReadXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", fname + ".xml"));
 
                 // テーブル名を取得
-                string tableName = ds.エンティティ[0].テーブル名;
+                string tableName = ds.項目一覧[0].項目一覧ID;
 
                 StringBuilder sb = new StringBuilder();
                 StringBuilder orderSb = new StringBuilder();
@@ -289,7 +290,7 @@ namespace NEXS.ERP.CM.DA
                     }
 
                     // ソート条件を作成
-                    if (row.Key)
+                    if (row.主キー)
                     {
                         if (orderSb.Length > 0) orderSb.Append(" ,");
                         orderSb.Append(col);
@@ -297,7 +298,7 @@ namespace NEXS.ERP.CM.DA
                 }
 
                 // ソート条件
-                string order = ds.エンティティ[0].OrderBy;
+                string order = ds.項目一覧[0].並び順;
                 if (string.IsNullOrEmpty(order)) order = orderSb.ToString();
 
                 // tableNameがテーブル名が一致するものとtableNameなしを抽出
@@ -339,7 +340,7 @@ namespace NEXS.ERP.CM.DA
                 // データの取得
                 Adapter.Fill(result);
                 // テーブル名を設定
-                result.Tables["Table"].TableName = tableName;
+                result.Tables["Table"].TableName = fname;
             }
 
             // 最初のデータテーブルで検索件数オーバーを判定
@@ -388,7 +389,7 @@ namespace NEXS.ERP.CM.DA
             if (tableCnt == 1)
             {
                 // 登録実行
-                cnt = UpdateTable(argCmdSettings[0], argUpdateData.Tables[argCmdSettings[0].Name], argOperationTime);
+                cnt = UpdateTable(argCmdSettings[0], argUpdateData.Tables[0], argOperationTime);
             }
             // 複数テーブルの場合
             else
@@ -396,18 +397,18 @@ namespace NEXS.ERP.CM.DA
                 // Command設定の逆順に削除データを登録
                 for (int i = tableCnt - 1; i > 0; i--)
                 {
-                    DataTable table = argUpdateData.Tables[argCmdSettings[i].Name].GetChanges(DataRowState.Deleted);
+                    DataTable table = argUpdateData.Tables[i].GetChanges(DataRowState.Deleted);
                     if (table != null && table.Rows.Count > 0)
                         cnt += UpdateTable(argCmdSettings[i], table, argOperationTime);
                 }
 
                 // 最初のテーブルのデータを登録
-                cnt += UpdateTable(argCmdSettings[0], argUpdateData.Tables[argCmdSettings[0].Name], argOperationTime);
+                cnt += UpdateTable(argCmdSettings[0], argUpdateData.Tables[0], argOperationTime);
 
                 // Command設定の順に新規、修正データを登録
                 for (int i = 1; i < tableCnt; i++)
                 {
-                    DataTable table = argUpdateData.Tables[argCmdSettings[i].Name].GetChanges(DataRowState.Added | DataRowState.Modified);
+                    DataTable table = argUpdateData.Tables[i].GetChanges(DataRowState.Added | DataRowState.Modified);
                     if (table != null && table.Rows.Count > 0)
                         cnt += UpdateTable(argCmdSettings[i], table, argOperationTime);
                 }

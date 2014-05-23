@@ -24,7 +24,7 @@ using NEXS.ERP.CM.BL;
 /// 選択子画面
 /// </summary>
 //************************************************************************
-public partial class CM2_CMSubForm : CMBaseListForm
+public partial class CM2_CMSubForm : CMBaseJqForm
 {
     #region private変数
     private string m_codeName;
@@ -46,7 +46,7 @@ public partial class CM2_CMSubForm : CMBaseListForm
             try
             {
                 // 検索パラメータ取得
-                List<CMSelectParam> param = CreateSelectParam2();
+                List<CMSelectParam> param = CreateSelectParam();
 
                 // ファサードの呼び出し
                 CMMessage message;
@@ -108,10 +108,16 @@ public partial class CM2_CMSubForm : CMBaseListForm
     /// </summary>
     /// <returns>検索パラメータ</returns>
     //************************************************************************
-    protected List<CMSelectParam> CreateSelectParam2()
+    protected List<CMSelectParam> CreateSelectParam()
     {
         // 画面の条件を取得
-        List<CMSelectParam> formParam = CreateSelectParam(PanelCondition);
+        List<CMSelectParam> formParam = new List<CMSelectParam>();
+
+        if (!string.IsNullOrEmpty(Request.Params["Name"]))
+            formParam.Add(new CMSelectParam("Name", "LIKE @Name", "%" + Request.Params["Name"] + "%"));
+
+        if (!string.IsNullOrEmpty(Request.Params["Code"]))
+            formParam.Add(new CMSelectParam("Code", "= @Code", Request.Params["Code"]));
 
         // 項目名の置き換え
         foreach (var p in formParam)

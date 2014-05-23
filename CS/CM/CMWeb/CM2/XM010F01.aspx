@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/CM2.master" AutoEventWireup="true" CodeFile="CMSM010F01.aspx.cs" Inherits="CM2_CMSM010F01" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/CM2.master" AutoEventWireup="true" CodeFile="XM010F01.aspx.cs" Inherits="CM2_XM010F01" %>
 <%@ MasterType  virtualPath="~/CM2.master"%>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="Content1" Runat="Server">
@@ -14,7 +14,7 @@
 
         // 詳細画面表示用検索パラメータ取得
         function getDetailSearchParam(rowData) {
-            return '組織CD=' + rowData.組織CD;
+            return '項目一覧ID=' + rowData.項目一覧ID + '&VER=' + rowData.VER;
         }
 
         // jquery
@@ -22,19 +22,19 @@
             // グリッド列名
             var grid1ColNames = [
                 '状態', '操作',
-                <%= GetColNames("CMSM組織") %>
+                <%= GetColNames(FORM_XML) %>
             ];
 
             // グリッド列設定
             var grid1ColModel = [
                 { name: '状態', align: 'center', frozen: true, formatter: statusFormatter, width: 40 },
                 { name: '操作', align: 'center', frozen: true, formatter: actionFormatter, width: 50 },
-                <%= GetColModel("CMSM組織") %>
+                <%= GetColModel(FORM_XML) %>
             ];
 
             // ValidationRule
             var rules = {
-                <%= GetValidationRules("CMSM組織") %>
+                <%= GetValidationRules(FORM_XML) %>
             };
 
             // 初期化
@@ -49,37 +49,23 @@
             addCommonEvent(form);
 
             // グリッド作成
-            var grid1 = createGrid('Grid1', grid1ColNames, grid1ColModel, 'CMSM010F01.aspx', 'Grid1_Pager');
+            var grid1 = createGrid('Grid1', grid1ColNames, grid1ColModel, 'XM010F01.aspx', 'Grid1_Pager');
             // ボタンの操作状態設定Func
             grid1.setButtonStateFunc(setButtonState);
 
             // 詳細ダイアログ作成
-            var editDlg1 = createDetailDialog('DlgDetail', rules, grid1);
+            var editDlg1 = createDetailDialog('DlgDetail', rules, 'Grid1');
 
             // ボタンイベント登録
             $("#BtnSelect").click({ grid: grid1, form: form }, onSelectClick);
             $("#BtnCsvExport").click({ form: form }, onCsvExportClick);
-            $("#BtnAdd").click({ grid: grid1, editDlg: editDlg1 }, onAddClick);
-            $("#BtnEdit").click({ grid: grid1, editDlg: editDlg1 }, onEditClick);
+            $("#BtnAdd").click({ grid: grid1, editDlg: editDlg1 }, onAddClick2);
+            $("#BtnEdit").click({ grid: grid1, editDlg: editDlg1 }, onEditClick2);
             //$("#BtnDel").click({ grid: grid1 }, onDelClick);
-            $("#BtnView").click({ grid: grid1, editDlg: editDlg1 }, onViewClick);
+            $("#BtnView").click({ grid: grid1, editDlg: editDlg1 }, onViewClick2);
             $("#BtnCommit").click({ grid: grid1 }, onCommitClick);
         });
     </script>
-
-    <!-- スクリプト -->
-	<script type="text/javascript">
-	    // 検索ボタン押下時の入力値チェック
-	    function CheckInputList() {
-	        if (CheckFromTo(Form1.組織CDFrom, Form1.組織CDTo, "組織コード")) return false;
-	        if (CheckName(Form1.組織名, "組織名")) return false;
-	        if (CheckFromTo(Form1.会社CDFrom, Form1.会社CDTo, "会社コード")) return false;
-	        if (CheckDateFromTo(Form1.更新日時From, Form1.更新日時To, "更新日時")) return false;
-
-	        //if (CheckCode(Form1.wTxb_RyohanGrpCd, "量販グループコード")) return false;
-	        //if (CheckAN(Form1.wTxb_UpdateId, "更新者")) return false;
-	    }
-	</script>
 
     <!-- フォーム -->
     <form id="Form1" runat="server">
@@ -88,14 +74,11 @@
         <asp:Panel id="PanelCondition" Runat="server">
             <span>検索条件</span>
             <table width="100%" cellspacing="2">
-                <%= CreateForm("CMSM組織検索条件", true) %>
+                <%= CreateForm("XMFS項目一覧", true) %>
             </table>
         </asp:Panel>
 	    <!-- 隠し項目 -->
-        <input id="KaishaCd" type="hidden" runat="server" />
-        <input id="SoshikiLayer" type="hidden" runat="server" />
-        <input id="Selected" type="hidden" runat="server" />
-        <input id="EntryForm" type="hidden" value="CMSM010F02.aspx" />
+        <input id="EntryForm" type="hidden" value="XM010F02.aspx" />
     </form>
 
     <!-- 機能ボタン -->
@@ -147,7 +130,7 @@
     <div id="DlgDetail" >
         <form>
             <table cellspacing="2">
-                <%= CreateForm("CMSM組織") %>
+                <%= CreateForm(FORM_XML) %>
             </table>
         </form>
     </div>

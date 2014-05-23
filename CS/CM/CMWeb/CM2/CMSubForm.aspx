@@ -38,6 +38,7 @@
     <script src="../Scripts/jquery.ui.datepicker.validation.js"></script>
     <!-- jQuery ローカル -->
     <script src="../Scripts/CMJqCommon.js"></script>
+    <script src="../Scripts/CMJqSubGrid.js"></script>
 
     <!-- jQueryスクリプト -->
     <script type="text/javascript">

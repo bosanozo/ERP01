@@ -163,6 +163,7 @@ select
 /* 読み取り専用 */
 .ReadOnly,
 input[readonly=readonly],
+textarea[readonly=readonly],
 select[disabled=disabled]
 {
 	/* border: none; */

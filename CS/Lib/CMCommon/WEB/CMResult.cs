@@ -31,6 +31,34 @@ namespace NEXS.ERP.CM.WEB
         public object[] cell;
     }
 
+#if ResultTable
+    //************************************************************************
+    /// <summary>
+    /// 返却データテーブル
+    /// </summary>
+    //************************************************************************
+    [Serializable]
+    public class ResultTable
+    {
+        public int total;
+        public int page;
+        public int records;
+        public List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+    }
+#endif
+    //************************************************************************
+    /// <summary>
+    /// 返却データセット
+    /// </summary>
+    //************************************************************************
+    [Serializable]
+    public class ResultDataSet
+    {
+        public Dictionary<string, object> firstRow = new Dictionary<string, object>();
+        public Dictionary<string, ResultData> tables = new Dictionary<string, ResultData>();
+        //public Dictionary<string, ResultTable> tables = new Dictionary<string, ResultTable>();
+    }
+
     //************************************************************************
     /// <summary>
     /// 処理結果返却データ

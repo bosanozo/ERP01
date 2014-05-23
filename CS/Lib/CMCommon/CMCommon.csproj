@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NEXS.ERP.CM</RootNamespace>
     <AssemblyName>CMCommon</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\CM\CMWeb\Bin\CMCommon.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\CM\CMWeb\Bin\CMCommon.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DocumentFormat.OpenXml, Version=2.0.5022.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -65,6 +68,8 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -87,15 +92,14 @@
     <Compile Include="Common\CMCommonSelectArgs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\CMFormDataSet.Designer.cs">
-      <DependentUpon>CMFormDataSet.xsd</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
+    <Compile Include="Common\CM項目DataSet.cs">
+      <DependentUpon>CM項目DataSet.xsd</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Common\CMEntityDataSet.Designer.cs">
+    <Compile Include="Common\CM項目DataSet.Designer.cs">
+      <DependentUpon>CM項目DataSet.xsd</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>CMEntityDataSet.xsd</DependentUpon>
     </Compile>
     <Compile Include="Common\CMException.cs">
       <SubType>Code</SubType>
@@ -154,6 +158,9 @@
     <Compile Include="WEB\CMBaseForm.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="WEB\CMBaseJqForm.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="WEB\CMBaseListForm.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -161,32 +168,27 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Common\CMFormDataSet.xsc">
-      <DependentUpon>CMFormDataSet.xsd</DependentUpon>
+    <None Include="Common\CM項目DataSet.xsc">
+      <DependentUpon>CM項目DataSet.xsd</DependentUpon>
     </None>
-    <None Include="Common\CMFormDataSet.xsd">
+    <None Include="Common\CM項目DataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>CMFormDataSet.Designer.cs</LastGenOutput>
+      <LastGenOutput>CM項目DataSet.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
-    <None Include="Common\CMFormDataSet.xss">
-      <DependentUpon>CMFormDataSet.xsd</DependentUpon>
+    <None Include="Common\CM項目DataSet.xss">
+      <DependentUpon>CM項目DataSet.xsd</DependentUpon>
     </None>
-    <None Include="Common\CMEntityDataSet.xsc">
-      <DependentUpon>CMEntityDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="Common\CMEntityDataSet.xsd">
-      <SubType>Designer</SubType>
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>CMEntityDataSet.Designer.cs</LastGenOutput>
-    </None>
-    <None Include="Common\CMEntityDataSet.xss">
-      <DependentUpon>CMEntityDataSet.xsd</DependentUpon>
+    <None Include="Common\CMMessageDataSet.xsc">
+      <DependentUpon>CMMessageDataSet.xsd</DependentUpon>
     </None>
     <None Include="Common\CMMessageDataSet.xsd">
       <SubType>Designer</SubType>
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>CMMessageDataSet.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="DA\CMCommonSelectDataSet.xsc">
+      <DependentUpon>CMCommonSelectDataSet.xsd</DependentUpon>
     </None>
     <None Include="DA\CMCommonSelectDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
