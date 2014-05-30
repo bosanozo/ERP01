@@ -105,7 +105,7 @@ namespace NEXS.ERP.CM.WEB
                 CMDbType dbType = (CMDbType)Enum.Parse(typeof(CMDbType), row.項目型);
 
                 // align
-                if (dbType == CMDbType.金額 || dbType == CMDbType.整数 || dbType == CMDbType.小数)
+                if (dbType == CMDbType.金額 || dbType == CMDbType.数値)
                     sb.Append("align: 'right', ");
                 else if (dbType == CMDbType.フラグ || dbType == CMDbType.日付 || dbType == CMDbType.日時)
                     sb.Append("align: 'center', ");
@@ -322,7 +322,7 @@ namespace NEXS.ERP.CM.WEB
                 sb.Append("</td>");
 
                 // 改行判定
-                if (colCnt == 1)
+                if (colCnt == 1 || row.改行)
                 {
                     sb.AppendLine("</tr>");
                     colCnt = 0;
@@ -546,7 +546,7 @@ namespace NEXS.ERP.CM.WEB
             CMDbType dbType = (CMDbType)Enum.Parse(typeof(CMDbType), argRow.項目型);
 
             argCssClass = null;
-            argMaxLen = argRow.Is長さNull() ? 0 : argRow.長さ;
+            argMaxLen = argRow.長さ;
             argWidth = 0;
 
             switch (dbType)
@@ -565,10 +565,9 @@ namespace NEXS.ERP.CM.WEB
                     argWidth = Math.Min(argMaxLen * 16 + 4, 120);
                     break;
                 case CMDbType.金額:
-                case CMDbType.小数: // 数値に統合する
-                case CMDbType.整数:
+                case CMDbType.数値:
                     argCssClass = "NumberInput";
-                    argMaxLen += (argMaxLen - 1) / 3;
+                    argMaxLen += (argMaxLen - 1) / 3 + argRow.小数桁 > 0 ? argRow.小数桁 + 1 : 0;
                     argWidth = argMaxLen * 8 + 4;
                     break;
                 case CMDbType.日付:
@@ -647,11 +646,11 @@ namespace NEXS.ERP.CM.WEB
         /// ブラウザからのリクエストを実行する。
         /// </summary>
         /// <param name="argFacade"></param>
-        /// <param name="argParams"></param>
+        /// <param name="argForm"></param>
         //************************************************************************
-        protected void DoRequest(ICMBaseBL argFacade, NameValueCollection argParams = null)
+        protected void DoRequest(ICMBaseBL argFacade, NameValueCollection argForm = null)
         {
-            if (argParams == null) argParams = Request.Params;
+            if (argForm == null) argForm = Request.Form;
 
             dynamic result = null;
 
@@ -662,21 +661,18 @@ namespace NEXS.ERP.CM.WEB
             try
             {
                 // 検索の場合
-                if (argParams["_search"] != null)
+                if (Request.QueryString["_search"] != null)
                 {
                     // 検索パラメータ取得
                     List<CMSelectParam> param = CreateSelectParam();
 
-                    CMSelectType selType = argParams["_search"] == "edit" ? CMSelectType.Edit : CMSelectType.List;
+                    CMSelectType selType = Request.QueryString["_search"] == "edit" ? CMSelectType.Edit : CMSelectType.List;
 
                     // ファサードの呼び出し
                     DataSet ds = argFacade.Select(param, selType, out operationTime, out message);
 
                     // 返却メッセージの表示
                     if (message != null) ShowMessage(message);
-
-                    // 検索結果を保存
-                    Session[Request.Path + "_DataSet"] = ds;
 
                     DataTable table = ds.Tables[0];
                     
@@ -725,6 +721,18 @@ namespace NEXS.ERP.CM.WEB
 #endif
                         }
 
+                        // 新規の場合
+                        string mode = Request.QueryString["_mode"];
+                        if (mode == "new")
+                        {
+                            // 全て新規行にする
+                            foreach (DataTable dt in ds.Tables)
+                                foreach (DataRow row in dt.Rows) row.SetAdded();
+                        }
+
+                        // 親はクリア
+                        if (mode == "new") table.Rows.Clear();
+
                         result = resultDs;
                     }
                     // 一覧検索
@@ -734,23 +742,26 @@ namespace NEXS.ERP.CM.WEB
                         foreach (DataRow row in table.Rows)
                             result.rows.Add(new ResultRecord { id = Convert.ToInt32(row["ROWNUMBER"]), cell = row.ItemArray });
                     }
+
+                    // 検索結果を保存
+                    Session[Request.Path + "_DataSet"] = ds;
                 }
                 // 編集操作の場合
-                else if (argParams["oper"] != null)
+                else if (argForm["oper"] != null)
                 {
                     // 検索結果を取得
                     DataSet ds = (DataSet)Session[Request.Path + "_DataSet"];
 
                     // 編集対象のDataTable取得
-                    DataTable table = argParams["TableName"] != null ?
-                        (DataTable)ds.Tables[argParams["TableName"]] : (DataTable)ds.Tables[0];
+                    DataTable table = Request.QueryString["TableName"] != null ?
+                        (DataTable)ds.Tables[Request.QueryString["TableName"]] : (DataTable)ds.Tables[0];
 
                     // 編集対象のDataRow取得
-                    string id = argParams["id"];
+                    string id = argForm["id"];
                     DataRow row = string.IsNullOrEmpty(id) || id == "_empty" ?
                         null : table.Select("ROWNUMBER=" + id).First();
 
-                    string oper = argParams["oper"];
+                    string oper = argForm["oper"];
 
                     switch (oper)
                     {
@@ -765,26 +776,26 @@ namespace NEXS.ERP.CM.WEB
                             row["ROWNUMBER"] = retId;
 
                             // パラメータを設定
-                            foreach (string key in argParams.Keys)
+                            foreach (string key in argForm.Keys)
                             {
                                 if (!table.Columns.Contains(key)) continue;
 
-                                row[key] = GetDataColumnVal(table.Columns[key], argParams[key]);
+                                row[key] = GetDataColumnVal(table.Columns[key], argForm[key]);
                             }
 
                             table.Rows.Add(row);
 
                             // idを返却
-                            if (oper == "new") result = new ResultStatus { id = retId };
-                            else Response.Write(retId.ToString());
+                            if (oper == "add") Response.Write(retId.ToString());
+                            else result = new ResultStatus { id = retId };
                             break;
 
                         case "edit":
-                            foreach (string key in argParams.Keys)
+                            foreach (string key in argForm.Keys)
                             {
                                 if (!table.Columns.Contains(key)) continue;
 
-                                string txtVal = argParams[key];
+                                string txtVal = argForm[key];
                                 object value = GetDataColumnVal(table.Columns[key], txtVal);
 
                                 if (value == DBNull.Value)
@@ -891,7 +902,7 @@ namespace NEXS.ERP.CM.WEB
                             xslDoc.SaveAs(Response.OutputStream);
                             break;
                     }
-                }
+               }
             }
             catch (CMException ex)
             {
@@ -1002,8 +1013,8 @@ namespace NEXS.ERP.CM.WEB
                     string colName = key.Substring(0, key.IndexOf("From"));
                     string toName = colName + "To";
 
-                    bool isSetFrom = Request.QueryString[key].Length > 0;
-                    bool isSetTo = Request.QueryString[toName].Length > 0;
+                    bool isSetFrom = !string.IsNullOrEmpty(Request.QueryString[key]);
+                    bool isSetTo = !string.IsNullOrEmpty(Request.QueryString[toName]);
 
                     // FromTo
                     if (isSetFrom && isSetTo)
@@ -1024,7 +1035,7 @@ namespace NEXS.ERP.CM.WEB
                 else
                 {
                     // 設定ありの場合
-                    if (Request.QueryString[key].Length > 0)
+                    if (!string.IsNullOrEmpty(Request.QueryString[key]))
                     {
                         string op = "= @";
                         string value = Request.QueryString[key];

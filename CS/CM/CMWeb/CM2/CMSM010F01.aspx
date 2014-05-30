@@ -59,7 +59,7 @@
             // ボタンイベント登録
             $("#BtnSelect").click({ grid: grid1, form: form }, onSelectClick);
             $("#BtnCsvExport").click({ form: form }, onCsvExportClick);
-            $("#BtnAdd").click({ grid: grid1, editDlg: editDlg1 }, onAddClick);
+            $("#BtnAdd").click({ grid: grid1, editDlg: editDlg1 }, onAddClick2);
             $("#BtnEdit").click({ grid: grid1, editDlg: editDlg1 }, onEditClick);
             //$("#BtnDel").click({ grid: grid1 }, onDelClick);
             $("#BtnView").click({ grid: grid1, editDlg: editDlg1 }, onViewClick);

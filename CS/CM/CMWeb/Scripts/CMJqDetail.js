@@ -15,6 +15,13 @@ function initDetail(form, grids) {
             buttons = form.find("input[type=button]");
             selects = form.find("select:not([disabled]), :checkbox:not([disabled])");
             $("#BtnCommit").attr('disabled', 'disabled');
+
+            // グリッドを参照モードに設定
+            if (grids) {
+                for (var tname in grids) {
+                    setViewMode(grids[tname]);
+                }
+            }
             break;
     }
 
@@ -36,11 +43,13 @@ function initDetail(form, grids) {
 }
 
 // 詳細画面データ検索
-function selectDetail(form, grids) {
+function selectDetail(form, grids, url) {
     // 初期検索
     $.ajax({
+        async: false,
         dataType: 'json',
-        data: '_search=edit'
+        data: '_search=edit',
+        url: url
     }).done(function (data) {
         if (data.error) {
             showError(data.messages[0].message);
@@ -58,6 +67,10 @@ function selectDetail(form, grids) {
                     grid.setGridParam({ datatype: 'json' });
                     grid[0].addJSONData(data.tables[tname]);
                     grid.setGridParam({ datatype: 'local' });
+
+                    // 状態クリア
+                    grid.setErrorMessage(null);
+                    grid.refreshGrid();
                 }
             }
         }
@@ -79,9 +92,10 @@ function onCommitClick2(evt) {
 
     // 送信
     $.ajax({
+        async: false,
         dataType: dataType,
         type: 'POST',
-        data: 'oper=' + oper + '&id=' + id + '&' + getSendInputs(form).serialize()
+        data: 'oper=' + oper + '&id=' + id + '&' + form.find('*:not([name^=_])').serialize()
     }).done(function (data) {
         if (data.error) {
             showError(data.messages[0].message);
@@ -95,6 +109,7 @@ function onCommitClick2(evt) {
 
     // 登録
     $.ajax({
+        async: false,
         dataType: 'json',
         type: 'POST',
         data: { oper: 'commit' }
@@ -117,6 +132,9 @@ function onCommitClick2(evt) {
         showServerError(xhr);
     });
 
+    // 再検索url
+    var url = $(location).attr('pathname') + '?_mode=' + mode + '&' + form.find(":input[key=true]").serialize();
+
     // 詳細画面データ再検索
-    selectDetail(form, evt.data.grids);
+    selectDetail(form, evt.data.grids, url);
 }

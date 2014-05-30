@@ -14,7 +14,10 @@
 
         // 詳細画面表示用検索パラメータ取得
         function getDetailSearchParam(rowData) {
-            return '項目一覧ID=' + rowData.項目一覧ID + '&VER=' + rowData.VER;
+            if (rowData)
+                return '項目一覧ID=' + rowData.項目一覧ID + '&VER=' + rowData.VER;
+            else
+                return '項目一覧ID= &VER=0';
         }
 
         // jquery

@@ -162,9 +162,9 @@ select
 
 /* 読み取り専用 */
 .ReadOnly,
-input[readonly=readonly],
-textarea[readonly=readonly],
-select[disabled=disabled]
+input[readonly],
+textarea[readonly],
+select[disabled]
 {
 	/* border: none; */
 	background-color: #CCCCFF;

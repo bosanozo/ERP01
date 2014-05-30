@@ -92,6 +92,7 @@
     <Compile Include="Common\CMCommonSelectArgs.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Common\CMInputType.cs" />
     <Compile Include="Common\CM項目DataSet.cs">
       <DependentUpon>CM項目DataSet.xsd</DependentUpon>
       <SubType>Component</SubType>

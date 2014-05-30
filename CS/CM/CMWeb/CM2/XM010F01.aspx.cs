@@ -34,9 +34,20 @@ public partial class CM2_XM010F01 : CMBaseJqForm
     //************************************************************************
     protected void Page_Load(object sender, EventArgs e)
     {
+        string oper = Request.Params["oper"];
+
         // Ajax
-        if (Request.Params["_search"] != null || Request.Params["oper"] != null)
+        if (Request.Params["_search"] != null || oper != null)
         {
+            // 検索結果を取得
+            DataSet ds = (DataSet)Session[Request.Path + "_DataSet"];
+
+            if (oper == "commit")
+            {
+                // 子テーブルの削除データを追加する
+                m_facade.AddChildDelRow(ds);
+            }
+
             // ブラウザからのリクエストを実行
             DoRequest(m_facade);
         }

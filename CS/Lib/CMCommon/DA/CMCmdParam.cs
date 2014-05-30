@@ -25,7 +25,7 @@ namespace NEXS.ERP.CM.DA
     //************************************************************************
     public enum CMDbType
     {
-        コード, コード_可変, 区分, 文字列, 金額, 整数, 小数, フラグ, 日付, 日時
+        コード, コード_可変, 区分, 文字列, 金額, 数値, フラグ, 日付, 日時
     }
 
     //************************************************************************
@@ -58,6 +58,8 @@ namespace NEXS.ERP.CM.DA
         [DefaultValue(false)]
         public bool IsKey { get; set; }
 
+        public bool IsDecimal { get; set; }
+
         #region コンストラクタ
         //************************************************************************
         /// <summary>
@@ -86,10 +88,8 @@ namespace NEXS.ERP.CM.DA
                     return SqlDbType.NVarChar;
                 case CMDbType.金額:
                     return SqlDbType.Money;
-                case CMDbType.整数:
-                    return SqlDbType.Int;
-                case CMDbType.小数:
-                    return SqlDbType.Decimal;
+                case CMDbType.数値:
+                    return IsDecimal ? SqlDbType.Decimal : SqlDbType.Int;
                 case CMDbType.フラグ:
                     return SqlDbType.Bit;
                 case CMDbType.日付:

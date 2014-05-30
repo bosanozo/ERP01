@@ -301,9 +301,9 @@ namespace NEXS.ERP.CM.DA
                 string order = ds.項目一覧[0].並び順;
                 if (string.IsNullOrEmpty(order)) order = orderSb.ToString();
 
-                // tableNameがテーブル名が一致するものとtableNameなしを抽出
+                // tableNameがXMLファイル名と一致するものとtableNameなしを抽出
                 var p = from a in argParam
-                        where a.tableName == tableName
+                        where a.tableName == fname
                            || string.IsNullOrEmpty(a.tableName)
                         select a;
 
@@ -538,7 +538,7 @@ namespace NEXS.ERP.CM.DA
                 // キー項目にNULLは設定させない
                 if (row.IsKey)
                 {
-                    if (row.DbType == CMDbType.金額 || row.DbType == CMDbType.整数 || row.DbType == CMDbType.小数)
+                    if (row.DbType == CMDbType.金額 || row.DbType == CMDbType.数値)
                         valueFmt = "ISNULL(@{0}, 0),";
                     // 日付型は対応なし
                     else if (row.DbType == CMDbType.日時 || row.DbType == CMDbType.日付)

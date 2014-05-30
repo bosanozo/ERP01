@@ -471,11 +471,8 @@ namespace NEXS.ERP.CM.WEB
                         dcol.DataType = typeof(bool);
                         break;
                     case CMDbType.‹àŠz:
-                    case CMDbType.¬”:
-                        dcol.DataType = typeof(decimal);
-                        break;
-                    case CMDbType.®”:
-                        dcol.DataType = typeof(long);
+                    case CMDbType.”’l:
+                        dcol.DataType = row.¬”Œ… > 0 ? typeof(decimal) : typeof(long);
                         break;
                     case CMDbType.“ú•t:
                     case CMDbType.“úŽž:

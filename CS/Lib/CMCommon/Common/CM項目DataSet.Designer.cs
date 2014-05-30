@@ -1799,11 +1799,11 @@ namespace NEXS.ERP.CM.Common {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public int 長さ {
                 get {
-                    try {
-                        return ((int)(this[this.table項目.長さColumn]));
+                    if (this.Is長さNull()) {
+                        return 0;
                     }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'長さ\' の値は DBNull です。", e);
+                    else {
+                        return ((int)(this[this.table項目.長さColumn]));
                     }
                 }
                 set {
@@ -1815,11 +1815,11 @@ namespace NEXS.ERP.CM.Common {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public int 小数桁 {
                 get {
-                    try {
-                        return ((int)(this[this.table項目.小数桁Column]));
+                    if (this.Is小数桁Null()) {
+                        return 0;
                     }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'小数桁\' の値は DBNull です。", e);
+                    else {
+                        return ((int)(this[this.table項目.小数桁Column]));
                     }
                 }
                 set {
@@ -2525,11 +2525,11 @@ namespace NEXS.ERP.CM.Common {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string 結合条件 {
                 get {
-                    try {
-                        return ((string)(this[this.table結合テーブル.結合条件Column]));
+                    if (this.Is結合条件Null()) {
+                        return "false";
                     }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'結合テーブル\' にある列 \'結合条件\' の値は DBNull です。", e);
+                    else {
+                        return ((string)(this[this.table結合テーブル.結合条件Column]));
                     }
                 }
                 set {

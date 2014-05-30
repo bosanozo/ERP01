@@ -9,20 +9,20 @@
       </DataSource>
     </xs:appinfo>
   </xs:annotation>
-  <xs:element name="項目一覧" msprop:Generator_TableClassName="項目一覧DataTable" msprop:Generator_TableVarName="table項目一覧" msprop:Generator_TablePropName="項目一覧" msprop:Generator_RowDeletingName="項目一覧RowDeleting" msprop:Generator_RowChangingName="項目一覧RowChanging" msprop:Generator_RowEvHandlerName="項目一覧RowChangeEventHandler" msprop:Generator_RowDeletedName="項目一覧RowDeleted" msprop:Generator_UserTableName="項目一覧" msprop:Generator_RowChangedName="項目一覧RowChanged" msprop:Generator_RowEvArgName="項目一覧RowChangeEvent" msprop:Generator_RowClassName="項目一覧Row">
+  <xs:element name="項目一覧" msprop:Generator_TableClassName="項目一覧DataTable" msprop:Generator_TableVarName="table項目一覧" msprop:Generator_RowChangedName="項目一覧RowChanged" msprop:Generator_TablePropName="項目一覧" msprop:Generator_RowDeletingName="項目一覧RowDeleting" msprop:Generator_RowChangingName="項目一覧RowChanging" msprop:Generator_RowEvHandlerName="項目一覧RowChangeEventHandler" msprop:Generator_RowDeletedName="項目一覧RowDeleted" msprop:Generator_RowClassName="項目一覧Row" msprop:Generator_UserTableName="項目一覧" msprop:Generator_RowEvArgName="項目一覧RowChangeEvent">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="項目一覧ID" msprop:Generator_ColumnVarNameInTable="column項目一覧ID" msprop:Generator_ColumnPropNameInRow="項目一覧ID" msprop:Generator_ColumnPropNameInTable="項目一覧IDColumn" msprop:Generator_UserColumnName="項目一覧ID" type="xs:string" minOccurs="0" />
         <xs:element name="並び順" msprop:nullValue="_null" msprop:Generator_ColumnPropNameInRow="並び順" msprop:Generator_ColumnVarNameInTable="column並び順" msprop:Generator_ColumnPropNameInTable="並び順Column" msprop:Generator_UserColumnName="並び順" type="xs:string" minOccurs="0" />
         <xs:element name="エンティティID" msprop:nullValue="_null" msprop:Generator_ColumnPropNameInRow="エンティティID" msprop:Generator_ColumnVarNameInTable="columnエンティティID" msprop:Generator_ColumnPropNameInTable="エンティティIDColumn" msprop:Generator_UserColumnName="エンティティID" type="xs:string" minOccurs="0" />
-        <xs:element name="項目" msprop:Generator_TableClassName="項目DataTable" msprop:Generator_TableVarName="table項目" msprop:Generator_TablePropName="項目" msprop:Generator_RowDeletingName="項目RowDeleting" msprop:Generator_RowChangingName="項目RowChanging" msprop:Generator_RowEvHandlerName="項目RowChangeEventHandler" msprop:Generator_RowDeletedName="項目RowDeleted" msprop:Generator_UserTableName="項目" msprop:Generator_RowChangedName="項目RowChanged" msprop:Generator_RowEvArgName="項目RowChangeEvent" msprop:Generator_RowClassName="項目Row" minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="項目" msprop:Generator_TableClassName="項目DataTable" msprop:Generator_TableVarName="table項目" msprop:Generator_RowChangedName="項目RowChanged" msprop:Generator_TablePropName="項目" msprop:Generator_RowDeletingName="項目RowDeleting" msprop:Generator_RowChangingName="項目RowChanging" msprop:Generator_RowEvHandlerName="項目RowChangeEventHandler" msprop:Generator_RowDeletedName="項目RowDeleted" msprop:Generator_RowClassName="項目Row" msprop:Generator_UserTableName="項目" msprop:Generator_RowEvArgName="項目RowChangeEvent" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="項目名" msprop:Generator_ColumnVarNameInTable="column項目名" msprop:Generator_ColumnPropNameInRow="項目名" msprop:Generator_ColumnPropNameInTable="項目名Column" msprop:Generator_UserColumnName="項目名" type="xs:string" minOccurs="0" />
               <xs:element name="ラベル" msprop:nullValue="_null" msprop:Generator_ColumnPropNameInRow="ラベル" msprop:Generator_ColumnVarNameInTable="columnラベル" msprop:Generator_ColumnPropNameInTable="ラベルColumn" msprop:Generator_UserColumnName="ラベル" type="xs:string" minOccurs="0" />
               <xs:element name="項目型" msprop:nullValue="_null" msprop:Generator_ColumnPropNameInRow="項目型" msprop:Generator_ColumnVarNameInTable="column項目型" msprop:Generator_ColumnPropNameInTable="項目型Column" msprop:Generator_UserColumnName="項目型" type="xs:string" minOccurs="0" />
-              <xs:element name="長さ" msprop:Generator_ColumnVarNameInTable="column長さ" msprop:Generator_ColumnPropNameInRow="長さ" msprop:Generator_ColumnPropNameInTable="長さColumn" msprop:Generator_UserColumnName="長さ" type="xs:int" minOccurs="0" />
-              <xs:element name="小数桁" msprop:Generator_ColumnVarNameInTable="column小数桁" msprop:Generator_ColumnPropNameInRow="小数桁" msprop:Generator_ColumnPropNameInTable="小数桁Column" msprop:Generator_UserColumnName="小数桁" type="xs:int" minOccurs="0" />
+              <xs:element name="長さ" msprop:nullValue="0" msprop:Generator_ColumnPropNameInRow="長さ" msprop:Generator_ColumnVarNameInTable="column長さ" msprop:Generator_ColumnPropNameInTable="長さColumn" msprop:Generator_UserColumnName="長さ" type="xs:int" minOccurs="0" />
+              <xs:element name="小数桁" msprop:nullValue="0" msprop:Generator_ColumnPropNameInRow="小数桁" msprop:Generator_ColumnVarNameInTable="column小数桁" msprop:Generator_ColumnPropNameInTable="小数桁Column" msprop:Generator_UserColumnName="小数桁" type="xs:int" minOccurs="0" />
               <xs:element name="必須" msprop:nullValue="false" msprop:Generator_ColumnPropNameInRow="必須" msprop:Generator_ColumnVarNameInTable="column必須" msprop:Generator_ColumnPropNameInTable="必須Column" msprop:Generator_UserColumnName="必須" type="xs:boolean" minOccurs="0" />
               <xs:element name="主キー" msprop:nullValue="false" msprop:Generator_ColumnPropNameInRow="主キー" msprop:Generator_ColumnVarNameInTable="column主キー" msprop:Generator_ColumnPropNameInTable="主キーColumn" msprop:Generator_UserColumnName="主キー" type="xs:boolean" minOccurs="0" />
               <xs:element name="基準値分類CD" msprop:nullValue="_null" msprop:Generator_ColumnPropNameInRow="基準値分類CD" msprop:Generator_ColumnVarNameInTable="column基準値分類CD" msprop:Generator_ColumnPropNameInTable="基準値分類CDColumn" msprop:Generator_UserColumnName="基準値分類CD" type="xs:string" minOccurs="0" />
@@ -46,14 +46,14 @@
             <xs:attribute name="項目一覧_Id" msprop:Generator_ColumnVarNameInTable="column項目一覧_Id" msprop:Generator_ColumnPropNameInRow="項目一覧_Id" msprop:Generator_ColumnPropNameInTable="項目一覧_IdColumn" msprop:Generator_UserColumnName="項目一覧_Id" type="xs:int" use="prohibited" />
           </xs:complexType>
         </xs:element>
-        <xs:element name="結合テーブル" msprop:Generator_TableClassName="結合テーブルDataTable" msprop:Generator_TableVarName="table結合テーブル" msprop:Generator_TablePropName="結合テーブル" msprop:Generator_RowDeletingName="結合テーブルRowDeleting" msprop:Generator_RowChangingName="結合テーブルRowChanging" msprop:Generator_RowEvHandlerName="結合テーブルRowChangeEventHandler" msprop:Generator_RowDeletedName="結合テーブルRowDeleted" msprop:Generator_UserTableName="結合テーブル" msprop:Generator_RowChangedName="結合テーブルRowChanged" msprop:Generator_RowEvArgName="結合テーブルRowChangeEvent" msprop:Generator_RowClassName="結合テーブルRow" minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="結合テーブル" msprop:Generator_TableClassName="結合テーブルDataTable" msprop:Generator_TableVarName="table結合テーブル" msprop:Generator_RowChangedName="結合テーブルRowChanged" msprop:Generator_TablePropName="結合テーブル" msprop:Generator_RowDeletingName="結合テーブルRowDeleting" msprop:Generator_RowChangingName="結合テーブルRowChanging" msprop:Generator_RowEvHandlerName="結合テーブルRowChangeEventHandler" msprop:Generator_RowDeletedName="結合テーブルRowDeleted" msprop:Generator_RowClassName="結合テーブルRow" msprop:Generator_UserTableName="結合テーブル" msprop:Generator_RowEvArgName="結合テーブルRowChangeEvent" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="項目一覧_Id" msprop:Generator_ColumnVarNameInTable="column項目一覧_Id" msprop:Generator_ColumnPropNameInRow="項目一覧_Id" msprop:Generator_ColumnPropNameInTable="項目一覧_IdColumn" msprop:Generator_UserColumnName="項目一覧_Id" type="xs:int" minOccurs="0" />
               <xs:element name="テーブル名" msprop:Generator_ColumnVarNameInTable="columnテーブル名" msprop:Generator_ColumnPropNameInRow="テーブル名" msprop:Generator_ColumnPropNameInTable="テーブル名Column" msprop:Generator_UserColumnName="テーブル名" type="xs:string" minOccurs="0" />
               <xs:element name="シノニム" msprop:Generator_ColumnVarNameInTable="columnシノニム" msprop:Generator_ColumnPropNameInRow="シノニム" msprop:Generator_ColumnPropNameInTable="シノニムColumn" msprop:Generator_UserColumnName="シノニム" type="xs:string" minOccurs="0" />
               <xs:element name="内部結合" msprop:nullValue="false" msprop:Generator_ColumnPropNameInRow="内部結合" msprop:Generator_ColumnVarNameInTable="column内部結合" msprop:Generator_ColumnPropNameInTable="内部結合Column" msprop:Generator_UserColumnName="内部結合" type="xs:boolean" minOccurs="0" />
-              <xs:element name="結合条件" msprop:Generator_ColumnVarNameInTable="column結合条件" msprop:Generator_ColumnPropNameInRow="結合条件" msprop:Generator_ColumnPropNameInTable="結合条件Column" msprop:Generator_UserColumnName="結合条件" type="xs:string" minOccurs="0" />
+              <xs:element name="結合条件" msprop:nullValue="false" msprop:Generator_ColumnPropNameInRow="結合条件" msprop:Generator_ColumnVarNameInTable="column結合条件" msprop:Generator_ColumnPropNameInTable="結合条件Column" msprop:Generator_UserColumnName="結合条件" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -71,11 +71,11 @@
       <xs:selector xpath=".//項目一覧" />
       <xs:field xpath="@項目一覧_Id" />
     </xs:unique>
-    <xs:keyref name="エンティティ_結合テーブル" refer="Constraint1" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="結合テーブル" msprop:rel_Generator_ChildPropName="Get結合テーブルRows" msprop:rel_Generator_UserRelationName="エンティティ_結合テーブル" msprop:rel_Generator_ParentPropName="エンティティRow" msprop:rel_Generator_RelationVarName="relationエンティティ_結合テーブル" msprop:rel_Generator_UserParentTable="項目一覧">
+    <xs:keyref name="エンティティ_結合テーブル" refer="Constraint1" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="結合テーブル" msprop:rel_Generator_ChildPropName="Get結合テーブルRows" msprop:rel_Generator_UserRelationName="エンティティ_結合テーブル" msprop:rel_Generator_RelationVarName="relationエンティティ_結合テーブル" msprop:rel_Generator_UserParentTable="項目一覧" msprop:rel_Generator_ParentPropName="エンティティRow">
       <xs:selector xpath=".//結合テーブル" />
       <xs:field xpath="項目一覧_Id" />
     </xs:keyref>
-    <xs:keyref name="エンティティ_項目" refer="Constraint1" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="項目" msprop:rel_Generator_ChildPropName="Get項目Rows" msprop:rel_Generator_UserRelationName="エンティティ_項目" msprop:rel_Generator_ParentPropName="エンティティRow" msprop:rel_Generator_RelationVarName="relationエンティティ_項目" msprop:rel_Generator_UserParentTable="項目一覧">
+    <xs:keyref name="エンティティ_項目" refer="Constraint1" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="項目" msprop:rel_Generator_ChildPropName="Get項目Rows" msprop:rel_Generator_UserRelationName="エンティティ_項目" msprop:rel_Generator_RelationVarName="relationエンティティ_項目" msprop:rel_Generator_UserParentTable="項目一覧" msprop:rel_Generator_ParentPropName="エンティティRow">
       <xs:selector xpath=".//項目" />
       <xs:field xpath="@項目一覧_Id" />
     </xs:keyref>

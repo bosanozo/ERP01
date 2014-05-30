@@ -134,6 +134,9 @@ function createGrid(gid, colNames, colModel, editurl, pagerId) {
         //afterInsertRow : function (id) {},
         // 行編集
         ondblClickRow: function (id) {
+            // 状態が非表示の場合、編集不可
+            if ($(this).getColProp('状態').hidden) return;
+
             // 削除行は編集不可
             var sts = $(this).getCell(id, '状態');
             if (sts.match(/^削除/)) return;
@@ -219,6 +222,9 @@ function createDetailDialog(dlgId, rules, grid) {
 
             // エラー消去
             validator.resetForm();
+
+            // open後処理があれば実行
+            if (dlg.oper != 'view' && dlg.afterOpen) dlg.afterOpen();
         },
         close: function () {
             // 読み取り専用を戻す
@@ -325,9 +331,12 @@ function onSelectClick(evt) {
     var grid = evt.data.grid;
     var postData = grid.getGridParam('postData');
 
+    // データクリア
+    $.each(postData, function (key) { delete postData[key] });
+
     // Formのデータを結合
-    getSendInputs(evt.data.form).serializeArray().forEach(function (data) {
-        postData[data.name] = data.value;
+    $.each(getSendInputs(evt.data.form).serializeArray(), function (id, data) {
+        if (data.value && data.value.length > 0) postData[data.name] = data.value;
     });
 
     // 検索
@@ -378,6 +387,9 @@ function showDetailDialog(data, oper) {
         dlg.buttons = dlg.find("input[type=button]");
         dlg.selects = dlg.find("select:not([disabled]), :checkbox:not([disabled])");
     }
+
+    // oper保存
+    dlg.oper = oper;
 
     // オプション設定
     dlg.dialog('option', 'title', title);
@@ -547,4 +559,11 @@ function onDelClick(evt) {
 
     // エラーダイアログ表示
     if (errmsg) showAlert(errmsg);
+}
+
+// 参照モードにする
+function setViewMode(grid) {
+    grid.destroyFrozenColumns();
+    grid.hideCol(['状態', '操作']);
+    grid.setFrozenColumns();
 }

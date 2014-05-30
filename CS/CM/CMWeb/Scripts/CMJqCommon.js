@@ -147,9 +147,8 @@ function colseSubDialog(rowData) {
 
 // QueryStringの値を取得する
 function getQueryString(name) {
-    var idx = window.location.href.indexOf('?');
-    if (idx >= 0) {
-        var arr = window.location.href.substr(idx + 1).split('&');
+    if ($(location).attr('search').length > 0) {
+        var arr = $(location).attr('search').substr(1).split('&');
         for (var i = 0; i < arr.length; i++) {
             var p = arr[i].split('=');
             if (p[0] == name) return p[1];
@@ -221,14 +220,14 @@ function onCsvExportClick(evt) {
 }
 
 // 詳細画面表示ボタン共通処理２
-function showDetailDialog2(data, oper) {
+function showDetailDialog2(data, oper, title) {
     var grid = data.grid;
     var selrow = grid.getGridParam('selrow');
-    var rowData = selrow ? grid.getRowData(selrow) : "";
+    var rowData = selrow ? grid.getRowData(selrow) : null;
     var param = '_mode=' + oper + '&' + getDetailSearchParam(rowData);
 
     $('<div id="DetailDialog"><iframe width="100%" height="100%" frameborder="0" src="' + $("#EntryForm").val() + '?' + param + '"></iframe></div>').dialog({
-        title: 'タイトル',
+        title: title,
         modal: true,
         width: 1024,
         height: 700,
@@ -262,17 +261,17 @@ function onViewClick(evt) {
 
 // 新規ボタン
 function onAddClick2(evt) {
-    showDetailDialog2(evt.data, 'new');
+    showDetailDialog2(evt.data, 'new', $(this).val());
 }
 
 // 修正ボタン
 function onEditClick2(evt) {
-    showDetailDialog2(evt.data, 'edit');
+    showDetailDialog2(evt.data, 'edit', $(this).val());
 }
 
 // 参照ボタン
 function onViewClick2(evt) {
-    showDetailDialog2(evt.data, 'view');
+    showDetailDialog2(evt.data, 'view', $(this).val());
 }
 
 /*

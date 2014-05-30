@@ -76,6 +76,7 @@
             // グリッド作成
             var grid1 = createGrid('Grid1', grid1ColNames, grid1ColModel, 'XM010F02.aspx?TableName=XMEM結合テーブル');
             var grid2 = createGrid('Grid2', grid2ColNames, grid2ColModel, 'XM010F02.aspx?TableName=XMEM項目');
+            var grids = { XMEM結合テーブル: grid1, XMEM項目: grid2 };
 
             // ボタンの操作状態設定Func
             grid1.setButtonStateFunc(setGrid1ButtonState);
@@ -85,24 +86,75 @@
             var editDlg1 = createDetailDialog('DlgGrid1Detail', grid1Rules, grid1);
             var editDlg2 = createDetailDialog('DlgGrid2Detail', grid2Rules, grid2);
 
-            // グリッド１ ボタンイベント登録
-            $("#BtnGrid1Add").click({ grid: grid1, editDlg: editDlg1 }, onAddClick);
-            $("#BtnGrid1Edit").click({ grid: grid1, editDlg: editDlg1 }, onEditClick);
-            $("#BtnGrid1View").click({ grid: grid1, editDlg: editDlg1 }, onViewClick);
+            // 画面の状態設定
+            var mode = getQueryString('_mode');
 
-            // グリッド２ ボタンイベント登録
-            $("#BtnGrid2Add").click({ grid: grid2, editDlg: editDlg2 }, onAddClick);
-            $("#BtnGrid2Edit").click({ grid: grid2, editDlg: editDlg2 }, onEditClick);
+            // 修正の時はチェックボックス追加
+            if (mode == 'edit') {
+                $("#TxtVER").after('<input id="ChkVerUp" name="VerUp" type="checkbox"/><label for="ChkVerUp">新版</label>');
+                $("#ChkVerUp").click(function () {
+                    var add = $(this).prop('checked') ? 1 : -1;
+                    $("#TxtVER").val(Number($("#TxtVER").val()) + add);
+                });
+            }
+
+            if (mode != 'view') {
+                // グリッド１ ボタンイベント登録
+                $("#BtnGrid1Add").click({ grid: grid1, editDlg: editDlg1 }, onAddClick);
+                $("#BtnGrid1Edit").click({ grid: grid1, editDlg: editDlg1 }, onEditClick);
+
+                // グリッド２ ボタンイベント登録
+                $("#BtnGrid2Add").click({ grid: grid2, editDlg: editDlg2 }, onAddClick);
+                $("#BtnGrid2Edit").click({ grid: grid2, editDlg: editDlg2 }, onEditClick);
+
+                // ボタンイベント登録
+                $("#BtnCommit").click({ form: form, validator: validator, grids: grids }, onCommitClick2);
+
+                // 入力制限制御
+                editDlg2.afterOpen = setReadOnly;
+
+                // 入力制限制御
+                $("#Ddl項目型").change(setReadOnly);
+                $("#Chk選択ボタン").click(setReadOnly);
+
+            } else {
+                // ボタン非表示
+                $("#BtnGrid1Add").css('display', 'none');
+                $("#BtnGrid1Edit").css('display', 'none');
+                $("#BtnGrid2Add").css('display', 'none');
+                $("#BtnGrid2Edit").css('display', 'none');
+            }
+
+            // 参照ボタン
+            $("#BtnGrid1View").click({ grid: grid1, editDlg: editDlg1 }, onViewClick);
             $("#BtnGrid2View").click({ grid: grid2, editDlg: editDlg2 }, onViewClick);
 
-            var grids = { XMEM結合テーブル: grid1, XMEM項目: grid2 };
-
-            // ボタンイベント登録
-            $("#BtnCommit").click({ form: form, validator: validator, grids: grids }, onCommitClick2);
+            // XML出力ボタン
+            $("#BtnXml").click(function () { location.href = '?oper=xml'; });
 
             // 初期処理
             initDetail(form, grids);
+
+            // VERの設定
+            if (mode == 'new') $("#TxtVER").val('1');
         });
+
+        // 入力制限
+        function setReadOnly() {
+            var type = $("#Ddl項目型").val();
+            var isCode = type == '1' || type == '2';
+
+            $("#Txt共通検索ID, #Txa共通検索パラメータ, #Txt共通検索結果出力項目").attr('readonly', !isCode);
+            $("#Chk選択ボタン").attr('disabled', !isCode);
+
+            var addBtn = isCode && $("#Chk選択ボタン").prop('checked');
+            $("#Txt共通検索ID2, #Txtコード値列名, #Txt名称列名").attr('readonly', !addBtn);
+
+            $("#Txt長さ").attr('readonly', type == '7');
+            $("#Txt小数桁").attr('readonly', type != '5' && type != '6');
+            $("#Txt基準値分類CD").attr('readonly', type != '3');
+        }
+
     </script>
 
     <!-- フォーム -->
@@ -178,6 +230,9 @@
 			<tr>
 				<td>
                     <input id="BtnCommit" class="FuncButton" type="button" value="登録"/>
+                </td>
+				<td>
+                    <input id="BtnXml" class="FuncButton" type="button" value="XML出力"/>
                 </td>
 				<td>
                     <input id="BtnClose" class="FuncButton" type="button" value="閉じる" onclick="window.parent.colseDetailDialog()"/>

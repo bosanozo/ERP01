@@ -33,7 +33,7 @@ namespace NEXS.ERP.CM.BL
         // 最新バージョン検索条件
         private const string VER_COND =
             "= (SELECT MAX(VER) FROM {0} WHERE VER <= @VER " +
-            "AND エンティティ名 = A.エンティティ名{1})";
+            "AND 項目一覧ID = A.項目一覧ID{1})";
 
         #region コンストラクタ
         //************************************************************************
@@ -75,25 +75,35 @@ namespace NEXS.ERP.CM.BL
                 // 検索テーブル
                 fnames = new string[] { "XMEM項目一覧", "XMEM結合テーブル", "XMEM項目" };
 
-                /*
-                // パラメータ
-                argParam[0].tableName = fnames[0];
+                // VERの条件を変更
                 argParam[1].tableName = fnames[0];
 
+                // 子テーブルのVERの条件を追加
                 for (int i = 1; i <= 2; i++)
                 {
-                    CMSelectParam param1 = new CMSelectParam("エンティティ名",
-                        "= @エンティティ名", argParam[0].paramFrom);
-                    param1.tableName = fnames[i];
-
                     CMSelectParam param2 = new CMSelectParam("VER",
-                        string.Format(VER_COND, fnames[i], i == 1 ? "" : " AND 項目NO = A.項目NO"),
+                        string.Format(VER_COND,
+                        i == 1 ? "XM結合テーブル" : "XM項目",
+                        i == 1 ? " AND テーブル名 = A.テーブル名" : " AND 項目名 = A.項目名"),
                         argParam[1].paramFrom);
                     param2.tableName = fnames[i];
-
-                    argParam.Add(param1);
                     argParam.Add(param2);
-                }*/
+                }
+            }　
+            else
+            {
+                // 最新VERのみ表示
+                var p1 = argParam.Where(p => p.name == "最新版のみ");
+                if (p1.Count() > 0)
+                {
+                    var param = p1.First();
+                    if (param.paramFrom.ToString() == "true")
+                    {
+                        param.name = "VER";
+                        param.condtion = "= (SELECT MAX(VER) FROM XM項目一覧 WHERE 項目一覧ID = A.項目一覧ID)";
+                        param.paramFrom = null;
+                    }
+                }
             }
 
             // 検索実行
@@ -138,6 +148,84 @@ namespace NEXS.ERP.CM.BL
             int cnt = m_dataAccess.Update(argUpdateData, argOperationTime);
 
             return cnt;
+        }
+
+        //************************************************************************
+        /// <summary>
+        /// 子テーブルの削除データを追加する。
+        /// </summary>
+        /// <param name="argDataSet">削除データ追加対象DataSet</param>
+        //************************************************************************
+        public void AddChildDelRow(DataSet argDataSet)
+        {
+            foreach (DataRow prow in argDataSet.Tables[0].Rows)
+            {
+                if (prow["削除"].ToString() == "1")
+                {
+                    // 検索条件設定
+                    List<CMSelectParam> paramList = new List<CMSelectParam>();
+                    paramList.Add(new CMSelectParam("項目一覧ID", "= @項目一覧ID", prow["項目一覧ID"]));
+                    paramList.Add(new CMSelectParam("VER", "= @VER", prow["VER"]));
+
+                    m_dataAccess.Connection = Connection;
+
+                    // 検索実行
+                    bool isOver;
+                    DataSet result = m_dataAccess.SelectFromXml(paramList, CMSelectType.Edit,
+                        0, out isOver, "XMEM結合テーブル", "XMEM項目");
+
+                    // 削除行を取り込み
+                    foreach (DataTable dt in result.Tables)
+                    {
+                        if (!argDataSet.Tables.Contains(dt.TableName)) argDataSet.Tables.Add(dt.Clone());
+
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            row["削除"] = "1";
+                            argDataSet.Tables[dt.TableName].ImportRow(row);
+                        }
+                    }
+                }
+            }
+        }
+
+        //************************************************************************
+        /// <summary>
+        /// 削除行の全VERの削除データを追加する。
+        /// </summary>
+        /// <param name="argDataSet">削除データ追加対象DataSet</param>
+        //************************************************************************
+        public void AddDelRow(DataSet argDataSet)
+        {
+            m_dataAccess.Connection = Connection;
+
+            foreach (DataTable dt in argDataSet.Tables)
+            {
+                foreach (var delRow in dt.Select("削除 = '1'"))
+                {
+                    // 検索条件設定
+                    List<CMSelectParam> paramList = new List<CMSelectParam>();
+                    paramList.Add(new CMSelectParam("項目一覧ID", "= @項目一覧ID", delRow["項目一覧ID"]));
+                    paramList.Add(new CMSelectParam("VER", "!= @VER", delRow["VER"]));
+                    if (dt.TableName == "XMEM結合テーブル" || dt.TableName == "XMEM項目")
+                    {
+                        string key2 = dt.TableName == "XMEM結合テーブル" ? "テーブル名" : "項目名";
+                        paramList.Add(new CMSelectParam(key2, "= @" + key2, delRow[key2]));
+                    }
+
+                    // 検索実行
+                    bool isOver;
+                    DataSet result = m_dataAccess.SelectFromXml(paramList, CMSelectType.Edit,
+                        0, out isOver, dt.TableName);
+
+                    // 削除行を取り込み
+                    foreach (DataRow row in result.Tables[0].Rows)
+                    {
+                        row["削除"] = "1";
+                        dt.ImportRow(row);
+                    }
+                }
+            }
         }
         #endregion
     }
