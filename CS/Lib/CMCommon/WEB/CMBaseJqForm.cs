@@ -666,7 +666,9 @@ namespace NEXS.ERP.CM.WEB
                     // 検索パラメータ取得
                     List<CMSelectParam> param = CreateSelectParam();
 
-                    CMSelectType selType = Request.QueryString["_search"] == "edit" ? CMSelectType.Edit : CMSelectType.List;
+                    string search = Request.QueryString["_search"];
+                    CMSelectType selType = search == "edit" ? CMSelectType.Edit : 
+                        search == "csvexp" ? CMSelectType.Csv : CMSelectType.List;
 
                     // ファサードの呼び出し
                     DataSet ds = argFacade.Select(param, selType, out operationTime, out message);
@@ -677,74 +679,34 @@ namespace NEXS.ERP.CM.WEB
                     DataTable table = ds.Tables[0];
                     
                     // 返却データクラス作成
-                    if (selType == CMSelectType.Edit)
+                    switch (selType)
                     {
-                        ResultDataSet resultDs = new ResultDataSet();
+                        // 一覧検索
+                        case CMSelectType.List:
+                            result = new ResultData();
+                            foreach (DataRow row in table.Rows)
+                                result.rows.Add(new ResultRecord { id = Convert.ToInt32(row["ROWNUMBER"]), cell = row.ItemArray });
+                            break;
 
-                        // 最初の行のデータを設定
-                        if (table.Rows.Count > 0)
-                        {
-                            DataRow row = table.Rows[0];
+                        case CMSelectType.Edit:
+                            result = CreateResultDataSet(ds);
+                            break;
 
-                            foreach (DataColumn dcol in table.Columns)
-                                resultDs.firstRow.Add(dcol.ColumnName, row[dcol.ColumnName]);
-                        }
+                        case CMSelectType.Csv:
+                            // ヘッダ設定
+                            Response.AppendHeader("Content-type", "application/octet-stream; charset=UTF-8");
+                            Response.AppendHeader("Content-Disposition", "Attachment; filename=" +
+                                ((dynamic)Master).Title + ".xlsx");
 
-                        // DataTableを設定
-                        foreach (DataTable dt in ds.Tables)
-                        {
-                            ResultData rd = new ResultData();
-                            rd.records = dt.Rows.Count;
-                            resultDs.tables.Add(dt.TableName, rd);
-
-                            foreach (DataRow row in dt.Rows)
-                                rd.rows.Add(new ResultRecord { id = Convert.ToInt32(row["ROWNUMBER"]), cell = row.ItemArray });
-
-#if ResultTable
-                            ResultTable rt = new ResultTable();
-                            rt.records = dt.Rows.Count;
-                            resultDs.tables.Add(dt.TableName, rt);
-
-                            foreach (DataRow row in dt.Rows)
-                            {
-                                Dictionary<string, object> record = new Dictionary<string, object>();
-                                rt.rows.Add(record);
-
-                                foreach (DataColumn dcol in dt.Columns)
-                                {
-                                    string name = dcol.ColumnName;
-                                    if (name == "ROWNUMBER") record.Add("id", Convert.ToInt32(row[name]));
-                                    else if (name == "削除") record.Add("状態", row[name]);
-                                    else record.Add(name, row[name]);
-                                }
-                            }
-#endif
-                        }
-
-                        // 新規の場合
-                        string mode = Request.QueryString["_mode"];
-                        if (mode == "new")
-                        {
-                            // 全て新規行にする
-                            foreach (DataTable dt in ds.Tables)
-                                foreach (DataRow row in dt.Rows) row.SetAdded();
-                        }
-
-                        // 親はクリア
-                        if (mode == "new") table.Rows.Clear();
-
-                        result = resultDs;
-                    }
-                    // 一覧検索
-                    else
-                    {
-                        result = new ResultData();
-                        foreach (DataRow row in table.Rows)
-                            result.rows.Add(new ResultRecord { id = Convert.ToInt32(row["ROWNUMBER"]), cell = row.ItemArray });
+                            // Excelファイル作成
+                            var xslDoc = CreateExcel(ds);
+                            xslDoc.SaveAs(Response.OutputStream);
+                            break;
                     }
 
                     // 検索結果を保存
-                    Session[Request.Path + "_DataSet"] = ds;
+                    if (selType != CMSelectType.Csv)
+                        Session[Request.Path + "_DataSet"] = ds;
                 }
                 // 編集操作の場合
                 else if (argForm["oper"] != null)
@@ -884,23 +846,6 @@ namespace NEXS.ERP.CM.WEB
                                 });
                             }
                             break;
-
-                        case "csvexp":
-                            // 検索パラメータ取得
-                            List<CMSelectParam> param = CreateSelectParam();
-
-                            // ファサードの呼び出し
-                            DataSet expDs = argFacade.Select(param, CMSelectType.Csv, out operationTime, out message);
-
-                            // ヘッダ設定
-                            Response.AppendHeader("Content-type", "application/octet-stream; charset=UTF-8");
-                            Response.AppendHeader("Content-Disposition", "Attachment; filename=" +
-                                ((dynamic)Master).Title + ".xlsx");
-
-                            // Excelファイル作成
-                            var xslDoc = CreateExcel(expDs);
-                            xslDoc.SaveAs(Response.OutputStream);
-                            break;
                     }
                }
             }
@@ -944,6 +889,74 @@ namespace NEXS.ERP.CM.WEB
                 Response.Write(serializer.Serialize(result));
             }
             Response.End();
+        }
+
+        //************************************************************************
+        /// <summary>
+        /// DataSetからResultDataSetを作成する。
+        /// </summary>
+        /// <param name="ds">DataSet</param>
+        /// <returns>ResultDataSet</returns>
+        //************************************************************************
+        private ResultDataSet CreateResultDataSet(DataSet ds)
+        {
+            ResultDataSet resultDs = new ResultDataSet();
+
+            DataTable table = ds.Tables[0];
+
+            // 最初の行のデータを設定
+            if (table.Rows.Count > 0)
+            {
+                DataRow row = table.Rows[0];
+
+                foreach (DataColumn dcol in table.Columns)
+                    resultDs.firstRow.Add(dcol.ColumnName, row[dcol.ColumnName]);
+            }
+
+            // DataTableを設定
+            foreach (DataTable dt in ds.Tables)
+            {
+                ResultData rd = new ResultData();
+                rd.records = dt.Rows.Count;
+                resultDs.tables.Add(dt.TableName, rd);
+
+                foreach (DataRow row in dt.Rows)
+                    rd.rows.Add(new ResultRecord { id = Convert.ToInt32(row["ROWNUMBER"]), cell = row.ItemArray });
+
+#if ResultTable
+                                ResultTable rt = new ResultTable();
+                                rt.records = dt.Rows.Count;
+                                resultDs.tables.Add(dt.TableName, rt);
+
+                                foreach (DataRow row in dt.Rows)
+                                {
+                                    Dictionary<string, object> record = new Dictionary<string, object>();
+                                    rt.rows.Add(record);
+
+                                    foreach (DataColumn dcol in dt.Columns)
+                                    {
+                                        string name = dcol.ColumnName;
+                                        if (name == "ROWNUMBER") record.Add("id", Convert.ToInt32(row[name]));
+                                        else if (name == "削除") record.Add("状態", row[name]);
+                                        else record.Add(name, row[name]);
+                                    }
+                                }
+#endif
+            }
+
+            // 新規の場合
+            string mode = Request.QueryString["_mode"];
+            if (mode == "new")
+            {
+                // 全て新規行にする
+                foreach (DataTable dt in ds.Tables)
+                    foreach (DataRow row in dt.Rows) row.SetAdded();
+            }
+
+            // 親はクリア
+            if (mode == "new") table.Rows.Clear();
+
+            return resultDs;
         }
 
         //************************************************************************

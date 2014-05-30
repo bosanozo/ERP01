@@ -216,7 +216,7 @@ function getSendInputs(form) {
 
 // CSV出力ボタン
 function onCsvExportClick(evt) {
-    location.href = '?oper=csvexp&' + getSendInputs(evt.data.form).serialize();
+    location.href = '?_search=csvexp&' + getSendInputs(evt.data.form).serialize();
 }
 
 // 詳細画面表示ボタン共通処理２
