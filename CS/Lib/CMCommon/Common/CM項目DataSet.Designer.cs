@@ -2087,11 +2087,11 @@ namespace NEXS.ERP.CM.Common {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string 一致条件 {
                 get {
-                    try {
-                        return ((string)(this[this.table項目.一致条件Column]));
+                    if (this.Is一致条件Null()) {
+                        return null;
                     }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("テーブル \'項目\' にある列 \'一致条件\' の値は DBNull です。", e);
+                    else {
+                        return ((string)(this[this.table項目.一致条件Column]));
                     }
                 }
                 set {

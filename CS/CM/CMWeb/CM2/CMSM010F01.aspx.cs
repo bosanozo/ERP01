@@ -32,11 +32,22 @@ public partial class CM2_CMSM010F01 : CMBaseJqForm
     //************************************************************************
     protected void Page_Load(object sender, EventArgs e)
     {
-        // Ajax
-        if (Request.Params["_search"] != null || Request.Params["oper"] != null)
+        string oper = Request.Params["oper"];
+
+        // 検索の場合
+        if (Request.QueryString["_search"] != null)
         {
-            // ブラウザからのリクエストを実行
-            DoRequest(m_facade);
+            // 検索を実行
+            DoSearch(m_facade, CreateSelectParam(Request.QueryString, "CMSM組織検索条件"));
+        }
+        // 編集操作の場合
+        else if (oper != null)
+        {
+            // 検索結果を取得
+            DataSet ds = (DataSet)Session[Request.Path + "_DataSet"];
+
+            // 操作を実行
+            DoOperation(m_facade, ds);
         }
         // ASP.Net
         else

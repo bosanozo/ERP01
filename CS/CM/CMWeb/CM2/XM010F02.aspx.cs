@@ -13,7 +13,6 @@ using System.Web.UI.HtmlControls;
 using NEXS.ERP.CM.Common;
 using NEXS.ERP.CM.WEB;
 using NEXS.ERP.CM.BL;
-using NEXS.ERP.CM.DA;
 
 //************************************************************************
 /// <summary>
@@ -40,13 +39,19 @@ public partial class CM2_XM010F02 : CMBaseJqForm
     {
         string oper = Request.Params["oper"];
 
-        NameValueCollection customForm = new NameValueCollection(Request.Form);
-
-        // Ajax
-        if (Request.QueryString["_search"] != null || oper != null)
+        // 検索の場合
+        if (Request.QueryString["_search"] != null)
+        {
+            // 検索を実行
+            DoSearch(m_facade);
+        }
+        // 編集操作の場合
+        else if (oper != null)
         {
             // 検索結果を取得
             DataSet ds = (DataSet)Session[Request.Path + "_DataSet"];
+
+            NameValueCollection customForm = new NameValueCollection(Request.Form);
 
             // グリッドの編集操作の場合
             if (Request.QueryString["TableName"] != null)
@@ -142,9 +147,9 @@ public partial class CM2_XM010F02 : CMBaseJqForm
                 }
             }
 
-            // ブラウザからのリクエストを実行
-            DoRequest(m_facade, customForm);
-        }
+            // 操作を実行
+            DoOperation(m_facade, ds, customForm);
+        }        
         // ASP.Net
         else
         {

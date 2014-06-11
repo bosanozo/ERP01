@@ -36,8 +36,14 @@ public partial class CM2_XM010F01 : CMBaseJqForm
     {
         string oper = Request.Params["oper"];
 
-        // Ajax
-        if (Request.Params["_search"] != null || oper != null)
+        // 検索の場合
+        if (Request.QueryString["_search"] != null)
+        {                     
+            // 検索を実行
+            DoSearch(m_facade, CreateSelectParam(Request.QueryString, "XMFS項目一覧"));
+        }
+        // 編集操作の場合
+        else if (oper != null)
         {
             // 検索結果を取得
             DataSet ds = (DataSet)Session[Request.Path + "_DataSet"];
@@ -48,8 +54,8 @@ public partial class CM2_XM010F01 : CMBaseJqForm
                 m_facade.AddChildDelRow(ds);
             }
 
-            // ブラウザからのリクエストを実行
-            DoRequest(m_facade);
+            // 操作を実行
+            DoOperation(m_facade, ds);
         }
         // ASP.Net
         else
