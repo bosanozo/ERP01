@@ -145,9 +145,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CMCommonSelectDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="DA\CMCmdParam.cs" />
-    <Compile Include="DA\CMCmdSettings.cs" />
     <Compile Include="DA\CMUserInfoDA.cs" />
+    <Compile Include="Helper\JqGridHelper.cs" />
+    <Compile Include="Helper\TagBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

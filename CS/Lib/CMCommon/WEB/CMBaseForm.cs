@@ -57,7 +57,7 @@ namespace NEXS.ERP.CM.WEB
         }
 
         /// <summary>
-        /// ロガー
+        /// 共通処理ファサード
         /// </summary>
         protected ICMCommonBL CommonBL
         {

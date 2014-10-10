@@ -266,8 +266,7 @@ namespace NEXS.ERP.CM.DA
             foreach (string fname in argFname)
             {
                 // データセットにファイルを読み込み
-                CM項目DataSet ds = new CM項目DataSet();
-                ds.ReadXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Model", fname + ".xml"));
+                var ds = CM項目DataSet.ReadModelXml(fname);
 
                 // テーブル名を取得
                 string tableName = ds.項目一覧[0].項目一覧ID;
@@ -364,32 +363,36 @@ namespace NEXS.ERP.CM.DA
         /// </summary>
         /// <param name="argUpdateData">更新データ</param>
         /// <param name="argOperationTime">操作時刻</param>
-        /// <param name="argCmdSettings">Command設定</param>
+        /// <param name="arg項目DSList">項目DataSetList</param>
         /// <returns>登録したレコード数</returns>
-        /// <remarks>argCmdSettingsが未指定の場合、エンティティ定義XMLファイルからCMCmdSettingsを生成する。
+        /// <remarks>arg項目DSListが未指定の場合、エンティティ定義XMLファイルから項目DataSetを生成する。
         /// データテーブル名がXMLファイル名になる。
         /// argUpdateDataに複数のDataTableが存在する場合、
         /// DataTableの逆順に削除データを登録後、
         /// DataTableの正順に新規、修正データを登録する。</remarks>
         //************************************************************************
-        public int Update(DataSet argUpdateData, DateTime argOperationTime, CMCmdSettings argCmdSettings = null)
+        public int Update(DataSet argUpdateData, DateTime argOperationTime, List<CM項目DataSet> arg項目DSList = null)
         {
             // デフォルト設定
-            if (argCmdSettings == null)
+            if (arg項目DSList == null)
             {
-                argCmdSettings = new CMCmdSettings();
+                arg項目DSList = new List<CM項目DataSet>();
                 foreach (DataTable table in argUpdateData.Tables)
-                    argCmdSettings.AddFomXml(table.TableName);
+                {
+                    // データセットにファイルを読み込み
+                    var ds = CM項目DataSet.ReadModelXml(table.TableName);
+                    arg項目DSList.Add(ds);
+                }
             }
 
             int cnt = 0;
-            int tableCnt = argCmdSettings.CmdSettings.Count;
+            int tableCnt = arg項目DSList.Count;
 
             // 1テーブルの場合
             if (tableCnt == 1)
             {
                 // 登録実行
-                cnt = UpdateTable(argCmdSettings[0], argUpdateData.Tables[0], argOperationTime);
+                cnt = UpdateTable(arg項目DSList[0], argUpdateData.Tables[0], argOperationTime);
             }
             // 複数テーブルの場合
             else
@@ -399,18 +402,18 @@ namespace NEXS.ERP.CM.DA
                 {
                     DataTable table = argUpdateData.Tables[i].GetChanges(DataRowState.Deleted);
                     if (table != null && table.Rows.Count > 0)
-                        cnt += UpdateTable(argCmdSettings[i], table, argOperationTime);
+                        cnt += UpdateTable(arg項目DSList[i], table, argOperationTime);
                 }
 
                 // 最初のテーブルのデータを登録
-                cnt += UpdateTable(argCmdSettings[0], argUpdateData.Tables[0], argOperationTime);
+                cnt += UpdateTable(arg項目DSList[0], argUpdateData.Tables[0], argOperationTime);
 
                 // Command設定の順に新規、修正データを登録
                 for (int i = 1; i < tableCnt; i++)
                 {
                     DataTable table = argUpdateData.Tables[i].GetChanges(DataRowState.Added | DataRowState.Modified);
                     if (table != null && table.Rows.Count > 0)
-                        cnt += UpdateTable(argCmdSettings[i], table, argOperationTime);
+                        cnt += UpdateTable(arg項目DSList[i], table, argOperationTime);
                 }
             }
 
@@ -423,32 +426,36 @@ namespace NEXS.ERP.CM.DA
         /// </summary>
         /// <param name="argUpdateData">更新データ</param>
         /// <param name="argOperationTime">操作時刻</param>
-        /// <param name="argCmdSettings">Command設定</param>
+        /// <param name="arg項目DSList">項目DataSetList</param>
         /// <returns>登録したレコード数</returns>
-        /// <remarks>argCmdSettingsが未指定の場合、エンティティ定義XMLファイルからCMCmdSettingsを生成する。
+        /// <remarks>arg項目DSListが未指定の場合、エンティティ定義XMLファイルから項目DataSetを生成する。
         /// データテーブル名がXMLファイル名になる。
         /// argUpdateDataに複数のDataTableが存在する場合、
         /// DataTableの正順に新規、修正データを登録する。
         /// 削除データは扱わない。</remarks>
         //************************************************************************
-        public int Upload(DataSet argUpdateData, DateTime argOperationTime, CMCmdSettings argCmdSettings = null)
+        public int Upload(DataSet argUpdateData, DateTime argOperationTime, List<CM項目DataSet> arg項目DSList = null)
         {
             // デフォルト設定
-            if (argCmdSettings == null)
+            if (arg項目DSList == null)
             {
-                argCmdSettings = new CMCmdSettings();
+                arg項目DSList = new List<CM項目DataSet>();
                 foreach (DataTable table in argUpdateData.Tables)
-                    argCmdSettings.AddFomXml(table.TableName);
+                {
+                    // データセットにファイルを読み込み
+                    var ds = CM項目DataSet.ReadModelXml(table.TableName);
+                    arg項目DSList.Add(ds);
+                }
             }
 
             int cnt = 0;
 
             // Command設定の順に新規、修正データを登録
-            for (int i = 0; i < argCmdSettings.CmdSettings.Count; i++)
+            for (int i = 0; i < arg項目DSList.Count; i++)
             {
-                DataTable table = argUpdateData.Tables[argCmdSettings[i].Name];
+                DataTable table = argUpdateData.Tables[arg項目DSList[i].項目一覧.First().項目一覧ID];
                 if (table != null && table.Rows.Count > 0)
-                    cnt += UploadTable(argCmdSettings[i], table, argOperationTime);
+                    cnt += UploadTable(arg項目DSList[i], table, argOperationTime);
             }
 
             return cnt;
@@ -519,11 +526,11 @@ namespace NEXS.ERP.CM.DA
         /// <summary>
         /// テーブル項目列DataTableからINSERT文, UPDATE文を作成する。
         /// </summary>
-        /// <param name="argCmdSetting">Command設定</param>
+        /// <param name="arg項目DataSet">項目設定</param>
         /// <param name="argInsertSql">INSERT文</param>
         /// <param name="argUpdateSql">UPDATE文</param>
         //************************************************************************
-        protected void CreateInsertUpdateSql(CMCmdSetting argCmdSetting,
+        protected void CreateInsertUpdateSql(CM項目DataSet arg項目DataSet,
             out string argInsertSql, out string argUpdateSql)
         {
             StringBuilder ins1 = new StringBuilder();
@@ -531,35 +538,37 @@ namespace NEXS.ERP.CM.DA
             StringBuilder upd = new StringBuilder();
 
             // テーブル項目列でループ
-            foreach (var row in argCmdSetting.ColumnParams)
+            foreach (var row in arg項目DataSet.項目.Where(i => i.入力制限 != "不可"))
             {
                 string valueFmt;
 
+                var dbType = (CMDbType)Enum.Parse(typeof(CMDbType), row.項目型);
+
                 // キー項目にNULLは設定させない
-                if (row.IsKey)
+                if (row.主キー)
                 {
-                    if (row.DbType == CMDbType.金額 || row.DbType == CMDbType.数値)
+                    if (dbType == CMDbType.金額 || dbType == CMDbType.数値)
                         valueFmt = "ISNULL(@{0}, 0),";
                     // 日付型は対応なし
-                    else if (row.DbType == CMDbType.日時 || row.DbType == CMDbType.日付)
+                    else if (dbType == CMDbType.日時 || dbType == CMDbType.日付)
                         valueFmt = "@{0},";
                     else valueFmt = "ISNULL(@{0}, ' '),";
                 }
                 else valueFmt = "@{0},";
 
-                string colName = row.Name;
+                string colName = row.項目名;
 
                 // INSERT文作成
                 ins1.Append(colName).Append(",");
-                ins2.AppendFormat(valueFmt, row.Name);
+                ins2.AppendFormat(valueFmt, row.項目名);
 
                 // 従属項目の場合
-                if (!row.IsKey)
+                if (!row.主キー)
                     // UPDATE文作成
-                    upd.Append(colName).Append(" = ").AppendFormat(valueFmt, row.Name);
+                    upd.Append(colName).Append(" = ").AppendFormat(valueFmt, row.項目名);
             }
 
-            string tname = argCmdSetting.Name;
+            string tname = arg項目DataSet.項目一覧.First().項目一覧ID;
             argInsertSql = string.Format(INSERT_SQL, tname, ins1, ins2);
             argUpdateSql = string.Format(UPDATE_SQL, tname, upd);
         }
@@ -655,7 +664,7 @@ namespace NEXS.ERP.CM.DA
         /// <summary>
         /// 指定されたテーブルに更新データを登録する。
         /// </summary>
-        /// <param name="argCmdSetting">Command設定</param>
+        /// <param name="arg項目DataSet">項目設定</param>
         /// <param name="argDataTable">更新データを格納したDataTable</param>
         /// <param name="argSysdate">データベースに記録する更新時刻</param>
         /// <param name="argInsertSql">INSERT文</param>
@@ -666,16 +675,16 @@ namespace NEXS.ERP.CM.DA
         /// 削除データ、更新データ、新規データの順に登録を行う。
         /// 登録が成功した場合、監査証跡の出力を行う。</remarks>
         //************************************************************************
-        protected int UpdateTable(CMCmdSetting argCmdSetting,
+        protected int UpdateTable(CM項目DataSet arg項目DataSet,
             DataTable argDataTable, DateTime argSysdate,
             string argInsertSql = null, string argUpdateSql = null)
         {
             // テーブル名を取得
             //string tname = Escape(argCmdSetting.Name);
-            string tname = argCmdSetting.Name;
+            string tname = arg項目DataSet.項目一覧.First().項目一覧ID;
 
             // 主キーの検索条件を取得
-            string keyCond = argCmdSetting.GetKeyCondition();
+            string keyCond = arg項目DataSet.GetKeyCondition();
 
             // INSERT文, UPDATE文の自動設定
             if (argInsertSql == null || argUpdateSql == null)
@@ -683,7 +692,7 @@ namespace NEXS.ERP.CM.DA
                 // INSERT文, UPDATE文を作成
                 string insertSql;
                 string updateSql;
-                CreateInsertUpdateSql(argCmdSetting, out insertSql, out updateSql);
+                CreateInsertUpdateSql(arg項目DataSet, out insertSql, out updateSql);
                 // nullの場合は作成したものを設定
                 if (argInsertSql == null) argInsertSql = insertSql;
                 if (argUpdateSql == null) argUpdateSql = updateSql + keyCond;
@@ -705,7 +714,7 @@ namespace NEXS.ERP.CM.DA
 
             // INSERT, UPDATE, DELETE, 排他チェック用SELECTコマンドのパラメータを設定
             AddCommandParameter(insertCommand, updateCommand, deleteCommand,
-                concCheckCommand, argCmdSetting);
+                concCheckCommand, arg項目DataSet);
 
             // コネクション自動オープン判定フラグ
             bool isClosed = Connection.State == ConnectionState.Closed;
@@ -723,7 +732,13 @@ namespace NEXS.ERP.CM.DA
 
                     // 更新、削除データの場合、排他チェックを実施
                     if (row.RowState == DataRowState.Modified || row.RowState == DataRowState.Deleted)
-                        DoConcCheck(concCheckCommand, row, argCmdSetting);
+                    {
+                        // 排他チェック用コマンドにパラメータ値を設定
+                        foreach (var prow in arg項目DataSet.項目.Where(i => i.主キー))
+                            ((IDbDataParameter)concCheckCommand.Parameters[prow.項目名]).Value = row[prow.項目名, DataRowVersion.Original];
+
+                        DoConcCheck(concCheckCommand, row);
+                    }
                 }
             }
             finally
@@ -735,7 +750,7 @@ namespace NEXS.ERP.CM.DA
             int cnt = DoUpdate(argDataTable);
 
             // 監査証跡出力
-            WriteAuditLog(argCmdSetting, argDataTable, argSysdate);
+            WriteAuditLog(arg項目DataSet, argDataTable, argSysdate);
 
             return cnt;
         }
@@ -744,7 +759,7 @@ namespace NEXS.ERP.CM.DA
         /// <summary>
         /// 指定されたテーブルに、指定されたデータをアップロードする。
         /// </summary>
-        /// <param name="argCmdSetting">Command設定</param>
+        /// <param name="arg項目DataSet">項目設定</param>
         /// <param name="argDataTable">更新データを格納したDataTable</param>
         /// <param name="argUpdateTime">データベースに記録する更新時刻</param>
         /// <param name="argInsertSql">INSERT文</param>
@@ -754,7 +769,7 @@ namespace NEXS.ERP.CM.DA
         /// 同一キーのデータが存在する場合UPDATE、存在しない場合INSERTを実行する。
         /// 監査証跡の出力は行わない。</remarks>
         //************************************************************************
-        protected int UploadTable(CMCmdSetting argCmdSetting,
+        protected int UploadTable(CM項目DataSet arg項目DataSet,
             DataTable argDataTable,  DateTime argUpdateTime,
             string argInsertSql = null, string argUpdateSql = null)
         {
@@ -766,10 +781,10 @@ namespace NEXS.ERP.CM.DA
 
             // テーブル名を取得
             //string tname = Escape(argCmdSetting.Name);
-            string tname = argCmdSetting.Name;
+            string tname = arg項目DataSet.項目一覧.First().項目一覧ID;
 
             // 主キーの検索条件を取得
-            string keyCond = argCmdSetting.GetKeyCondition();
+            string keyCond = arg項目DataSet.GetKeyCondition();
 
             // INSERT文, UPDATE文の自動設定
             if (argInsertSql == null || argUpdateSql == null)
@@ -777,7 +792,7 @@ namespace NEXS.ERP.CM.DA
                 // INSERT文, UPDATE文を作成
                 string insertSql;
                 string updateSql;
-                CreateInsertUpdateSql(argCmdSetting, out insertSql, out updateSql);
+                CreateInsertUpdateSql(arg項目DataSet, out insertSql, out updateSql);
                 // nullの場合は作成したものを設定
                 if (argInsertSql == null) argInsertSql = insertSql;
                 if (argUpdateSql == null) argUpdateSql = updateSql + keyCond;
@@ -796,7 +811,7 @@ namespace NEXS.ERP.CM.DA
             Adapter.UpdateCommand = updateCommand;
 
             // INSERT, UPDATE, 存在チェック用SELECTコマンドのパラメータを設定
-            AddCommandParameter(insertCommand, updateCommand, null, existCheckCommand, argCmdSetting);
+            AddCommandParameter(insertCommand, updateCommand, null, existCheckCommand, arg項目DataSet);
 
             // コネクション自動オープン判定フラグ
             bool isClosed = Connection.State == ConnectionState.Closed;
@@ -810,8 +825,13 @@ namespace NEXS.ERP.CM.DA
                 {
                     // データベース更新パラメータの設定
                     SetUpdateParameter(row, argUpdateTime);
+
+                    // 存在チェック用コマンドにパラメータ値を設定
+                    foreach (var prow in arg項目DataSet.項目.Where(i => i.主キー))
+                        ((IDbDataParameter)existCheckCommand.Parameters[prow.項目名]).Value = row[prow.項目名];
+
                     // 存在するかチェック
-                    DoUploadCheck(existCheckCommand, row, argCmdSetting);
+                    DoUploadCheck(existCheckCommand, row);
                 }
             }
             finally
@@ -857,21 +877,9 @@ namespace NEXS.ERP.CM.DA
         /// </summary>
         /// <param name="argConcCheckCommand">排他チェック用コマンド</param>
         /// <param name="argRow">排他チェック対象のDataRow</param>
-        /// <param name="argCmdSetting">Command設定</param>
         //************************************************************************
-        private void DoConcCheck(IDbCommand argConcCheckCommand,
-            DataRow argRow, CMCmdSetting argCmdSetting)
+        private void DoConcCheck(IDbCommand argConcCheckCommand, DataRow argRow)
         {
-            // 排他チェック用コマンドにパラメータ値を設定
-            foreach (var row in argCmdSetting.ColumnParams)
-            {
-                if (row.IsKey)
-                {
-                    string name = !string.IsNullOrEmpty(row.SourceColumn) ? row.SourceColumn : row.Name;
-                    ((IDbDataParameter)argConcCheckCommand.Parameters[row.Name]).Value = argRow[name, DataRowVersion.Original];
-                }
-            }
-
             // 検索実行
             try
             {
@@ -947,21 +955,9 @@ namespace NEXS.ERP.CM.DA
         /// </summary>
         /// <param name="argExistCheckCommand">存在チェック用コマンド</param>
         /// <param name="argRow">存在チェック対象のDataRow</param>
-        /// <param name="argCmdSetting">Command設定</param>
         //************************************************************************
-        private void DoUploadCheck(IDbCommand argExistCheckCommand,
-            DataRow argRow, CMCmdSetting argCmdSetting)
+        private void DoUploadCheck(IDbCommand argExistCheckCommand, DataRow argRow)
         {
-            // 存在チェック用コマンドにパラメータ値を設定
-            foreach (var row in argCmdSetting.ColumnParams)
-            {
-                if (row.IsKey)
-                {
-                    string name = !string.IsNullOrEmpty(row.SourceColumn) ? row.SourceColumn : row.Name;
-                    ((IDbDataParameter)argExistCheckCommand.Parameters[row.Name]).Value = argRow[name];
-                }
-            }
-
             // 検索実行
             using (IDataReader reader = argExistCheckCommand.ExecuteReader())
             {
@@ -984,47 +980,32 @@ namespace NEXS.ERP.CM.DA
         /// <param name="argUpdateCommand">UPDATEコマンド</param>
         /// <param name="argDeleteCommand">DELETEコマンド</param>
         /// <param name="argConcCheckCommand">排他チェック用コマンド</param>
-        /// <param name="argCmdSetting">項目設定</param>
+        /// <param name="arg項目DataSet">項目設定</param>
         //************************************************************************
         private void AddCommandParameter(IDbCommand argInsertCommand, IDbCommand argUpdateCommand,
-            IDbCommand argDeleteCommand, IDbCommand argConcCheckCommand, CMCmdSetting argCmdSetting)
+            IDbCommand argDeleteCommand, IDbCommand argConcCheckCommand, CM項目DataSet arg項目DataSet)
         {
-            string[] updateCols = { "更新日時", "更新者ID", "更新者IP", "更新PG" };
-            SqlDbType[] updateTypes = { SqlDbType.DateTime, SqlDbType.VarChar, SqlDbType.VarChar, SqlDbType.VarChar };
-
             IDbCommand[] keyCmds = { argInsertCommand, argUpdateCommand, argDeleteCommand, argConcCheckCommand };
             IDbCommand[] apdCmds = { argInsertCommand, argUpdateCommand };
 
-            foreach (var row in argCmdSetting.ColumnParams)
+            foreach (var row in arg項目DataSet.項目.Where(i => i.入力制限 != "不可"))
             {
-                // sourceColumnが設定されていた場合は使用する
-                string sc = !string.IsNullOrEmpty(row.SourceColumn) ? row.SourceColumn : row.Name;
+                // キー項目と従属項目で場合わけ
+                IDbCommand[] cmds = row.主キー ? keyCmds : apdCmds;
 
-                // キー項目の場合
-                if (row.IsKey)
+                foreach (var cmd in cmds)
                 {
-                    foreach (var cmd in keyCmds)
-                    {
-                        if (cmd == null) continue;
+                    if (cmd == null) continue;
 
-                        // パラメータを追加
-                        IDbDataParameter cmdParam = CreateCmdParam(row.Name, row.GetDbType());
-                        cmdParam.SourceColumn = sc;
-                        cmd.Parameters.Add(cmdParam);
-                    }
-                }
-                // 従属項目の場合
-                else
-                {
-                    foreach (var cmd in apdCmds)
-                    {
-                        // パラメータを追加
-                        IDbDataParameter cmdParam = CreateCmdParam(row.Name, row.GetDbType());
-                        cmdParam.SourceColumn = sc;
-                        cmd.Parameters.Add(cmdParam);
-                    }
+                    // パラメータを追加
+                    IDbDataParameter cmdParam = CreateCmdParam(row.項目名, row.GetDbType());
+                    cmdParam.SourceColumn = row.項目名;
+                    cmd.Parameters.Add(cmdParam);
                 }
             }
+
+            string[] updateCols = { "更新日時", "更新者ID", "更新者IP", "更新PG" };
+            SqlDbType[] updateTypes = { SqlDbType.DateTime, SqlDbType.VarChar, SqlDbType.VarChar, SqlDbType.VarChar };
 
             // 更新情報パラメータ
             for (int i = 0; i < updateCols.Length; i++)
@@ -1097,18 +1078,19 @@ namespace NEXS.ERP.CM.DA
         /// <summary>
         /// 監査証跡を記録する。
         /// </summary>
-        /// <param name="argCmdSetting">Command設定</param>
+        /// <param name="arg項目DataSet">項目設定</param>
         /// <param name="argDataTable">更新データを格納したDataTable</param>
         /// <param name="argUpdateTime">データベースに記録する更新時刻</param>
         //************************************************************************
-        protected void WriteAuditLog(CMCmdSetting argCmdSetting, 
+        protected void WriteAuditLog(CM項目DataSet arg項目DataSet, 
             DataTable argDataTable, DateTime argUpdateTime)
         {
             // 出力OFFの場合は出力しない
             if (!Properties.Settings.Default.WriteAuditLog) return;
 
             // マスタ以外は対象
-            if (!argCmdSetting.Name.StartsWith("CMSM")) return;
+            string table = arg項目DataSet.項目一覧.First().エンティティID;
+            if (!table.StartsWith("CMSM")) return;
 
             // コネクション自動オープン判定フラグ
             bool isClosed = Connection.State == ConnectionState.Closed;
@@ -1120,7 +1102,7 @@ namespace NEXS.ERP.CM.DA
                 // INSERT文の設定
                 IDbCommand cmd = CreateCommand(INSERT_AUDITLOG_SQL);
                 // パラメータの設定
-                cmd.Parameters.Add(CreateCmdParam("テーブル名", argCmdSetting.Name));
+                cmd.Parameters.Add(CreateCmdParam("テーブル名", table));
                 cmd.Parameters.Add(CreateCmdParam("更新区分", SqlDbType.Char));
                 cmd.Parameters.Add(CreateCmdParam("キー", SqlDbType.NVarChar));
                 cmd.Parameters.Add(CreateCmdParam("内容", SqlDbType.NVarChar));
@@ -1165,20 +1147,21 @@ namespace NEXS.ERP.CM.DA
                     content.Length = 0;
 
                     // テーブル項目列でループ
-                    foreach (var csRow in argCmdSetting.ColumnParams)
+                    foreach (var csRow in arg項目DataSet.項目.Where(i => i.入力制限 != "不可"))
                     {
                         // 列名を取得
-                        string srcCol = csRow.SourceColumn != null ? csRow.SourceColumn : csRow.Name;
+                        string srcCol = csRow.項目名;
 
                         // フォーマットを設定
-                        string format = csRow.DbType == CMDbType.日付 ?
+                        var dbType = (CMDbType)Enum.Parse(typeof(CMDbType), csRow.項目型);
+                        string format = dbType == CMDbType.日付 ?
                             "{0}:{1:yyyy/MM/dd}" : "{0}:{1}";
 
                         // キー項目
-                        if (csRow.IsKey)
+                        if (csRow.主キー)
                         {
                             if (key.Length > 0) key.Append(",");
-                            key.AppendFormat(format, csRow.Name, row[srcCol, ver]);
+                            key.AppendFormat(format, csRow.項目名, row[srcCol, ver]);
                         }
                         // 従属項目
                         else
@@ -1188,7 +1171,7 @@ namespace NEXS.ERP.CM.DA
                                 || !onlyModCol)
                             {
                                 if (content.Length > 0) content.Append(",");
-                                content.AppendFormat(format, csRow.Name, row[srcCol, ver]);
+                                content.AppendFormat(format, csRow.項目名, row[srcCol, ver]);
                             }
                         }
                     }
