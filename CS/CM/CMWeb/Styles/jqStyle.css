@@ -51,6 +51,11 @@
     color: initial;
 }
 
+/* 削除行 */
+.ui-jqgrid .jqgrow.deleted {
+    background: lightgray;
+}
+
 /* 選択行背景色 */
 .ui-jqgrid .jqgrow.ui-state-highlight {
     /*opacity: .7;

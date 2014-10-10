@@ -12,7 +12,8 @@ function commonGridInit() {
         rownumbers: true,
         shrinkToFit: false,
         viewrecords: true,
-        width: 950,
+        //width: 950,
+        width: $("#GridPanel").width(),
         height: 'auto',
         loadError: function (xhr) { showServerError(xhr); }
     };
@@ -101,10 +102,11 @@ function statusFormatter(cellval, opts) {
 // 操作列のカスタムフォーマッター
 function actionFormatter(cellval, opts, data) {
     var sts = data.状態 == "0" || data.状態 == undefined || data.状態 == "";
-    var val = sts ? "削除" : "取消";
+    var val = sts ? "trash" : "refresh";
     var func = sts ? "deleteRow" : "cancelEdit";
 
-    return '<input type="button" value="' + val + '" onclick="' + func + '(' + "'" + opts.gid + "'," + opts.rowId + ')"/>';
+    return '<button class="SelectButton btn btn-default" onclick="' + func + '(' + "'" +
+        opts.gid + "'," + opts.rowId + ')"><span class="glyphicon glyphicon-' + val + '"></span></button>';
 }
 
 // グリッド作成
@@ -120,6 +122,9 @@ function createGrid(gid, colNames, colModel, editurl, pagerId) {
         //url: 'CMSM010F01.aspx',
         gridComplete: function () {
             $(this).showErrorMessage();
+            // 削除行のCSSクラスを設定
+            for (var i = 0; i < delRows.length; i++)
+                $(this).setRowData(delRows[i], false, 'deleted');
         },
         // 行選択
         onSelectRow: function (id) {
@@ -253,7 +258,8 @@ function createDetailDialog(dlgId, rules, grid) {
             });
         },
         width: 'auto'
-    });
+        //width: Math.min($("#GridPanel").width(), 800)
+});
 
     return dlg;
 }
@@ -261,11 +267,14 @@ function createDetailDialog(dlgId, rules, grid) {
 // 選択ボタン追加
 function addSelectButton(code, data) {
     var btnId = 'Btn' + code.attr('id');
-    code.after('<input id="' + btnId + '" class="SelectButton" type="button" value="..."/>');
+    code.after('<span class="left-addon"><i class="glyphicon glyphicon-search"/><input id="' + btnId + '" class="SelectButton btn btn-default" type="button"/></span>');
     data.codeId = code.attr('id');
+
     // イベントハンドラ設定
     $("#" + btnId).click(data, ShowSelectSub);
 }
+
+var delRows = [];
 
 // 行削除ボタン
 function deleteRow(gid, id) {
@@ -285,6 +294,8 @@ function deleteRow(gid, id) {
         } else {
             // 状態を削除に変更
             grid.setCell(id, '状態', '3');
+            // 削除行IDを記憶
+            delRows[delRows.length] = id;
             grid.refreshGrid();
         }
     }).fail(function (xhr) {
@@ -314,6 +325,14 @@ function cancelEdit(gid, id) {
             else {
                 if (grid.setRowData(id, data))
                     grid.setCell(id, '状態', '0');
+            }
+
+            // 削除行IDを削除
+            for (var i = 0; i < delRows.length; i++) {
+                if (delRows[i] == id) {
+                    delRows.splice(i, 1);
+                    break;
+                }
             }
 
             // エラー表示消去
@@ -384,7 +403,7 @@ function showDetailDialog(data, oper) {
         title = '参照';
 
         dlg.inputs = dlg.find("input:not([readonly]), textarea:not([readonly])");
-        dlg.buttons = dlg.find("input[type=button]");
+        dlg.buttons = dlg.find("input[type=button], button");
         dlg.selects = dlg.find("select:not([disabled]), :checkbox:not([disabled])");
     }
 

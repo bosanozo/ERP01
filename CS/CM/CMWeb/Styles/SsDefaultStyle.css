@@ -4,6 +4,7 @@
 	font-size:9pt;
 }
 
+/*
 input[type="text"],
 input[type="password"]
 input[type="file"]
@@ -14,7 +15,7 @@ input[type="file"]
 select
 {
     height:20px;
-}
+}*/
 
 .menu
 {
@@ -24,8 +25,10 @@ select
 /* ページ全体 */
 .page
 {
+    /*
     width: 960px;
-    margin: 10px auto 0px auto;
+    margin: 10px auto 0px auto;*/
+    margin-top: 34px;
     border: 1px solid #496077;
 }
 
@@ -106,12 +109,15 @@ select
 }
 
 /* 項目名ラベル */
-.ItemName
+table label
 {
-    height:20px;   
+    margin-bottom: 0px;
+    /*
+    font-weight:normal;
+    height:26px;
 	color:White;
 	background-color: #003580;
-	padding-left: 4px;
+	padding-left: 4px;*/
 }
 
 /* 項目パネル */
@@ -123,9 +129,23 @@ select
 /* 選択ボタン */
 .SelectButton
 {
-    padding-left:2px;
-    /*height:20px;*/
-    width:20px;
+    vertical-align:top;
+    height:23px;
+    width:23px;
+}
+
+/* 選択ボタンフォーム内 */
+form .SelectButton 
+{
+    height:26px;
+    width:26px;
+}
+
+/* フォームの中のテーブル */
+.FormTable
+{
+    border-collapse:separate;
+    border-spacing:4px;
 }
 
 /* コード値入力 */
@@ -168,4 +188,68 @@ select[disabled]
 {
 	/* border: none; */
 	background-color: #CCCCFF;
+}
+
+/* コントロール フォーカス */
+.form-control-custom {
+  height: 26px;
+  padding: 3px 6px;
+  /*font-size: 14px;*/
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+       -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+/* コントロール フォーカス */
+.form-control-custom:focus {
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+}
+
+.form-group {
+    margin-bottom:6px;
+}
+
+.navbar {
+    min-height:32px;
+}
+
+.navbar-toggle {
+    padding: 6px 5px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.navbar-nav > li > a {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+/* input中のアイコン */
+.left-addon {
+    position: relative; 
+}
+
+.left-addon .glyphicon {
+  position: absolute;
+  pointer-events: none;
+  padding-left: 6px;
+}
+
+/* 汎用ダイアログメッセージ */
+.dialog-message
+{
+    padding-left:10px;
+    font-size: 14px;
+    vertical-align:bottom;
 }

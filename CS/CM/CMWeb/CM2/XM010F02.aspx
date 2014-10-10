@@ -1,7 +1,15 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/CM2.master" AutoEventWireup="true" CodeFile="XM010F02.aspx.cs" Inherits="CM2_XM010F02" %>
 <%@ MasterType  virtualPath="~/CM2.master"%>
+<%@ Import Namespace="NEXS.ERP.CM.Common"%>
+<%@ Import Namespace="NEXS.ERP.CM.Helper"%>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="Content1" Runat="Server">
+    <%
+        var formDs = CM項目DataSet.ReadFormXml(FORM_XML);
+        var grid1Ds = CM項目DataSet.ReadFormXml(GRID1_XML);
+        var grid2Ds = CM項目DataSet.ReadFormXml(GRID2_XML);
+    %>
+
     <!-- jQueryスクリプト -->
     <script type="text/javascript">
         // グリッド1ボタンの操作状態設定
@@ -22,41 +30,35 @@
         $(document).ready(function () {
             // グリッド1列名
             var grid1ColNames = [
-                '状態', '操作',
-                <%= GetColNames(GRID1_XML) %>
+                <%= JqGridHelper.GetColNames(grid1Ds) %>
             ];
 
             // グリッド1列設定
             var grid1ColModel = [
-                { name: '状態', align: 'center', frozen: true, formatter: statusFormatter, width: 40 },
-                { name: '操作', align: 'center', frozen: true, formatter: actionFormatter, width: 50 },
-                <%= GetColModel(GRID1_XML) %>
+                <%= JqGridHelper.GetColModel(grid1Ds, CommonBL) %>
             ];
 
             // グリッド2列名
             var grid2ColNames = [
-                '状態', '操作',
-                <%= GetColNames(GRID2_XML) %>
+                <%= JqGridHelper.GetColNames(grid2Ds) %>
             ];
 
             // グリッド2列設定
             var grid2ColModel = [
-                { name: '状態', align: 'center', frozen: true, formatter: statusFormatter, width: 40 },
-                { name: '操作', align: 'center', frozen: true, formatter: actionFormatter, width: 50 },
-                <%= GetColModel(GRID2_XML) %>
+                <%= JqGridHelper.GetColModel(grid2Ds, CommonBL) %>
             ];
 
             // ValidationRule
             var rules = {
-                <%= GetValidationRules(FORM_XML) %>
+                <%= JqGridHelper.GetValidationRules(formDs) %>
             };
 
             var grid1Rules = {
-                <%= GetValidationRules(GRID1_XML) %>
+                <%= JqGridHelper.GetValidationRules(grid1Ds) %>
             };
 
             var grid2Rules = {
-                <%= GetValidationRules(GRID2_XML) %>
+                <%= JqGridHelper.GetValidationRules(grid2Ds) %>
             };
 
             // 初期化
@@ -132,6 +134,9 @@
             // XML出力ボタン
             $("#BtnXml").click(function () { location.href = '?oper=xml'; });
 
+            // 閉じるボタン
+            $("#BtnClose").click(false, window.parent.colseDetailDialog);
+
             // 初期処理
             initDetail(form, grids);
 
@@ -158,87 +163,51 @@
     </script>
 
     <!-- フォーム -->
-    <form id="Form1" runat="server">
-        <!-- 条件部 -->
-        <asp:Panel id="Panel1" Runat="server"/>
-        <asp:Panel id="PanelCondition" Runat="server">
-            <table width="100%" cellspacing="2">
-                <%= CreateForm(FORM_XML) %>
-            </table>
-        </asp:Panel>
+    <form id="Form1" class="form-horizontal">
+        <%= JqGridHelper.CreateForm(formDs, CommonBL) %>
     </form>
 
     <!-- グリッド１ -->
-    <table id="Grid1"></table>
+    <div id="GridPanel" class="row">
+        <table id="Grid1"></table>
+    </div>
+
     <!-- グリッド１ 操作ボタン -->
-    <div class="FuncPanel">
-		<table cellspacing="0" cellpadding="0" width="100%">
-			<tr>
-				<td>
-                    <input id="BtnGrid1Add" class="FuncButton" type="button" value="新規"/>
-                </td>
-				<td>
-                    <input id="BtnGrid1Edit" class="FuncButton" type="button" value="修正" disabled/>
-                </td>
-				<td>
-                    <input id="BtnGrid1View" class="FuncButton" type="button" value="参照" disabled/>
-                </td>
-			</tr>
-		</table>
+    <div class="FuncPanel row">
+    <%= JqGridHelper.CreateFuncButton("Grid1", 0, "新規", "修正", "参照") %>
     </div>
 
     <!-- グリッド１ 詳細ダイアログ -->
     <div id="DlgGrid1Detail" >
         <form>
-            <table cellspacing="2">
-                <%= CreateForm(GRID1_XML) %>
+            <table class="FormTable">
+            <%= JqGridHelper.CreateFormFixed(grid1Ds, CommonBL) %>
             </table>
         </form>
     </div>
 
     <!-- グリッド２ -->
-    <table id="Grid2"></table>
+    <div id="GridPanel2" class="row">
+        <table id="Grid2"></table>
+    </div>
+
     <!-- グリッド２ 操作ボタン -->
-    <div class="FuncPanel">
-		<table cellspacing="0" cellpadding="0" width="100%">
-			<tr>
-				<td>
-                    <input id="BtnGrid2Add" class="FuncButton" type="button" value="新規"/>
-                </td>
-				<td>
-                    <input id="BtnGrid2Edit" class="FuncButton" type="button" value="修正" disabled/>
-                </td>
-				<td>
-                    <input id="BtnGrid2View" class="FuncButton" type="button" value="参照" disabled/>
-                </td>
-			</tr>
-		</table>
+    <div class="FuncPanel row">
+    <%= JqGridHelper.CreateFuncButton("Grid2", 0, "新規", "修正", "参照") %>
     </div>
 
     <!-- グリッド２ 詳細ダイアログ -->
     <div id="DlgGrid2Detail" >
         <form>
-            <table cellspacing="2">
-                <%= CreateForm(GRID2_XML) %>
+            <table class="FormTable">
+            <%= JqGridHelper.CreateFormFixed(grid2Ds, CommonBL) %>
             </table>
         </form>
     </div>
 
     <!-- 機能ボタン -->
-    <div class="EntryFuncPanel">
-		<table cellspacing="0" cellpadding="0" width="100%">
-			<tr>
-				<td>
-                    <input id="BtnCommit" class="FuncButton" type="button" value="登録"/>
-                </td>
-				<td>
-                    <input id="BtnXml" class="FuncButton" type="button" value="XML出力"/>
-                </td>
-				<td>
-                    <input id="BtnClose" class="FuncButton" type="button" value="閉じる" onclick="window.parent.colseDetailDialog()"/>
-                </td>
-			</tr>
-		</table>
+    <div class="EntryFuncPanel row">
+    <%= JqGridHelper.CreateFuncButton(1, "登録", "XML出力", "閉じる") %>
     </div>
 
 </asp:Content>

@@ -1,7 +1,11 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/CM2.master" AutoEventWireup="true" CodeFile="XM010F01.aspx.cs" Inherits="CM2_XM010F01" %>
 <%@ MasterType  virtualPath="~/CM2.master"%>
+<%@ Import Namespace="NEXS.ERP.CM.Common"%>
+<%@ Import Namespace="NEXS.ERP.CM.Helper"%>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="Content1" Runat="Server">
+    <% var dataSet = CM項目DataSet.ReadFormXml(FORM_XML); %>
+
     <!-- jQueryスクリプト -->
     <script type="text/javascript">
         // ボタンの操作状態設定
@@ -15,7 +19,7 @@
         // 詳細画面表示用検索パラメータ取得
         function getDetailSearchParam(rowData) {
             if (rowData)
-                return '項目一覧ID=' + rowData.項目一覧ID + '&VER=' + rowData.VER;
+                return escape('項目一覧ID') + '=' + escape(rowData.項目一覧ID) + '&VER=' + rowData.VER;
             else
                 return '項目一覧ID= &VER=0';
         }
@@ -24,20 +28,17 @@
         $(document).ready(function () {
             // グリッド列名
             var grid1ColNames = [
-                '状態', '操作',
-                <%= GetColNames(FORM_XML) %>
+                <%= JqGridHelper.GetColNames(dataSet) %>
             ];
 
             // グリッド列設定
             var grid1ColModel = [
-                { name: '状態', align: 'center', frozen: true, formatter: statusFormatter, width: 40 },
-                { name: '操作', align: 'center', frozen: true, formatter: actionFormatter, width: 50 },
-                <%= GetColModel(FORM_XML) %>
+                <%= JqGridHelper.GetColModel(dataSet, CommonBL) %>
             ];
 
             // ValidationRule
             var rules = {
-                <%= GetValidationRules(FORM_XML) %>
+                <%= JqGridHelper.GetValidationRules(dataSet) %>
             };
 
             // 初期化
@@ -57,10 +58,11 @@
             grid1.setButtonStateFunc(setButtonState);
 
             // 詳細ダイアログ作成
-            var editDlg1 = createDetailDialog('DlgDetail', rules, 'Grid1');
+            var editDlg1 = createDetailDialog('DlgDetail', rules, grid1);
 
             // ボタンイベント登録
             $("#BtnSelect").click({ grid: grid1, form: form }, onSelectClick);
+            $("#BtnClear").click(false, ClearCondition);
             $("#BtnCsvExport").click({ form: form }, onCsvExportClick);
             $("#BtnAdd").click({ grid: grid1, editDlg: editDlg1 }, onAddClick2);
             $("#BtnEdit").click({ grid: grid1, editDlg: editDlg1 }, onEditClick2);
@@ -71,69 +73,39 @@
     </script>
 
     <!-- フォーム -->
-    <form id="Form1" runat="server">
+    <form id="Form1" class="form-horizontal">
         <!-- 条件部 -->
-        <asp:Panel id="Panel1" Runat="server"/>
-        <asp:Panel id="PanelCondition" Runat="server">
+        <div id="PanelCondition">
             <span>検索条件</span>
-            <table width="100%" cellspacing="2">
-                <%= CreateForm("XMFS項目一覧", true) %>
-            </table>
-        </asp:Panel>
+            <div>
+            <%= JqGridHelper.CreateForm(CM項目DataSet.ReadFormXml("XMFS項目一覧"), CommonBL, true) %>
+            </div>
+        </div>
 	    <!-- 隠し項目 -->
         <input id="EntryForm" type="hidden" value="XM010F02.aspx" />
     </form>
 
     <!-- 機能ボタン -->
-    <div class="FuncPanel">
-		<table cellspacing="0" cellpadding="0" width="100%">
-			<tr>
-				<td>
-                    <input id="BtnSelect" class="FuncButton" type="button" value="検索"/>
-                </td>
-				<td>
-                    <input id="BtnClear" class="FuncButton" type="button" value="条件クリア" onclick="ClearCondition()"/>
-                    </td>
-				<td>
-                    <input id="BtnCsvExport" class="FuncButton" type="button" value="ＣＳＶ出力" />
-                </td>
-			</tr>
-		</table>
+    <div class="FuncPanel row">
+    <%= JqGridHelper.CreateFuncButton(1, "検索", "条件クリア", "ＣＳＶ出力") %>
     </div>
+
     <!-- 明細部 -->
-    <table id="Grid1"></table>
-    <div id="Grid1_Pager"></div>
+    <div id="GridPanel" class="row">
+        <table id="Grid1"></table>
+        <div id="Grid1_Pager"></div>
+    </div>
 
     <!-- 機能ボタン２ -->
-    <div class="FuncPanel">
-		<table cellspacing="0" cellpadding="0" width="100%">
-			<tr>
-				<td>
-                    <input id="BtnAdd" class="FuncButton" type="button" value="新規"/>
-                </td>
-				<td>
-                    <input id="BtnEdit" class="FuncButton" type="button" value="修正" disabled/>
-                </td>
-                <!--
-				<td>
-                    <input id="BtnDel" class="FuncButton" type="button" value="削除" disabled/>
-                </td>
-                -->
-				<td>
-                    <input id="BtnView" class="FuncButton" type="button" value="参照" disabled/>
-                </td>
-				<td>
-                    <input id="BtnCommit" class="FuncButton" type="button" value="登録"/>
-                </td>
-			</tr>
-		</table>
+    <div class="FuncPanel row">
+    <%= JqGridHelper.CreateFuncButton("新規", "修正", "参照", "登録") %>
     </div>
 
     <!-- 詳細ダイアログ -->
     <div id="DlgDetail" >
         <form>
-            <table cellspacing="2">
-                <%= CreateForm(FORM_XML) %>
+            <table class="FormTable">
+            <%= JqGridHelper.CreateFormFixed(dataSet, CommonBL) %>
             </table>
         </form>
     </div>

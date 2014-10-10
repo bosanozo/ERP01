@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="CMSubForm.aspx.cs" Inherits="CM2_CMSubForm" %>
+<%@ Import Namespace="NEXS.ERP.CM.Helper"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -7,18 +8,23 @@
     <title></title>
     <base target="_self" />
 
+    <!-- bootstrap スタイルシート -->
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-theme.css" rel="stylesheet" />
     <!--jQuery UI スタイルシート -->
-    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
     <!-- jqGrid スタイルシート -->
     <link href="~/Content/jquery.jqGrid/ui.jqgrid.css" rel="stylesheet" />
     <!-- ローカルスタイルシート -->
     <link href="~/Styles/SsDefaultStyle.css" type="text/css" rel="stylesheet" />
     <link href="~/Styles/jqStyle.css" rel="stylesheet" />
+    <!-- bootstrap -->
+    <script src="../Scripts/bootstrap.js"></script>
     <!-- jQuery -->
-    <!--<script src="../Scripts/jquery-2.1.0.intellisense.js"></script>-->
+    <!--<script src="../Scripts/jquery-2.1.1.intellisense.js"></script>-->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <!-- jQuery UI -->
-    <script src="../Scripts/jquery-ui-1.10.4.js"></script>
+    <script src="../Scripts/jquery-ui-1.11.1.js"></script>
     <!--<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>-->
     <!-- jQuery UI datepicker 日本語 -->
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
@@ -63,6 +69,7 @@
 
             // ボタンイベント登録
             $("#BtnSelect").click({ grid: grid1, form: $("#Form1") }, onSelectClick);
+            $("#BtnClose").click(null, window.parent.colseSubDialog);
         });
     </script>
 
@@ -77,36 +84,29 @@
 <body>
     <!-- 条件部 -->
     <form id="Form1" runat="server">
-        <asp:Panel id="PanelCondition" Runat="server">
-            <table width="100%" cellspacing="2" >
+        <div id="PanelCondition">
+            <table class="FormTable" >
                 <tr>
-                    <td class="ItemName"><%# GetNameLabel() %></td>
+                    <td class="ItemName"><label class="control-label"><%# GetNameLabel() %></label></td>
                     <td class="ItemPanel">
-                        <asp:TextBox ID="Name" runat="server" CssClass="TextInput" Width="300" />
+                        <input id="Name" class="TextInput form-control-custom" type="text" size="40"/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="ItemName"><%# GetCodeLabel() %></td>
+                    <td class="ItemName"><label class="control-label"><%# GetCodeLabel() %></label></td>
                     <td class="ItemPanel">
-                        <asp:TextBox ID="Code" CssClass="CodeInput" runat="server" />
+                        <asp:TextBox ID="Code" CssClass="CodeInput form-control-custom" runat="server" />
                     </td>
                 </tr>
             </table>
-        </asp:Panel>
+        </div>
     </form>
+
     <!-- 機能ボタン -->
     <div class="FuncPanel">
-		<table cellspacing="0" cellpadding="0" width="100%">
-			<tr>
-				<td>
-                    <input id="BtnSelect" class="FuncButton" type="button" value="検索" />
-                </td>
-				<td>
-                    <input id="BtnClose" class="FuncButton" type="button" value="閉じる" onclick="window.parent.colseSubDialog()"/>
-                </td>
-			</tr>
-		</table>
+    <%= JqGridHelper.CreateFuncButton(1, "検索", "閉じる") %>
     </div>
+
     <!-- 明細部 -->
     <table id="Grid1"></table>
     <div id="Grid1_Pager"></div>

@@ -120,7 +120,7 @@ function colseSubDialog(rowData) {
     var dlg = $("#SubDialog");
     dlg.dialog('close');
 
-    if (rowData) {
+    if (rowData.code) {
         var code = $("#" + dlg.attr('codeId'));
         code.val(rowData.code);
 
@@ -184,8 +184,8 @@ function showServerError(xhr) {
 
 // Infoダイアログ表示
 function showInfo(msg) {
-    $('<div><table><tr><td><span class="ui-icon ui-icon-info"/></td><td>' +
-        msg + '</td></tr></table></div>').dialog({
+    $('<div><span class="glyphicon glyphicon-info-sign" style="font-size: 26px; color: blue;"/>' +
+        '<span class="dialog-message">' + msg + '</span></div>').dialog({
         title: 'メッセージ',
         buttons: { '閉じる': function () { $(this).dialog('close'); } }
     });
@@ -193,8 +193,8 @@ function showInfo(msg) {
 
 // 警告ダイアログ表示
 function showAlert(msg) {
-    $('<div><table><tr><td><span class="ui-icon ui-icon-alert"/></td><td>' +
-        msg + '</td></tr></table></div>').dialog({
+    $('<div><span class="glyphicon glyphicon-warning-sign" style="font-size: 26px; color: yellow;"/>' +
+        '<span class="dialog-message">' + msg + '</span></div>').dialog({
         title: '警告',
         buttons: { '閉じる': function () { $(this).dialog('close'); } }
     });
@@ -202,8 +202,8 @@ function showAlert(msg) {
 
 // エラーダイアログ表示
 function showError(msg) {
-    $('<div><table><tr><td><span class="ui-icon ui-icon-circle-close"/></td><td>' +
-        msg + '</td></tr></table></div>').dialog({
+    $('<div><span class="glyphicon glyphicon-remove-sign" style="font-size: 26px; color: red;"/>' +
+        '<span class="dialog-message">' + msg + '</span></div>').dialog({            
         title: 'エラー',
         buttons: { '閉じる': function () { $(this).dialog('close'); } }
     });
@@ -229,8 +229,10 @@ function showDetailDialog2(data, oper, title) {
     $('<div id="DetailDialog"><iframe width="100%" height="100%" frameborder="0" src="' + $("#EntryForm").val() + '?' + param + '"></iframe></div>').dialog({
         title: title,
         modal: true,
-        width: 1024,
-        height: 700,
+        //width: 1024,
+        //height: 700,
+        width: Math.min($(window).width(), 1024),
+        height: Math.min($(window).height(), 600),
         close: function () {
             $(this).dialog('destroy');
         }

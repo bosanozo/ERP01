@@ -1,25 +1,36 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="CM2.master.cs" Inherits="CM2Master" ClientIDMode="Static" %>
+<%@ Import Namespace="NEXS.ERP.CM.Helper"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <base target="_self" />
     <title><%=LabelTitle.Text%></title>
  
+    <!-- bootstrap スタイルシート -->
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-theme.css" rel="stylesheet" />
     <!--jQuery UI スタイルシート -->
-    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
     <!-- jqGrid スタイルシート -->
     <link href="~/Content/jquery.jqGrid/ui.jqgrid.css" rel="stylesheet" />
     <!-- ローカルスタイルシート -->
     <link href="~/Styles/SsDefaultStyle.css" type="text/css" rel="stylesheet" />
     <link href="~/Styles/jqStyle.css" rel="stylesheet" />
+
     <!-- jQuery -->
-    <!--<script src="../Scripts/jquery-2.1.0.intellisense.js"></script>-->
+    <!--<script src="../Scripts/jquery-2.1.1.intellisense.js"></script>-->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <!-- bootstrap -->
+    <script src="../Scripts/bootstrap.js"></script>
+    <!-- bootbox -->
+    <script src="../Scripts/bootbox.js"></script>
     <!-- jQuery UI -->
-    <script src="../Scripts/jquery-ui-1.10.4.js"></script>
+    <script src="../Scripts/jquery-ui-1.11.1.js"></script>
     <!--<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>-->
     <!-- jQuery UI datepicker 日本語 -->
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
@@ -57,7 +68,32 @@ End Function
 </head>
 <body id="Body1" runat="server">
     <script type="text/javascript" src="<%=ResolveUrl("~") %>Scripts/CMCommon.js"></script>
-    <div class="page">
+
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+            <!--
+          <a class="navbar-brand" href="#">Brand</a>
+            -->
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling  -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <%= JqGridHelper.CreateMenu() %>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="page container">
         <!-- ヘッダ -->
         <div class="header">
             <table width="100%" style="border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #003580">

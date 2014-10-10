@@ -12,7 +12,7 @@ function initDetail(form, grids) {
 
         case 'view':
             inputs = form.find("input:not([readonly]), textarea:not([readonly])");
-            buttons = form.find("input[type=button]");
+            buttons = form.find("input[type=button], button");
             selects = form.find("select:not([disabled]), :checkbox:not([disabled])");
             $("#BtnCommit").attr('disabled', 'disabled');
 

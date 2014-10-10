@@ -93,7 +93,7 @@ public partial class CM2_CMSubForm : CMBaseJqForm
         {
             // コード値幅調整
             Code.MaxLength = Convert.ToInt32(Request.Params["CodeLen"]);
-            Code.Width = Code.MaxLength * 8 + 2;
+            Code.Attributes["size"] = Request.Params["CodeLen"];
 
             // 検索コード名
             m_codeName = Regex.Replace(Request.Params["CodeId"], "(From|To)", "");
