@@ -1,0 +1,70 @@
+﻿@using NEXS.ERP.CM.Common;
+@using NEXS.ERP.CM.Helper;
+
+@{
+    Layout = "~/Views/Shared/_BaseLayout.cshtml";
+    ViewBag.Title = "検索";
+}
+
+@* 内容 *@
+@section contents{
+    <!-- フォーム -->
+    <form id="Form1" class="form-horizontal">
+        <!-- 条件部 -->
+        <div id="PanelCondition">
+            <table class="FormTable">
+                <tr>
+                    <td class="ItemName"><label class="control-label">@ViewBag.NameLabel</label></td>
+                    <td class="ItemPanel">
+                        @Html.TextBox("Name", null, new { @class = "TextInput form-control-custom", size = 40 })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="ItemName"><label class="control-label">@ViewBag.CodeLabel</label></td>
+                    <td class="ItemPanel">
+                        @Html.TextBox("Code", null, new { @class = "CodeInput form-control-custom", maxlength = Request.QueryString["CodeLen"], size = Request.QueryString["CodeLen"] })
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+
+    <!-- 機能ボタン -->
+    <div class="FuncPanel">
+    @JqGridHelper.CreateFuncButton(1, "検索", "閉じる")
+    </div>
+
+    <!-- 明細部 -->
+    <table id="Grid1"></table>
+    <div id="Grid1_Pager"></div>
+}
+
+@* スクリプト *@
+@section scripts{
+    @Scripts.Render("~/Scripts/CMJqSubGrid.js")
+    <script type="text/javascript">
+        // jquery
+        $(document).ready(function() {
+            // グリッド列名
+            var grid1ColNames = [
+                '@ViewBag.CodeLabel', '@ViewBag.NameLabel'
+            ];
+
+            // グリッド列設定
+            var grid1ColModel = [
+                { name: 'code', width: 100 },
+                { name: 'name', width: 250 }
+            ];
+
+            // 初期化
+            commonInit();
+
+            // グリッド作成
+            var grid1 = createSubGrid('Grid1', grid1ColNames, grid1ColModel, 'Grid1_Pager');
+
+            // ボタンイベント登録
+            $("#BtnSelect").click({ grid: grid1, form: $("#Form1") }, onSelectClick);
+            $("#BtnClose").click(false, window.parent.colseSubDialog);            
+        });
+    </script>
+}

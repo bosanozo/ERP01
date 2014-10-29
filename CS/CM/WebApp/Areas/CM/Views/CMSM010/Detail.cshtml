@@ -1,0 +1,57 @@
+﻿@using NEXS.ERP.CM.Common;
+@using NEXS.ERP.CM.Helper;
+
+@{
+    Layout = "~/Views/Shared/_SubLayout.cshtml";
+    ViewBag.Title = "組織マスタメンテ詳細";
+    var dataSet = CM項目DataSet.ReadFormXml("CMSM組織");
+}
+
+<h4>組織マスタメンテ詳細</h4>
+
+<!-- フォーム -->
+<form id="Form1" class="form-horizontal">
+    <!-- 条件部 -->
+    <div id="PanelCondition">
+    @JqGridHelper.CreateForm(dataSet, ViewBag.CommonBL)
+    </div>
+</form>
+
+<!-- 機能ボタン -->
+<div class="EntryFuncPanel row">
+@JqGridHelper.CreateFuncButton(1, "登録", "閉じる")
+</div>
+
+@* スクリプト *@
+@section scripts{
+    <script type="text/javascript">
+        // jquery
+        $(document).ready(function() {
+            // ValidationRule
+            var rules = {
+                @JqGridHelper.GetValidationRules(dataSet)
+            };
+
+            // 初期化
+            commonInit();
+
+            var form = $("#Form1");
+
+            // validator作成
+            var validator = form.validate({
+                errorClass: 'ui-state-error',
+                rules: rules
+            });
+
+            // 標準操作追加
+            addCommonEvent(form);
+
+            // ボタンイベント登録
+            $("#BtnCommit").click({ form: form, validator: validator, url: '/api/CMSM010Api' }, onCommitClick2);
+            $("#BtnClose").click(false, window.parent.colseDetailDialog);
+
+            // 初期処理
+            initDetail(form, null, '/api/CMSM010Api');
+        });
+    </script>
+}

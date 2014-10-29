@@ -1,0 +1,19 @@
+﻿@{
+    Layout = "~/Views/Shared/_BaseLayout.cshtml";
+}
+
+@* 内容 *@
+@section contents{
+    <!-- 内容 -->
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+    @RenderSection("dialogs", false)
+}
+
+@* スクリプト *@
+@section scripts{
+    @Scripts.Render("~/Scripts/CMJqGrid.js")
+    @Scripts.Render("~/Scripts/CMJqDetail.js")
+    @RenderSection("scripts", false)
+}

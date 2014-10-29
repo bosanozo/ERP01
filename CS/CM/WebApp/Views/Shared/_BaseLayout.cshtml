@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <!-- jQuery UI スタイルシート -->
+    @Styles.Render("~/Content/themes/base/all.css")
+    <!-- ローカル スタイルシート -->
+    @Styles.Render("~/Content/csslocal")
+</head>
+<body>
+    @RenderSection("contents")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryui")
+    <!-- jQuery UI datepicker 日本語 -->
+    @Scripts.Render("http://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js")
+    <!-- jQuery Validation 日付 -->
+    @Scripts.Render("~/Scripts/jquery.ui.datepicker.validation.js")
+    <!-- jQuery ローカル -->
+    @Scripts.Render("~/Scripts/CMCommon.js")
+    @Scripts.Render("~/Scripts/CMJqCommon.js")
+    @RenderSection("scripts", false)
+</body>
+</html>

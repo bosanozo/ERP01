@@ -1,0 +1,118 @@
+﻿@using NEXS.ERP.CM.Common;
+@using NEXS.ERP.CM.Helper;
+
+@{
+    ViewBag.Title = "組織マスタメンテ";
+    var dataSet = CM項目DataSet.ReadFormXml("CMSM組織");
+}
+<!-- フォーム -->
+<form id="Form1" class="form-horizontal">
+    <!-- 条件部 -->
+    <div id="PanelCondition">
+        <span>検索条件</span>
+        <div>
+            @JqGridHelper.CreateForm(CM項目DataSet.ReadFormXml("CMSM組織検索条件"), ViewBag.CommonBL, true)
+        </div>
+    </div>
+    <!-- 隠し項目 -->
+    @*
+    <input id="KaishaCd" type="hidden" runat="server" />
+    <input id="SoshikiLayer" type="hidden" runat="server" />
+    <input id="Selected" type="hidden" runat="server" />
+    <input id="EntryForm" type="hidden" value="CMSM010F02.aspx" />*@
+</form>
+
+<!-- 隠し項目 -->
+@Html.Hidden("EntryForm", "/CM/CMSM010/Detail")
+
+<!-- 機能ボタン -->
+<div class="FuncPanel row">
+    @JqGridHelper.CreateFuncButton(1, "検索", "条件クリア", "ＣＳＶ出力")
+</div>
+
+<!-- 明細部 -->
+<div id="GridPanel" class="row">
+    <table id="Grid1"></table>
+    <div id="Grid1_Pager"></div>
+</div>
+
+<!-- 機能ボタン２ -->
+<div class="FuncPanel row">
+    @JqGridHelper.CreateFuncButton("新規", "修正", "参照", "登録")
+</div>
+
+@* ダイアログ *@
+@section dialogs{
+    <!-- 詳細ダイアログ -->
+    <div id="DlgDetail">
+        <form>
+            <table class="FormTable">
+                @JqGridHelper.CreateFormFixed(dataSet, ViewBag.CommonBL)
+            </table>
+        </form>
+    </div>
+}
+
+@* スクリプト *@
+@section scripts{
+    <script type="text/javascript">
+        // ボタンの操作状態設定
+        function setButtonState(flg) {
+            $("#BtnEdit").attr('disabled', flg);
+            $("#BtnDel").attr('disabled', flg);
+            $("#BtnView").attr('disabled', flg);
+        }
+
+        // 詳細画面表示用検索パラメータ取得
+        function getDetailSearchParam(rowData) {
+            return '組織CD=' + rowData.組織CD;
+        }
+
+        // jquery
+        $(document).ready(function() {
+            // グリッド列名
+            var grid1ColNames = [
+                @JqGridHelper.GetColNames(dataSet)
+                ];
+
+            // グリッド列設定
+            var grid1ColModel = [
+                @JqGridHelper.GetColModel(dataSet, ViewBag.CommonBL)
+                ];
+
+            // ValidationRule
+            var rules = {
+                @JqGridHelper.GetValidationRules(dataSet)
+            };
+
+            // 初期化
+            commonGridInit();
+
+            var form = $("#Form1");
+
+            // 検索条件部
+            $("#PanelCondition").accordion({ collapsible: true, heightStyle: 'content' });
+
+            // 標準操作追加
+            addCommonEvent(form);
+
+            // グリッド作成
+            var grid1 = createGrid('Grid1', grid1ColNames, grid1ColModel, '/api/CMSM010Api', 'Grid1_Pager');
+            // ボタンの操作状態設定Func
+            grid1.setButtonStateFunc(setButtonState);
+
+            // 詳細ダイアログ作成
+            var editDlg1 = createDetailDialog('DlgDetail', rules, grid1);
+
+            // ボタンイベント登録
+            $("#BtnSelect").click({ grid: grid1, form: form }, onSelectClick);
+            $("#BtnClear").click(false, ClearCondition);
+            $("#BtnCsvExport").click({ url: '/api/CMSM010Api', form: form }, onCsvExportClick);
+            $("#BtnAdd").click({ grid: grid1, editDlg: editDlg1 }, onAddClick2);
+            $("#BtnEdit").click({ grid: grid1, editDlg: editDlg1 }, onEditClick);
+            //$("#BtnDel").click({ grid: grid1 }, onDelClick);
+            $("#BtnView").click({ grid: grid1, editDlg: editDlg1 }, onViewClick);
+            $("#BtnCommit").click({ grid: grid1 }, onCommitClick);
+        });
+    </script>
+}

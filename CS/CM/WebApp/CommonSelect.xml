@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="shift_jis" standalone="yes"?>
+<DocumentElement>
+  <!-- 汎用 -->
+  <SelectStatement>
+    <SelectId>CMSM汎用基準値</SelectId>
+    <Statement>SELECT 基準値名, 基準値1, 基準値2, 文字項目1, 文字項目2 FROM CMSM汎用基準値 WHERE 分類CD = @1 AND 基準値CD = @2</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CMSM汎用基準値_一覧</SelectId>
+    <Statement>SELECT 基準値CD, 基準値名, 文字項目1 FROM CMSM汎用基準値 WHERE 分類CD = @1 ORDER BY 基準値CD</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CMSTシステム情報</SelectId>
+    <Statement>SELECT 記事NO, 重要度, 内容, 表示期間From FROM CMSTシステム情報 WHERE CONVERT(DATE, GETDATE()) BETWEEN 表示期間From AND 表示期間To ORDER BY 記事NO</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CMSMメニューレベル1</SelectId>
+    <Statement>WITH SL (組織CD, 上位組織CD, 組織階層区分) AS
+(SELECT 組織CD, 上位組織CD, 組織階層区分 FROM CMSM組織 WHERE 組織CD = @1
+UNION ALL
+SELECT A.組織CD, A.上位組織CD, A.組織階層区分 FROM CMSM組織 A
+  JOIN SL ON SL.上位組織CD = A.組織CD AND SL.組織階層区分 != '1')
+SELECT DISTINCT メニューID, 画面名, FIRST_VALUE(許否フラグ)
+  OVER (PARTITION BY メニューID ORDER BY 許否フラグ DESC) 許否フラグ
+  FROM (SELECT DISTINCT M.メニューID, 画面名, ロールID, FIRST_VALUE(許否フラグ)
+  OVER (PARTITION BY M.メニューID, R.ロールID ORDER BY SL.組織階層区分 DESC) 許否フラグ
+  FROM CMSMメニュー M
+  LEFT JOIN CMSMメニュー管理 R ON R.ロールID IN (SELECT ロールID FROM CMSMユーザロール WHERE ユーザID = @2)
+       AND R.メニューID = M.メニューID
+  LEFT JOIN SL ON SL.組織CD = R.組織CD
+  WHERE M.メニューID = M.上位メニューID AND 空欄フラグ != 1) MR
+ORDER BY メニューID</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CMSMメニューレベル2</SelectId>
+    <Statement>WITH SL (組織CD, 上位組織CD, 組織階層区分) AS
+(SELECT 組織CD, 上位組織CD, 組織階層区分 FROM CMSM組織 WHERE 組織CD = @1
+UNION ALL
+SELECT A.組織CD, A.上位組織CD, A.組織階層区分 FROM CMSM組織 A
+  JOIN SL ON SL.上位組織CD = A.組織CD AND SL.組織階層区分 != '1')
+SELECT DISTINCT メニューID, 画面名, URL, オプション, FIRST_VALUE(許否フラグ)
+  OVER (PARTITION BY メニューID ORDER BY 許否フラグ DESC) 許否フラグ
+  FROM (SELECT DISTINCT M.メニューID, 画面名, URL, オプション, ロールID, FIRST_VALUE(許否フラグ)
+  OVER (PARTITION BY M.メニューID, R.ロールID ORDER BY SL.組織階層区分 DESC) 許否フラグ
+  FROM CMSMメニュー M
+  LEFT JOIN CMSMメニュー管理 R ON R.ロールID IN (SELECT ロールID FROM CMSMユーザロール WHERE ユーザID = @2)
+       AND R.メニューID = M.メニューID
+  LEFT JOIN SL ON SL.組織CD = R.組織CD
+  WHERE M.上位メニューID = @3 AND M.メニューID != M.上位メニューID AND 空欄フラグ != 1) MR
+ORDER BY メニューID</Statement>
+  </SelectStatement>
+
+  <!-- コード値名称取得 -->
+  <SelectStatement>
+    <SelectId>CN分類名</SelectId>
+    <Statement>SELECT TOP 1 分類名 FROM CMSM汎用基準値 WHERE 分類CD = @1</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CN基準値名</SelectId>
+    <Statement>SELECT 基準値名 FROM CMSM汎用基準値 WHERE 基準値CD = @1 AND 分類CD = @2</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CNユーザ名</SelectId>
+    <Statement>SELECT ユーザ名 FROM CMSMユーザ A WHERE ユーザID = @1</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CN組織名</SelectId>
+    <Statement>SELECT 組織名 FROM CMSM組織 A WHERE 組織CD = @1</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CN上位組織名</SelectId>
+    <Statement>SELECT 組織名 FROM CMSM組織 A WHERE 組織CD = @1 AND 組織階層区分 = CASE @2 WHEN '1' THEN '1' ELSE @2 - 1 END</Statement>
+  </SelectStatement>
+
+  <!-- 共通検索サブ画面 -->
+  <SelectStatement>
+    <SelectId>CS汎用基準値分類</SelectId>
+    <Statement>SELECT DISTINCT 分類CD, 分類名, DENSE_RANK() OVER (ORDER BY 分類CD) ROWNUMBER FROM CMSM汎用基準値 A WHERE 1=1</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CS組織別汎用基準値分類</SelectId>
+    <Statement>SELECT DISTINCT 分類CD, 分類名, DENSE_RANK() OVER (ORDER BY 分類CD) ROWNUMBER FROM CMSM組織別汎用基準値 A WHERE 1=1</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CS汎用基準値分類_ALL</SelectId>
+    <Statement>SELECT DISTINCT 分類CD, 分類名, DENSE_RANK() OVER (ORDER BY 分類CD) ROWNUMBER
+FROM (SELECT 分類CD, 分類名 FROM CMSM汎用基準値 UNION SELECT 分類CD, 分類名 FROM CMSM組織別汎用基準値) A WHERE 1=1</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CS汎用基準値</SelectId>
+    <Statement>SELECT 基準値CD, 基準値名, ROW_NUMBER() OVER (ORDER BY 基準値CD) ROWNUMBER FROM CMSM汎用基準値 A WHERE 分類CD = @1</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CSロール</SelectId>
+    <Statement>SELECT 基準値CD, 基準値名, '0' 選択, ROW_NUMBER() OVER (ORDER BY 基準値CD) ROWNUMBER FROM CMSM汎用基準値 A WHERE 分類CD = 'V003'</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CSユーザ</SelectId>
+    <Statement>SELECT "ユーザID", "ユーザ名", ROW_NUMBER() OVER (ORDER BY "ユーザID") ROWNUMBER FROM "CMSMユーザ" A
+JOIN CMSM組織 S ON S.組織CD = A.組織CD WHERE (@1 = '1' OR S.会社CD = @2)</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CS組織</SelectId>
+    <Statement>SELECT 組織CD, 組織名, ROW_NUMBER() OVER (ORDER BY 組織CD) ROWNUMBER FROM CMSM組織 A WHERE 1=1</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CSH上位組織</SelectId>
+    <Statement>SELECT 組織CD, 組織名, ROW_NUMBER() OVER (ORDER BY 組織CD) ROWNUMBER FROM CMSM組織 A WHERE (@1 = '1' OR (会社CD = @2 OR 組織階層区分 = '1')) AND 組織階層区分 &lt; @3</Statement>
+  </SelectStatement>
+  <SelectStatement>
+    <SelectId>CS上位組織</SelectId>
+    <Statement>SELECT 組織CD, 組織名, ROW_NUMBER() OVER (ORDER BY 組織CD) ROWNUMBER FROM CMSM組織 A WHERE 組織階層区分 = CASE @1 WHEN '1' THEN '1' ELSE @1 - 1 END</Statement>
+  </SelectStatement>
+
+</DocumentElement>
