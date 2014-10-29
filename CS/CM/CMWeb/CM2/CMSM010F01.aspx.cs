@@ -38,7 +38,7 @@ public partial class CM2_CMSM010F01 : CMBaseJqForm
         if (Request.QueryString["_search"] != null)
         {
             // 検索を実行
-            DoSearch(m_facade, CreateSelectParam(Request.QueryString, "CMSM組織検索条件"));
+            DoSearch(m_facade, CMSelectParam.CreateSelectParam(Request.QueryString, "CMSM組織検索条件"));
         }
         // 編集操作の場合
         else if (oper != null)

@@ -40,7 +40,7 @@ public partial class CM2_XM010F01 : CMBaseJqForm
         if (Request.QueryString["_search"] != null)
         {                     
             // 検索を実行
-            DoSearch(m_facade, CreateSelectParam(Request.QueryString, "XMFS項目一覧"));
+            DoSearch(m_facade, CMSelectParam.CreateSelectParam(Request.QueryString, "XMFS項目一覧"));
         }
         // 編集操作の場合
         else if (oper != null)

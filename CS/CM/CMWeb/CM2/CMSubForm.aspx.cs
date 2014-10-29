@@ -45,8 +45,11 @@ public partial class CM2_CMSubForm : CMBaseJqForm
 
             try
             {
+                var p = Request.QueryString;
+
                 // 検索パラメータ取得
-                List<CMSelectParam> param = CreateSelectParam();
+                List<CMSelectParam> param = CMSelectParam.CreateSelectParam(
+                    p["Name"], p["Code"], p["Params"], p["DbCodeCol"], p["DbNameCol"], p["CodeId"]);
 
                 // ファサードの呼び出し
                 CMMessage message;
@@ -56,9 +59,7 @@ public partial class CM2_CMSubForm : CMBaseJqForm
                 if (message != null) ShowMessage(message);
 
                 // 返却データクラス作成
-                result = new ResultData();
-                foreach (DataRow row in table.Rows)
-                    result.rows.Add(new ResultRecord { id = Convert.ToInt32(row["ROWNUMBER"]), cell = row.ItemArray });
+                result = ResultData.CreateResultData(table);
             }
             catch (CMException ex)
             {
@@ -70,7 +71,7 @@ public partial class CM2_CMSubForm : CMBaseJqForm
                 {
                     messageCd = ex.CMMessage.MessageCd,
                     message = ex.CMMessage.ToString(),
-                    rowField = ex.CMMessage.RowField
+                    rowField = new RowField(ex.CMMessage.RowField)
                 });
             }
             catch (Exception ex)
@@ -100,67 +101,6 @@ public partial class CM2_CMSubForm : CMBaseJqForm
 
             DataBind();
         }
-    }
-
-    //************************************************************************
-    /// <summary>
-    /// 検索パラメータ作成
-    /// </summary>
-    /// <returns>検索パラメータ</returns>
-    //************************************************************************
-    protected List<CMSelectParam> CreateSelectParam()
-    {
-        // 画面の条件を取得
-        List<CMSelectParam> formParam = new List<CMSelectParam>();
-
-        if (!string.IsNullOrEmpty(Request.Params["Name"]))
-            formParam.Add(new CMSelectParam("Name", "LIKE @Name", "%" + Request.Params["Name"] + "%"));
-
-        if (!string.IsNullOrEmpty(Request.Params["Code"]))
-            formParam.Add(new CMSelectParam("Code", "= @Code", Request.Params["Code"]));
-
-        // 項目名の置き換え
-        foreach (var p in formParam)
-        {
-            if (p.name == "Code") p.name = string.IsNullOrEmpty(Request.Params["DbCodeCol"]) ?
-                m_codeName : Request.Params["DbCodeCol"];
-            else if (p.name == "Name")
-            {
-                p.name = string.IsNullOrEmpty(Request.Params["DbNameCol"]) ?
-                   GetNameLabel() : Request.Params["DbNameCol"];
-                p.condtion = "LIKE @" + p.name;
-                p.paramFrom = "%" + p.paramFrom + "%";
-            }
-        }
-
-        // 検索パラメータ作成
-        List<CMSelectParam> param = new List<CMSelectParam>();
-
-        // 追加パラメータがある場合、追加する
-        if (!string.IsNullOrEmpty(Request.Params["Params"]))
-        {
-            foreach (string p in Request.Params["Params"].Split())
-            {
-                object value;
-
-                // "#"から始まる場合はUserInfoから設定
-                if (p[0] == '#')
-                {
-                    PropertyInfo pi = CMInformationManager.UserInfo.GetType().GetProperty(p.Substring(1));
-                    value = pi.GetValue(CMInformationManager.UserInfo, null);
-                }
-                // セルの値を取得
-                else value = p;
-
-                // パラメータ追加
-                param.Add(new CMSelectParam(null, null, value));
-            }
-        }
-
-        // 画面の条件を追加
-        param.AddRange(formParam);
-
-        return param;
     }
     #endregion
 
