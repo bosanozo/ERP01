@@ -68,7 +68,7 @@ namespace NEXS.ERP.CM.WEB
         protected void DoSearch(ICMBaseBL argFacade, List<CMSelectParam> argParam = null)
         {
             // 検索パラメータ取得
-            if (argParam == null) argParam = CreateSelectParam(Request.QueryString);
+            if (argParam == null) argParam = CMSelectParam.CreateSelectParam(Request.QueryString);
 
             dynamic result = null;
             DataSet ds = null;
@@ -96,13 +96,11 @@ namespace NEXS.ERP.CM.WEB
                 {
                     // 一覧検索
                     case CMSelectType.List:
-                        result = new ResultData();
-                        foreach (DataRow row in table.Rows)
-                            result.rows.Add(new ResultRecord { id = Convert.ToInt32(row["ROWNUMBER"]), cell = row.ItemArray });
+                        result = ResultData.CreateResultData(table);
                         break;
 
                     case CMSelectType.Edit:
-                        result = CreateResultDataSet(ds);
+                        result = ResultDataSet.CreateResultDataSet(ds);
                         break;
 
                     case CMSelectType.Csv:
@@ -112,7 +110,7 @@ namespace NEXS.ERP.CM.WEB
                             ((dynamic)Master).Title + ".xlsx");
 
                         // Excelファイル作成
-                        var xslDoc = CreateExcel(ds);
+                        var xslDoc = ExcelUtil.CreateExcel(ds);
                         xslDoc.SaveAs(Response.OutputStream);
                         break;
                 }
@@ -131,7 +129,7 @@ namespace NEXS.ERP.CM.WEB
                 {
                     messageCd = ex.CMMessage.MessageCd,
                     message = ex.CMMessage.ToString(),
-                    rowField = ex.CMMessage.RowField
+                    rowField = new RowField(ex.CMMessage.RowField)
                 });
             }
             catch (System.Data.SqlClient.SqlException ex)
@@ -208,7 +206,7 @@ namespace NEXS.ERP.CM.WEB
                         {
                             if (!table.Columns.Contains(key)) continue;
 
-                            row[key] = GetDataColumnVal(table.Columns[key], argForm[key]);
+                            row[key] = CMUtil.GetDataColumnVal(table.Columns[key], argForm[key]);
                         }
 
                         table.Rows.Add(row);
@@ -224,7 +222,7 @@ namespace NEXS.ERP.CM.WEB
                             if (!table.Columns.Contains(key)) continue;
 
                             string txtVal = argForm[key];
-                            object value = GetDataColumnVal(table.Columns[key], txtVal);
+                            object value = CMUtil.GetDataColumnVal(table.Columns[key], txtVal);
 
                             if (value == DBNull.Value)
                             {
@@ -327,7 +325,7 @@ namespace NEXS.ERP.CM.WEB
                 {
                     messageCd = ex.CMMessage.MessageCd,
                     message = ex.CMMessage.ToString(),
-                    rowField = ex.CMMessage.RowField
+                    rowField = new RowField(ex.CMMessage.RowField)
                 });
             }
             catch (System.Data.SqlClient.SqlException ex)
@@ -357,203 +355,6 @@ namespace NEXS.ERP.CM.WEB
                 Response.Write(serializer.Serialize(result));
             }
             Response.End();
-        }
-
-        //************************************************************************
-        /// <summary>
-        /// DataSetからResultDataSetを作成する。
-        /// </summary>
-        /// <param name="ds">DataSet</param>
-        /// <returns>ResultDataSet</returns>
-        //************************************************************************
-        private ResultDataSet CreateResultDataSet(DataSet ds)
-        {
-            ResultDataSet resultDs = new ResultDataSet();
-
-            DataTable table = ds.Tables[0];
-
-            // 最初の行のデータを設定
-            if (table.Rows.Count > 0)
-            {
-                DataRow row = table.Rows[0];
-
-                foreach (DataColumn dcol in table.Columns)
-                    resultDs.firstRow.Add(dcol.ColumnName, row[dcol.ColumnName]);
-            }
-
-            // DataTableを設定
-            foreach (DataTable dt in ds.Tables)
-            {
-                ResultData rd = new ResultData();
-                rd.records = dt.Rows.Count;
-                resultDs.tables.Add(dt.TableName, rd);
-
-                foreach (DataRow row in dt.Rows)
-                    rd.rows.Add(new ResultRecord { id = Convert.ToInt32(row["ROWNUMBER"]), cell = row.ItemArray });
-
-#if ResultTable
-                                ResultTable rt = new ResultTable();
-                                rt.records = dt.Rows.Count;
-                                resultDs.tables.Add(dt.TableName, rt);
-
-                                foreach (DataRow row in dt.Rows)
-                                {
-                                    Dictionary<string, object> record = new Dictionary<string, object>();
-                                    rt.rows.Add(record);
-
-                                    foreach (DataColumn dcol in dt.Columns)
-                                    {
-                                        string name = dcol.ColumnName;
-                                        if (name == "ROWNUMBER") record.Add("id", Convert.ToInt32(row[name]));
-                                        else if (name == "削除") record.Add("状態", row[name]);
-                                        else record.Add(name, row[name]);
-                                    }
-                                }
-#endif
-            }
-
-            // 新規の場合
-            string mode = Request.QueryString["_mode"];
-            if (mode == "new")
-            {
-                // 全て新規行にする
-                foreach (DataTable dt in ds.Tables)
-                    foreach (DataRow row in dt.Rows) row.SetAdded();
-            }
-
-            // 親はクリア
-            if (mode == "new") table.Rows.Clear();
-
-            return resultDs;
-        }
-
-        //************************************************************************
-        /// <summary>
-        /// DataColumnに対応した型の値を取得する。
-        /// </summary>
-        /// <param name="dcol">DataColumn</param>
-        /// <param name="value">値の文字列</param>
-        /// <returns>DataColumnに対応した型の値</returns>
-        //************************************************************************
-        protected object GetDataColumnVal(DataColumn dcol, string value)
-        {
-            if (value.Length == 0) return DBNull.Value;
-
-            object result;
-
-            // 型に応じて、値を比較し、DataTableに値を設定する
-            switch (dcol.DataType.Name)
-            {
-                case "bool":
-                case "Boolean":
-                    // できてない
-                    result = value == "true";  //Convert.ToBoolean(value);
-                    break;
-
-                case "decimal":
-                    result = Convert.ToDecimal(value);
-                    break;
-
-                case "int32":
-                case "Byte":
-                    result = Convert.ToInt32(value);
-                    break;
-
-                case "DateTime":
-                    result = Convert.ToDateTime(value);
-                    break;
-
-                default:
-                    result = value;
-                    break;
-            }
-
-            return result;
-        }
-
-        //************************************************************************
-        /// <summary>
-        /// 検索パラメータを作成する。
-        /// </summary>
-        /// <param name="argQuery">QueryString</param>
-        /// <param name="argName">Xmlファイル名</param>
-        /// <returns>検索パラメータ</returns>
-        //************************************************************************
-        protected List<CMSelectParam> CreateSelectParam(NameValueCollection argQuery, string argName = null)
-        {
-            // データセットを取得
-            CM項目DataSet ds = argName != null ? ds = GetFormDataSet(argName) : null;
-            
-            List<CMSelectParam> param = new List<CMSelectParam>();
-
-            foreach (string key in argQuery)
-            {
-                // 以下は無視
-                if (key.StartsWith("_") || key.StartsWith("ctl00$") || key.EndsWith("To") ||
-                    System.Text.RegularExpressions.Regex.IsMatch(key, "(nd|rows|page|sidx|sord|oper)")) continue;
-
-                // Fromの場合
-                if (key.EndsWith("From"))
-                {
-                    // Fromなし名称取得
-                    string colName = key.Substring(0, key.IndexOf("From"));
-                    string toName = colName + "To";
-
-                    bool isSetFrom = !string.IsNullOrEmpty(argQuery[key]);
-                    bool isSetTo = !string.IsNullOrEmpty(argQuery[toName]);
-
-                    // FromTo
-                    if (isSetFrom && isSetTo)
-                    {
-                        param.Add(new CMSelectParam(colName,
-                            string.Format("BETWEEN @{0} AND @{1}", key, toName),
-                            argQuery[key], argQuery[toName]));
-                    }
-                    // From or To
-                    else if (isSetFrom || isSetTo)
-                    {
-                        string op = isSetFrom ? ">= @" + key : "<= @" + toName;
-
-                        param.Add(new CMSelectParam(colName, op, isSetFrom ? argQuery[key] : argQuery[toName]));
-                    }
-                }
-                // 単一項目の場合
-                else
-                {
-                    // 設定ありの場合
-                    if (string.IsNullOrEmpty(argQuery[key])) continue;
-
-                    string op = "= @";
-                    string value = argQuery[key];
-
-                    if (ds != null)
-                    {
-                        // LIKE検索の場合
-                        var irows = ds.項目.Where(item => item.項目名 == key);
-                        if (irows.Count() > 0 && !string.IsNullOrEmpty(irows.First().一致条件))
-                        {
-                            if (irows.First().一致条件 != "指定なし") op = "LIKE @";
-
-                            switch (irows.First().一致条件)
-                            {
-                                case "前方":
-                                    value = value + "%";
-                                    break;
-                                case "中間":
-                                    value = "%" + value + "%";
-                                    break;
-                                case "後方":
-                                    value = "%" + value;
-                                    break;
-                            }
-                        }
-                    }
-
-                    param.Add(new CMSelectParam(key, op + key, value));
-                }
-            }
-
-            return param;
         }
         #endregion
         #endregion

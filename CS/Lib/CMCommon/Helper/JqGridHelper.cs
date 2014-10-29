@@ -649,8 +649,11 @@ namespace NEXS.ERP.CM.Helper
                     {
                         input.TagName = "input";
                         input.Type = "text";
-                        input.Attributes.Add("maxlength", colParam.MaxLen);
-                        input.Attributes.Add("size", colParam.MaxLen);
+                        if (colParam.MaxLen > 0)
+                        {
+                            input.Attributes.Add("maxlength", colParam.MaxLen);
+                            input.Attributes.Add("size", colParam.MaxLen);
+                        }
                     }
                     else
                     {
